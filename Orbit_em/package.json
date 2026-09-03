@@ -1,0 +1,24 @@
+{
+  "name": "orbitem",
+  "version": "1.0.0",
+  "description": "Blackboxes Orbit'em - 3D Cloud Architecture & FinOps Constraint Engine",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/engine.test.js"
+  },
+  "keywords": [
+    "blackboxes",
+    "orbitem",
+    "webgl",
+    "threejs",
+    "finops",
+    "cloud-architecture",
+    "reciprocal-constraint-engine"
+  ],
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.180.0"
+  }
+}

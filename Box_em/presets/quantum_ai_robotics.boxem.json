@@ -1,0 +1,32 @@
+{
+  "$schema": "https://blackboxes.engine/schema/v1.json",
+  "version": "1.0.0",
+  "meta": {
+    "brand": "Blackboxes",
+    "app": "Box'em",
+    "title": "Quantum AI & Autonomous Robotics Synthesis",
+    "occupation": "custom",
+    "preset": "Autonomous Intelligence Matrix",
+    "author": "Blackboxes Deep Tech Lab"
+  },
+  "constraints": {
+    "timeWeeks": 6.0,
+    "costBudget": 16500,
+    "qualityPercent": 94,
+    "scopePercent": 100,
+    "lockMode": "cost",
+    "baseRate": 185
+  },
+  "submodules": [
+    { "id": "mod_1", "name": "Neural SLAM & Sensor Fusion", "reqQuality": 50 },
+    { "id": "mod_2", "name": "Reinforcement Policy Simulation", "reqQuality": 70 },
+    { "id": "mod_3", "name": "TensorRT Edge Compilation", "reqQuality": 85 },
+    { "id": "mod_4", "name": "Autonomous Safety Certification", "reqQuality": 95 }
+  ],
+  "visuals": {
+    "shaderPreset": "sapphire",
+    "fontScale": 1.3,
+    "theme": "dark",
+    "customNodeModels": {}
+  }
+}

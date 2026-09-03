@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blackboxes.engine/schema/capem/v1.json",
+  "title": "Cap'em Startup Valuation Configuration Schema",
+  "type": "object",
+  "required": ["version", "meta", "constraints", "submodules", "visuals"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "meta": {
+      "type": "object",
+      "required": ["brand", "app", "title", "sector"],
+      "properties": {
+        "brand": { "type": "string", "const": "Blackboxes" },
+        "app": { "type": "string", "const": "Cap'em" },
+        "title": { "type": "string", "maxLength": 100 },
+        "sector": { "type": "string" },
+        "author": { "type": "string", "maxLength": 60 }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["capitalRaisedUsd", "postMoneyValuationUsd", "runwayMonths", "founderEquityPercent", "lockMode"],
+      "properties": {
+        "capitalRaisedUsd": { "type": "number", "minimum": 10000, "maximum": 50000000 },
+        "postMoneyValuationUsd": { "type": "number", "minimum": 500000, "maximum": 200000000 },
+        "runwayMonths": { "type": "number", "minimum": 3, "maximum": 48 },
+        "founderEquityPercent": { "type": "number", "minimum": 5.0, "maximum": 100.0 },
+        "lockMode": { "type": "string", "enum": ["capital", "valuation", "runway", "equity"] }
+      }
+    },
+    "submodules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "ownership", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "ownership": { "type": "number" },
+          "type": { "type": "string" }
+        }
+      }
+    },
+    "visuals": {
+      "type": "object",
+      "required": ["shaderPreset", "theme"],
+      "properties": {
+        "shaderPreset": { "type": "string" },
+        "theme": { "type": "string", "enum": ["dark", "light"] }
+      }
+    }
+  }
+}

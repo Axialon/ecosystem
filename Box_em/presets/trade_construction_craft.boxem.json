@@ -1,0 +1,48 @@
+{
+  "$schema": "https://blackboxes.engine/schema/v1.json",
+  "version": "1.0.0",
+  "meta": {
+    "brand": "Blackboxes",
+    "app": "Box'em",
+    "title": "Master Trade & Physical Construction Craft",
+    "occupation": "trades",
+    "preset": "Skilled Trades Core",
+    "author": "Blackboxes Engineering Core"
+  },
+  "constraints": {
+    "timeWeeks": 3.5,
+    "costBudget": 7800,
+    "qualityPercent": 92,
+    "scopePercent": 100,
+    "lockMode": "time",
+    "baseRate": 110
+  },
+  "submodules": [
+    {
+      "id": "mod_1",
+      "name": "Master Electrical Rough-In & Grid Distribution",
+      "reqQuality": 25
+    },
+    {
+      "id": "mod_2",
+      "name": "Structural Timber Framing & Joist Matrix",
+      "reqQuality": 55
+    },
+    {
+      "id": "mod_3",
+      "name": "Hydronic Plumbing & Radiant Heating Loops",
+      "reqQuality": 80
+    },
+    {
+      "id": "mod_4",
+      "name": "Final Engineering Compliance & AS/NZS Certification",
+      "reqQuality": 95
+    }
+  ],
+  "visuals": {
+    "shaderPreset": "classic",
+    "fontScale": 1.35,
+    "theme": "dark",
+    "customNodeModels": {}
+  }
+}

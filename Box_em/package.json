@@ -1,0 +1,38 @@
+{
+  "name": "boxem",
+  "version": "1.0.0",
+  "description": "Blackboxes Box'em - 3D Reciprocal Constraint Engine & Power Tool",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/schema.test.js && node test/modelLoader.test.js && node test/modelAssets.test.js && node test/presets.test.js && node test/professions.test.js && node test/worker.test.js && node test/e2e_server.test.js && node test/redteam.test.js && node .audits/run_audits.js",
+    "audit": "node .audits/run_audits.js",
+    "test:schema": "node test/schema.test.js",
+    "test:models": "node test/modelLoader.test.js",
+    "test:assets": "node test/modelAssets.test.js",
+    "test:presets": "node test/presets.test.js",
+    "test:professions": "node test/professions.test.js",
+    "test:worker": "node test/worker.test.js",
+    "test:e2e": "node test/e2e_server.test.js",
+    "test:redteam": "node test/redteam.test.js",
+    "generate:models": "node scripts/generate_models.js",
+    "generate:professions": "node src/data/generate_professions.js && node src/data/export_js.js"
+  },
+  "keywords": [
+    "blackboxes",
+    "boxem",
+    "webgl",
+    "threejs",
+    "webxr",
+    "reciprocal-constraint-engine",
+    "225-professions-power-tool"
+  ],
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^25.9.0"
+  }
+}

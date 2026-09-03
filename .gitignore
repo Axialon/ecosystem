@@ -1,0 +1,11 @@
+node_modules/
+*/node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.wrangler/
+.git_standalone_backup
+Box_em/.git_standalone_backup
+Box_em/node_modules/
+*/node_modules/

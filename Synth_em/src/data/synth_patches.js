@@ -1,0 +1,66 @@
+// Synth'em - Embedded Spatial Audio Synth Patches Library
+window.SYNTHEM_PATCHES = [
+  {
+    "id": "cyberpunk_acid",
+    "name": "Cyberpunk Acid Bassline",
+    "category": "Electronic & Synthwave",
+    "desc": "Heavy square-saw harmonic saturation, fast resonant low-pass envelope, tight transient punch, and short metallic reflection.",
+    "defaults": {
+      "harmonicDrivePercent": 75,
+      "dynamicCrestDb": 14,
+      "pitchRatio": 0.85,
+      "reverbDecaySec": 0.8,
+      "filterCutoffHz": 1800,
+      "stereoWidthPercent": 65,
+      "lockMode": "harmonics"
+    },
+    "submodules": [
+      { "id": "m1", "name": "Dual Saw & Sub-Oscillator", "dspParam": "Osc Bank", "mixLevel": 85 },
+      { "id": "m2", "name": "Diode Ladder Filter (24dB)", "dspParam": "VCF Resonance", "mixLevel": 70 },
+      { "id": "m3", "name": "Soft-Clipping Waveshaper", "dspParam": "Drive Tube", "mixLevel": 65 },
+      { "id": "m4", "name": "Early Reflection Spatializer", "dspParam": "Stereo Width", "mixLevel": 30 }
+    ]
+  },
+  {
+    "id": "ambient_shimmer",
+    "name": "Ambient Shimmer Cathedral",
+    "category": "Cinematic & Ambient",
+    "desc": "Pitch-shifted octave-up feedback loop, infinite diffuse convolution reverb, soft sinusoidal harmonics, and gentle sidechain breathing.",
+    "defaults": {
+      "harmonicDrivePercent": 20,
+      "dynamicCrestDb": 6,
+      "pitchRatio": 1.25,
+      "reverbDecaySec": 8.5,
+      "filterCutoffHz": 5500,
+      "stereoWidthPercent": 95,
+      "lockMode": "reverb"
+    },
+    "submodules": [
+      { "id": "m1", "name": "Granular Grain Cloud (+1 Oct)", "dspParam": "Pitch Grain", "mixLevel": 90 },
+      { "id": "m2", "name": "Endless Diffusion Tank", "dspParam": "Reverb Tank", "mixLevel": 95 },
+      { "id": "m3", "name": "Tape Wow & Flutter LFO", "dspParam": "Modulation", "mixLevel": 40 },
+      { "id": "m4", "name": "Binaural 3D Spatial Panner", "dspParam": "HRTF Panning", "mixLevel": 80 }
+    ]
+  },
+  {
+    "id": "lofi_chillhop",
+    "name": "Lo-Fi Tape Chillhop Rhodes",
+    "category": "Lo-Fi & Beats",
+    "desc": "Vintage 12-bit DAC emulation, warm analog tube saturation, gentle tape flutter, and dynamic transient smoothing.",
+    "defaults": {
+      "harmonicDrivePercent": 45,
+      "dynamicCrestDb": 10,
+      "pitchRatio": 0.95,
+      "reverbDecaySec": 2.2,
+      "filterCutoffHz": 3200,
+      "stereoWidthPercent": 50,
+      "lockMode": "dynamics"
+    },
+    "submodules": [
+      { "id": "m1", "name": "FM Electric Piano Tines", "dspParam": "FM Operator", "mixLevel": 75 },
+      { "id": "m2", "name": "12-Bit Bitcrush & Downsampler", "dspParam": "Bit Depth", "mixLevel": 50 },
+      { "id": "m3", "name": "Spring Reverb Tank", "dspParam": "Spring Reverb", "mixLevel": 45 },
+      { "id": "m4", "name": "Vinyl Crackle Noise Floor", "dspParam": "Texture", "mixLevel": 25 }
+    ]
+  }
+];

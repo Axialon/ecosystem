@@ -1,0 +1,863 @@
+{
+  "timestamp": "2026-09-03T07:13:19.890Z",
+  "personas": {
+    "WebGL Architect": [
+      {
+        "engine": "Box_em",
+        "testName": "3D Billboard Stacking & Occlusion Prevention",
+        "passed": true,
+        "details": "Sprites must specify renderOrder = 9999 and depthTest: false"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Central Crystalline Reactor Two-Sided Shading",
+        "passed": true,
+        "details": "Mesh materials must specify side: THREE.DoubleSide"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Expanded Raycasting Hitboxes",
+        "passed": true,
+        "details": "Interactive submodule gems must provide expanded hitboxes for effortless spatial hovering"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "3D Billboard Stacking & Occlusion Prevention",
+        "passed": true,
+        "details": "Sprites must specify renderOrder = 9999 and depthTest: false"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Central Crystalline Reactor Two-Sided Shading",
+        "passed": true,
+        "details": "Mesh materials must specify side: THREE.DoubleSide"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Expanded Raycasting Hitboxes",
+        "passed": true,
+        "details": "Interactive submodule gems must provide expanded hitboxes for effortless spatial hovering"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "3D Billboard Stacking & Occlusion Prevention",
+        "passed": true,
+        "details": "Sprites must specify renderOrder = 9999 and depthTest: false"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Central Crystalline Reactor Two-Sided Shading",
+        "passed": true,
+        "details": "Mesh materials must specify side: THREE.DoubleSide"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Expanded Raycasting Hitboxes",
+        "passed": true,
+        "details": "Interactive submodule gems must provide expanded hitboxes for effortless spatial hovering"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "3D Billboard Stacking & Occlusion Prevention",
+        "passed": true,
+        "details": "Sprites must specify renderOrder = 9999 and depthTest: false"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Central Crystalline Reactor Two-Sided Shading",
+        "passed": true,
+        "details": "Mesh materials must specify side: THREE.DoubleSide"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Expanded Raycasting Hitboxes",
+        "passed": true,
+        "details": "Interactive submodule gems must provide expanded hitboxes for effortless spatial hovering"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "3D Billboard Stacking & Occlusion Prevention",
+        "passed": true,
+        "details": "Sprites must specify renderOrder = 9999 and depthTest: false"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Central Crystalline Reactor Two-Sided Shading",
+        "passed": true,
+        "details": "Mesh materials must specify side: THREE.DoubleSide"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Expanded Raycasting Hitboxes",
+        "passed": true,
+        "details": "Interactive submodule gems must provide expanded hitboxes for effortless spatial hovering"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "3D Billboard Stacking & Occlusion Prevention",
+        "passed": true,
+        "details": "Sprites must specify renderOrder = 9999 and depthTest: false"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Central Crystalline Reactor Two-Sided Shading",
+        "passed": true,
+        "details": "Mesh materials must specify side: THREE.DoubleSide"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Expanded Raycasting Hitboxes",
+        "passed": true,
+        "details": "Interactive submodule gems must provide expanded hitboxes for effortless spatial hovering"
+      }
+    ],
+    "Frontend UX": [
+      {
+        "engine": "Box_em",
+        "testName": "Keyboard ESC Listener for Modal Dismissal",
+        "passed": true,
+        "details": "Engine must handle Escape key for dismissing active modals"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Reciprocal Navigation Header Links",
+        "passed": true,
+        "details": "Engine must provide direct link to its showcase presentation"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Keyboard ESC Listener for Modal Dismissal",
+        "passed": true,
+        "details": "Engine must handle Escape key for dismissing active modals"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Reciprocal Navigation Header Links",
+        "passed": true,
+        "details": "Engine must provide direct link to its showcase presentation"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Keyboard ESC Listener for Modal Dismissal",
+        "passed": true,
+        "details": "Engine must handle Escape key for dismissing active modals"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Reciprocal Navigation Header Links",
+        "passed": true,
+        "details": "Engine must provide direct link to its showcase presentation"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Keyboard ESC Listener for Modal Dismissal",
+        "passed": true,
+        "details": "Engine must handle Escape key for dismissing active modals"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Reciprocal Navigation Header Links",
+        "passed": true,
+        "details": "Engine must provide direct link to its showcase presentation"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Keyboard ESC Listener for Modal Dismissal",
+        "passed": true,
+        "details": "Engine must handle Escape key for dismissing active modals"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Reciprocal Navigation Header Links",
+        "passed": true,
+        "details": "Engine must provide direct link to its showcase presentation"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Keyboard ESC Listener for Modal Dismissal",
+        "passed": true,
+        "details": "Engine must handle Escape key for dismissing active modals"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Reciprocal Navigation Header Links",
+        "passed": true,
+        "details": "Engine must provide direct link to its showcase presentation"
+      }
+    ],
+    "Security Backend": [
+      {
+        "engine": "Box_em",
+        "testName": "Strict Anti-Cache HTTP Response Headers",
+        "passed": true,
+        "details": "Development servers must send no-cache headers"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Deterministic JSON Schema Export",
+        "passed": true,
+        "details": "Engine must support schema-compliant JSON state export"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Strict Anti-Cache HTTP Response Headers",
+        "passed": true,
+        "details": "Development servers must send no-cache headers"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Deterministic JSON Schema Export",
+        "passed": true,
+        "details": "Engine must support schema-compliant JSON state export"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Strict Anti-Cache HTTP Response Headers",
+        "passed": true,
+        "details": "Development servers must send no-cache headers"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Deterministic JSON Schema Export",
+        "passed": true,
+        "details": "Engine must support schema-compliant JSON state export"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Strict Anti-Cache HTTP Response Headers",
+        "passed": true,
+        "details": "Development servers must send no-cache headers"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Deterministic JSON Schema Export",
+        "passed": true,
+        "details": "Engine must support schema-compliant JSON state export"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Strict Anti-Cache HTTP Response Headers",
+        "passed": true,
+        "details": "Development servers must send no-cache headers"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Deterministic JSON Schema Export",
+        "passed": true,
+        "details": "Engine must support schema-compliant JSON state export"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Strict Anti-Cache HTTP Response Headers",
+        "passed": true,
+        "details": "Development servers must send no-cache headers"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Deterministic JSON Schema Export",
+        "passed": true,
+        "details": "Engine must support schema-compliant JSON state export"
+      }
+    ],
+    "Math Systems": [
+      {
+        "engine": "Box_em",
+        "testName": "Automated Test Suite Availability",
+        "passed": true,
+        "details": "Engine must have dedicated test suites in test/"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Reciprocal Constraint Mathematical Solver",
+        "passed": true,
+        "details": "Engine must define a real-time reciprocal solver function"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Automated Test Suite Availability",
+        "passed": true,
+        "details": "Engine must have dedicated test suites in test/"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Reciprocal Constraint Mathematical Solver",
+        "passed": true,
+        "details": "Engine must define a real-time reciprocal solver function"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Automated Test Suite Availability",
+        "passed": true,
+        "details": "Engine must have dedicated test suites in test/"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Reciprocal Constraint Mathematical Solver",
+        "passed": true,
+        "details": "Engine must define a real-time reciprocal solver function"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Automated Test Suite Availability",
+        "passed": true,
+        "details": "Engine must have dedicated test suites in test/"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Reciprocal Constraint Mathematical Solver",
+        "passed": true,
+        "details": "Engine must define a real-time reciprocal solver function"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Automated Test Suite Availability",
+        "passed": true,
+        "details": "Engine must have dedicated test suites in test/"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Reciprocal Constraint Mathematical Solver",
+        "passed": true,
+        "details": "Engine must define a real-time reciprocal solver function"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Automated Test Suite Availability",
+        "passed": true,
+        "details": "Engine must have dedicated test suites in test/"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Reciprocal Constraint Mathematical Solver",
+        "passed": true,
+        "details": "Engine must define a real-time reciprocal solver function"
+      }
+    ],
+    "Technical Docs": [
+      {
+        "engine": "Box_em",
+        "testName": "README Documentation Specification",
+        "passed": true,
+        "details": "README.md must exist"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "ARCHITECTURE Pipeline Specification",
+        "passed": true,
+        "details": "docs/ARCHITECTURE.md must exist"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "API Reference Specification",
+        "passed": true,
+        "details": "docs/API_REFERENCE.md must exist"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "AI Agent Prompt Template Specification",
+        "passed": true,
+        "details": "agent_prompt_template.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "README Documentation Specification",
+        "passed": true,
+        "details": "README.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "ARCHITECTURE Pipeline Specification",
+        "passed": true,
+        "details": "docs/ARCHITECTURE.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "API Reference Specification",
+        "passed": true,
+        "details": "docs/API_REFERENCE.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "AI Agent Prompt Template Specification",
+        "passed": true,
+        "details": "agent_prompt_template.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "README Documentation Specification",
+        "passed": true,
+        "details": "README.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "ARCHITECTURE Pipeline Specification",
+        "passed": true,
+        "details": "docs/ARCHITECTURE.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "API Reference Specification",
+        "passed": true,
+        "details": "docs/API_REFERENCE.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "AI Agent Prompt Template Specification",
+        "passed": true,
+        "details": "agent_prompt_template.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "README Documentation Specification",
+        "passed": true,
+        "details": "README.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "ARCHITECTURE Pipeline Specification",
+        "passed": true,
+        "details": "docs/ARCHITECTURE.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "API Reference Specification",
+        "passed": true,
+        "details": "docs/API_REFERENCE.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "AI Agent Prompt Template Specification",
+        "passed": true,
+        "details": "agent_prompt_template.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "README Documentation Specification",
+        "passed": true,
+        "details": "README.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "ARCHITECTURE Pipeline Specification",
+        "passed": true,
+        "details": "docs/ARCHITECTURE.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "API Reference Specification",
+        "passed": true,
+        "details": "docs/API_REFERENCE.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "AI Agent Prompt Template Specification",
+        "passed": true,
+        "details": "agent_prompt_template.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "README Documentation Specification",
+        "passed": true,
+        "details": "README.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "ARCHITECTURE Pipeline Specification",
+        "passed": true,
+        "details": "docs/ARCHITECTURE.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "API Reference Specification",
+        "passed": true,
+        "details": "docs/API_REFERENCE.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "AI Agent Prompt Template Specification",
+        "passed": true,
+        "details": "agent_prompt_template.md must exist"
+      }
+    ],
+    "OSPO Community": [
+      {
+        "engine": "Box_em",
+        "testName": "MIT License Legal File",
+        "passed": true,
+        "details": "LICENSE must exist"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Code of Conduct Specification",
+        "passed": true,
+        "details": "CODE_OF_CONDUCT.md must exist"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Contribution Guidelines",
+        "passed": true,
+        "details": "CONTRIBUTING.md must exist"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Coordinated Security Disclosure Policy",
+        "passed": true,
+        "details": "SECURITY.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "MIT License Legal File",
+        "passed": true,
+        "details": "LICENSE must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Code of Conduct Specification",
+        "passed": true,
+        "details": "CODE_OF_CONDUCT.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Contribution Guidelines",
+        "passed": true,
+        "details": "CONTRIBUTING.md must exist"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Coordinated Security Disclosure Policy",
+        "passed": true,
+        "details": "SECURITY.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "MIT License Legal File",
+        "passed": true,
+        "details": "LICENSE must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Code of Conduct Specification",
+        "passed": true,
+        "details": "CODE_OF_CONDUCT.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Contribution Guidelines",
+        "passed": true,
+        "details": "CONTRIBUTING.md must exist"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Coordinated Security Disclosure Policy",
+        "passed": true,
+        "details": "SECURITY.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "MIT License Legal File",
+        "passed": true,
+        "details": "LICENSE must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Code of Conduct Specification",
+        "passed": true,
+        "details": "CODE_OF_CONDUCT.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Contribution Guidelines",
+        "passed": true,
+        "details": "CONTRIBUTING.md must exist"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Coordinated Security Disclosure Policy",
+        "passed": true,
+        "details": "SECURITY.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "MIT License Legal File",
+        "passed": true,
+        "details": "LICENSE must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Code of Conduct Specification",
+        "passed": true,
+        "details": "CODE_OF_CONDUCT.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Contribution Guidelines",
+        "passed": true,
+        "details": "CONTRIBUTING.md must exist"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Coordinated Security Disclosure Policy",
+        "passed": true,
+        "details": "SECURITY.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "MIT License Legal File",
+        "passed": true,
+        "details": "LICENSE must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Code of Conduct Specification",
+        "passed": true,
+        "details": "CODE_OF_CONDUCT.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Contribution Guidelines",
+        "passed": true,
+        "details": "CONTRIBUTING.md must exist"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Coordinated Security Disclosure Policy",
+        "passed": true,
+        "details": "SECURITY.md must exist"
+      }
+    ],
+    "DevSecOps": [
+      {
+        "engine": "Root Ecosystem",
+        "testName": "Root npm test Script Configured",
+        "passed": true,
+        "details": "Root package.json must define a comprehensive npm test script"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Engine package.json test Script Configured",
+        "passed": true,
+        "details": "Engine package.json must define test script"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Engine package.json test Script Configured",
+        "passed": true,
+        "details": "Engine package.json must define test script"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Engine package.json test Script Configured",
+        "passed": true,
+        "details": "Engine package.json must define test script"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Engine package.json test Script Configured",
+        "passed": true,
+        "details": "Engine package.json must define test script"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Engine package.json test Script Configured",
+        "passed": true,
+        "details": "Engine package.json must define test script"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Engine package.json test Script Configured",
+        "passed": true,
+        "details": "Engine package.json must define test script"
+      }
+    ],
+    "Gap Mapper": [
+      {
+        "engine": "Box_em",
+        "testName": "WebGL Initialization Fault-Tolerance Notice",
+        "passed": true,
+        "details": "Engine must provide a graceful WebGL fallback banner or notice"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "Corrupted Client Storage Defensive Recovery",
+        "passed": true,
+        "details": "localStorage parsing must be wrapped in try/catch defensive recovery"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "URL Query Parameter Hydration & Clamping",
+        "passed": true,
+        "details": "Engine must support hydration from URL query parameters"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "WebGL Initialization Fault-Tolerance Notice",
+        "passed": true,
+        "details": "Engine must provide a graceful WebGL fallback banner or notice"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Corrupted Client Storage Defensive Recovery",
+        "passed": true,
+        "details": "localStorage parsing must be wrapped in try/catch defensive recovery"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "URL Query Parameter Hydration & Clamping",
+        "passed": true,
+        "details": "Engine must support hydration from URL query parameters"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "WebGL Initialization Fault-Tolerance Notice",
+        "passed": true,
+        "details": "Engine must provide a graceful WebGL fallback banner or notice"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Corrupted Client Storage Defensive Recovery",
+        "passed": true,
+        "details": "localStorage parsing must be wrapped in try/catch defensive recovery"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "URL Query Parameter Hydration & Clamping",
+        "passed": true,
+        "details": "Engine must support hydration from URL query parameters"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "WebGL Initialization Fault-Tolerance Notice",
+        "passed": true,
+        "details": "Engine must provide a graceful WebGL fallback banner or notice"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Corrupted Client Storage Defensive Recovery",
+        "passed": true,
+        "details": "localStorage parsing must be wrapped in try/catch defensive recovery"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "URL Query Parameter Hydration & Clamping",
+        "passed": true,
+        "details": "Engine must support hydration from URL query parameters"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "WebGL Initialization Fault-Tolerance Notice",
+        "passed": true,
+        "details": "Engine must provide a graceful WebGL fallback banner or notice"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Corrupted Client Storage Defensive Recovery",
+        "passed": true,
+        "details": "localStorage parsing must be wrapped in try/catch defensive recovery"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "URL Query Parameter Hydration & Clamping",
+        "passed": true,
+        "details": "Engine must support hydration from URL query parameters"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "WebGL Initialization Fault-Tolerance Notice",
+        "passed": true,
+        "details": "Engine must provide a graceful WebGL fallback banner or notice"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Corrupted Client Storage Defensive Recovery",
+        "passed": true,
+        "details": "localStorage parsing must be wrapped in try/catch defensive recovery"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "URL Query Parameter Hydration & Clamping",
+        "passed": true,
+        "details": "Engine must support hydration from URL query parameters"
+      }
+    ],
+    "Solution Engine": [
+      {
+        "engine": "Box_em",
+        "testName": "Dedicated Marketing / Showcase Portal",
+        "passed": true,
+        "details": "Engine must provide a standalone showcase/marketing portal"
+      },
+      {
+        "engine": "Box_em",
+        "testName": "3D Hologram Voluntary Donation Model",
+        "passed": true,
+        "details": "Engine must feature a voluntary one-time sponsorship / donation modal"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "Dedicated Marketing / Showcase Portal",
+        "passed": true,
+        "details": "Engine must provide a standalone showcase/marketing portal"
+      },
+      {
+        "engine": "Orbit_em",
+        "testName": "3D Hologram Voluntary Donation Model",
+        "passed": true,
+        "details": "Engine must feature a voluntary one-time sponsorship / donation modal"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "Dedicated Marketing / Showcase Portal",
+        "passed": true,
+        "details": "Engine must provide a standalone showcase/marketing portal"
+      },
+      {
+        "engine": "Pulse_em",
+        "testName": "3D Hologram Voluntary Donation Model",
+        "passed": true,
+        "details": "Engine must feature a voluntary one-time sponsorship / donation modal"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "Dedicated Marketing / Showcase Portal",
+        "passed": true,
+        "details": "Engine must provide a standalone showcase/marketing portal"
+      },
+      {
+        "engine": "Cap_em",
+        "testName": "3D Hologram Voluntary Donation Model",
+        "passed": true,
+        "details": "Engine must feature a voluntary one-time sponsorship / donation modal"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "Dedicated Marketing / Showcase Portal",
+        "passed": true,
+        "details": "Engine must provide a standalone showcase/marketing portal"
+      },
+      {
+        "engine": "Synth_em",
+        "testName": "3D Hologram Voluntary Donation Model",
+        "passed": true,
+        "details": "Engine must feature a voluntary one-time sponsorship / donation modal"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "Dedicated Marketing / Showcase Portal",
+        "passed": true,
+        "details": "Engine must provide a standalone showcase/marketing portal"
+      },
+      {
+        "engine": "Balanc_em",
+        "testName": "3D Hologram Voluntary Donation Model",
+        "passed": true,
+        "details": "Engine must feature a voluntary one-time sponsorship / donation modal"
+      }
+    ]
+  },
+  "summary": {
+    "totalAudits": 139,
+    "passed": 139,
+    "failed": 0,
+    "issuesFound": []
+  }
+}

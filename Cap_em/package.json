@@ -1,0 +1,24 @@
+{
+  "name": "capem",
+  "version": "1.0.0",
+  "description": "Blackboxes Cap'em - 3D Startup Cap Table, Dilution & Valuation Equilibrium Matrix",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/engine.test.js"
+  },
+  "keywords": [
+    "blackboxes",
+    "capem",
+    "webgl",
+    "threejs",
+    "startup-valuation",
+    "cap-table",
+    "reciprocal-constraint-engine"
+  ],
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.180.0"
+  }
+}

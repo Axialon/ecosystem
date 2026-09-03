@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://blackboxes.engine/schema/v1.json",
+  "title": "BoxEmConfiguration",
+  "description": "Blackboxes Box'em 3D Reciprocal Constraint Engine Configuration Schema v1",
+  "type": "object",
+  "required": ["$schema", "version", "meta", "constraints", "submodules", "visuals"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "meta": {
+      "type": "object",
+      "required": ["brand", "app", "title", "occupation"],
+      "properties": {
+        "brand": { "type": "string", "enum": ["Blackboxes"] },
+        "app": { "type": "string", "enum": ["Box'em"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "occupation": { "type": "string", "pattern": "^[a-zA-Z0-9_ -]+$", "minLength": 1, "maxLength": 80 },
+        "preset": { "type": "string" },
+        "author": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["timeWeeks", "costBudget", "qualityPercent", "scopePercent", "lockMode", "baseRate"],
+      "properties": {
+        "timeWeeks": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 52.0
+        },
+        "costBudget": {
+          "type": "number",
+          "minimum": 500,
+          "maximum": 1000000
+        },
+        "qualityPercent": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 200
+        },
+        "scopePercent": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 250
+        },
+        "lockMode": {
+          "type": "string",
+          "enum": ["time", "cost", "quality", "scope"]
+        },
+        "baseRate": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 2000
+        },
+        "minFullScopeFloor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "enableFloorGuarantee": {
+          "type": "boolean"
+        },
+        "bounds": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "submodules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["name", "reqQuality"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "reqQuality": { "type": "number", "minimum": 0, "maximum": 150 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "visuals": {
+      "type": "object",
+      "required": ["shaderPreset", "fontScale", "theme"],
+      "properties": {
+        "shaderPreset": {
+          "type": "string",
+          "enum": [
+            "classic", "quartz", "emerald", "liquid", "polar", "magma", "rose", "nebula",
+            "citrine", "aquamarine", "amethyst", "titanium", "sapphire",
+            "kintsugi", "abyssal", "solar", "opaline", "damascus", "neonvapor", "carbon", "voidsingularity"
+          ]
+        },
+        "fontScale": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 3.0
+        },
+        "spatialFontScale": {
+          "type": "number",
+          "minimum": 0.4,
+          "maximum": 3.0
+        },
+        "nodeModelsScale": {
+          "type": "number",
+          "minimum": 0.4,
+          "maximum": 3.0
+        },
+        "insideObjectsScale": {
+          "type": "number",
+          "minimum": 0.4,
+          "maximum": 3.0
+        },
+        "detailCardScale": {
+          "type": "number",
+          "minimum": 0.4,
+          "maximum": 3.0
+        },
+        "theme": {
+          "type": "string",
+          "enum": ["dark", "light"]
+        },
+        "customNodeModels": {
+          "type": "object",
+          "properties": {
+            "time": { "type": "string" },
+            "cost": { "type": "string" },
+            "quality": { "type": "string" },
+            "scope": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

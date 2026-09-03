@@ -1,0 +1,13 @@
+# Cloudflare Pages Clean Route Rewrites
+/explore        /showcase        301
+/overview       /showcase        301
+/about          /showcase        301
+/marketing      /showcase        301
+
+/schema/boxem.schema.json   /schemas/v1.schema.json   200
+/schema                     /schemas/v1.schema.json   200
+
+/assets/models/time.glb     /models/clock_crystal.glb 200
+/assets/models/cost.glb     /models/coin_gem.glb      200
+/assets/models/quality.glb  /models/diamond_core.glb  200
+/assets/models/scope.glb    /models/cube_matrix.glb   200

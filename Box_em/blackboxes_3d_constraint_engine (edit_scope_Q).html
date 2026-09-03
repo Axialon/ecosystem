@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>BlackBoxes - 3D Constraint Engine</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800;900&family=Google+Sans+Code:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    :root {
+      --app-font-scale: 1.3;
+      --ff-sans: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ff-mono: 'Google Sans Code', monospace;
+      font-size: calc(13px * var(--app-font-scale));
+
+      --panel-bg: rgba(255, 255, 255, 0.96);
+      --panel-border: rgba(15, 23, 42, 0.22);
+      --text-main: #020617;
+      --text-muted: #1e293b;
+      --card-bg: rgba(241, 245, 249, 0.92);
+      --card-border: #cbd5e1;
+      --btn-bg: #ffffff;
+      --btn-border: #cbd5e1;
+      --btn-text: #020617;
+      --btn-hover-bg: #e2e8f0;
+      --btn-active-bg: #020617;
+      --btn-active-text: #ffffff;
+    }
+
+    html.dark {
+      --panel-bg: rgba(15, 23, 42, 0.96);
+      --panel-border: rgba(255, 255, 255, 0.22);
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --card-bg: rgba(30, 41, 59, 0.92);
+      --card-border: #334155;
+      --btn-bg: #1e293b;
+      --btn-border: #475569;
+      --btn-text: #f8fafc;
+      --btn-hover-bg: #334155;
+      --btn-active-bg: #38bdf8;
+      --btn-active-text: #020617;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--ff-sans);
+      background-color: #cbd5e1;
+      color: var(--text-main);
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    html.dark body {
+      background-color: #0b1120;
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .glass-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 16px 40px 0 rgba(15, 23, 42, 0.16);
+      color: var(--text-main);
+    }
+
+    html:not(.dark) .glass-panel {
+      color: #020617 !important;
+    }
+    html.dark .glass-panel {
+      color: #f8fafc !important;
+    }
+
+    .glass-card-sub {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    .glass-button {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      color: var(--btn-text);
+      font-weight: 800;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .glass-button:hover {
+      background: var(--btn-hover-bg);
+      transform: translateY(-1px);
+    }
+
+    .glass-button.active {
+      background: var(--btn-active-bg);
+      color: var(--btn-active-text);
+      border-color: var(--btn-active-bg);
+      font-weight: 900;
+    }
+
+    .floating-window {
+      position: absolute;
+      z-index: 10;
+      min-width: 280px;
+      min-height: 52px;
+      resize: both;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      touch-action: none;
+    }
+
+    .floating-window.collapsed {
+      height: 52px !important;
+      min-height: 52px !important;
+      resize: none !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+
+    .floating-window.collapsed .window-header {
+      height: 100% !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      border-bottom: none !important;
+      display: flex;
+      align-items: center;
+    }
+
+    .floating-window.collapsed .window-body,
+    .floating-window.collapsed .window-resizer {
+      display: none !important;
+    }
+
+    .window-header {
+      cursor: grab;
+      user-select: none;
+    }
+
+    .window-header:active {
+      cursor: grabbing;
+    }
+
+    .window-body {
+      overflow-y: auto;
+      flex: 1 1 auto;
+    }
+
+    .window-resizer {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      cursor: nwse-resize;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .spatial-node-tag {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      transform: translate(-50%, -100%);
+      transition: opacity 0.15s ease;
+      background: #ffffff;
+      color: #020617;
+      font-size: 15px;
+      line-height: 1.2;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+    }
+
+    html.dark .spatial-node-tag {
+      background: #020617;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.85);
+    }
+
+    .spatial-node-tag .tag-prefix {
+      color: #020617 !important;
+      font-weight: 900;
+    }
+
+    html.dark .spatial-node-tag .tag-prefix {
+      color: #f8fafc !important;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.4); border-radius: 4px; }
+    html.dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); }
+  </style>
+</head>
+<body class="relative w-full h-full">
+
+  <!-- 3D WebGL Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Top-Left Branding Badge -->
+  <div id="brand-badge-container" class="absolute top-5 left-5 z-20 pointer-events-auto transition-all duration-200">
+    <div class="glass-panel px-4 py-3 rounded-2xl flex items-center gap-3 cursor-pointer select-none">
+      <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+        <svg viewBox="0 0 100 100" class="w-full h-full obsidian-logo-svg" shape-rendering="geometricPrecision">
+          <defs>
+            <linearGradient id="pLogoTopG_q" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b485d"/>
+              <stop offset="35%" stop-color="#1e293b"/>
+              <stop offset="75%" stop-color="#0f172a"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+            <linearGradient id="pLogoLeftG_q" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="45%" stop-color="#050914"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </linearGradient>
+            <linearGradient id="pLogoRightG_q" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="50%" stop-color="#0b1120"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+          </defs>
+          <!-- 1. Pure Solid Backing Hexagon -->
+          <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="#000000"/>
+          <!-- 2. Obsidian Crystalline Facets -->
+          <polygon points="50,4 90,26 50,48 10,26" fill="url(#pLogoTopG_q)"/>
+          <polygon points="10,26 50,48 50,92 10,70" fill="url(#pLogoLeftG_q)"/>
+          <polygon points="50,48 90,26 90,70 50,92" fill="url(#pLogoRightG_q)"/>
+          <!-- 3. Outer Silhouette Border (Crisp miter join, perfectly enclosing the cube) -->
+          <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.4" stroke-linejoin="miter"/>
+          <!-- 4. Unified Internal Y Seam (Single path with miter join and butt caps - ZERO center dots) -->
+          <path d="M 10,26 L 50,48 L 90,26 M 50,48 L 50,92" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.4" stroke-linejoin="miter" stroke-linecap="butt"/>
+          <!-- 5. Subtle Top Specular Glint Line -->
+          <line x1="50" y1="4" x2="90" y2="26" stroke="rgba(255,255,255,0.45)" stroke-width="1.2" stroke-linecap="butt"/>
+        </svg>
+      </div>
+      <div id="brand-text-content">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black tracking-wider text-slate-950 dark:text-white uppercase font-mono">BLACKBOXES</span>
+          <span id="header-occupation-tag" class="px-2 py-0.5 text-[10px] font-mono uppercase bg-slate-900/10 dark:bg-white/20 text-slate-950 dark:text-slate-100 rounded-md font-black">SOFTWARE DEV</span>
+        </div>
+        <div class="text-[11px] text-slate-900 dark:text-slate-200 font-mono mt-0.5 font-bold">4-Pillar Spatial Constraint Matrix • Reciprocal Solver</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top-Right Action Pill Bar -->
+  <div class="absolute top-5 right-5 z-20 pointer-events-auto flex items-center gap-2">
+    <div class="glass-panel px-2 py-1.5 rounded-2xl flex items-center gap-1.5 shadow-lg">
+      <button id="btn-open-scenarios" class="glass-button p-2 rounded-xl flex items-center justify-center" title="Preset Negotiation Scenarios">
+        <span class="material-symbols-outlined text-lg text-slate-950 dark:text-white">tune</span>
+      </button>
+      <button id="btn-open-config" class="glass-button p-2 rounded-xl flex items-center justify-center" title="Freelancer Base Rates & Font Settings">
+        <span class="material-symbols-outlined text-lg text-slate-950 dark:text-white">settings</span>
+      </button>
+      <button id="btn-open-bazaar" class="glass-button p-2 rounded-xl flex items-center justify-center" title="Obsidian Shaders & Themes">
+        <span class="material-symbols-outlined text-lg text-slate-950 dark:text-white">palette</span>
+      </button>
+      <button id="btn-toggle-dark" class="glass-button p-2 rounded-xl flex items-center justify-center" title="Toggle Light / Dark Mode">
+        <span class="material-symbols-outlined text-lg text-slate-950 dark:text-white">dark_mode</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating 3D Spatial Node Tags -->
+  <div id="tag-time" class="spatial-node-tag px-3 py-1.5 rounded-xl font-mono font-bold border-2 border-sky-500 flex items-center gap-2">
+    <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+    <span class="tag-prefix">TIME:</span> <span id="tag-time-val" class="text-sky-700 dark:text-sky-400 font-black">3.0 wks</span>
+  </div>
+
+  <div id="tag-cost" class="spatial-node-tag px-3 py-1.5 rounded-xl font-mono font-bold border-2 border-emerald-500 flex items-center gap-2">
+    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+    <span class="tag-prefix">COST:</span> <span id="tag-cost-val" class="text-emerald-700 dark:text-emerald-400 font-black">$5,500</span>
+  </div>
+
+  <div id="tag-quality" class="spatial-node-tag px-3 py-1.5 rounded-xl font-mono font-bold border-2 border-purple-500 flex items-center gap-2">
+    <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+    <span class="tag-prefix">QUALITY:</span> <span id="tag-quality-val" class="text-purple-700 dark:text-purple-400 font-black">85% [GRADE A]</span>
+  </div>
+
+  <div id="tag-scope" class="spatial-node-tag px-3 py-1.5 rounded-xl font-mono font-bold border-2 border-amber-500 flex items-center gap-2">
+    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+    <span class="tag-prefix">SCOPE:</span> <span id="tag-scope-val" class="text-amber-700 dark:text-amber-400 font-black">100% (T4)</span>
+  </div>
+
+  <!-- Sub-Module Interactive Hover Tooltip -->
+  <div id="submodule-tooltip" class="absolute z-30 pointer-events-none opacity-0 glass-panel px-4 py-3 rounded-2xl shadow-2xl transition-opacity duration-150 -translate-x-1/2 -translate-y-full border-2 border-slate-950 dark:border-slate-400 font-mono min-w-[260px] max-w-[340px]">
+    <div class="flex items-center gap-2 mb-1">
+      <span id="tooltip-dot" class="w-3 h-3 rounded-full bg-emerald-500"></span>
+      <strong id="tooltip-title" class="text-slate-950 dark:text-white font-sans text-sm font-black">Sub-Module</strong>
+    </div>
+    <div id="tooltip-req" class="text-xs text-slate-900 dark:text-slate-200 font-extrabold">Req: Grade A (85%)</div>
+    <div id="tooltip-status" class="text-xs font-black text-emerald-800 dark:text-emerald-300 mt-1">INCLUDED IN PIPELINE</div>
+  </div>
+
+  <!-- FLOATING WINDOW 1: Primary Vector Controls -->
+  <div id="win-controls" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 80px; left: 20px; width: 340px; height: 390px;">
+    <div class="window-header flex justify-between items-center pb-2.5 border-b border-slate-950/20 dark:border-white/20 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-sky-700 dark:text-sky-400 font-bold">spatial_audio_off</span>
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono">Vector Controls</h3>
+      </div>
+      <button class="win-collapse-btn text-slate-950 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white p-1 rounded-lg">
+        <span class="material-symbols-outlined text-sm">remove</span>
+      </button>
+    </div>
+
+    <div class="window-body space-y-4 pr-1">
+      <div>
+        <div class="text-[11px] font-mono uppercase text-slate-950 dark:text-slate-100 font-black mb-1.5 flex justify-between">
+          <span>Active Constraint Target</span>
+          <span id="lock-target-text" class="text-sky-700 dark:text-sky-400 font-black">SOLVE FOR TIME</span>
+        </div>
+        <div class="grid grid-cols-4 gap-1">
+          <button id="lock-time-btn" class="lock-mode-btn py-1.5 px-2 rounded-xl text-[10px] font-mono font-black glass-button active">TIME</button>
+          <button id="lock-cost-btn" class="lock-mode-btn py-1.5 px-2 rounded-xl text-[10px] font-mono font-black glass-button">COST</button>
+          <button id="lock-qual-btn" class="lock-mode-btn py-1.5 px-2 rounded-xl text-[10px] font-mono font-black glass-button">QUAL</button>
+          <button id="lock-scope-btn" class="lock-mode-btn py-1.5 px-2 rounded-xl text-[10px] font-mono font-black glass-button">SCOPE</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="text-[11px] font-mono uppercase text-slate-950 dark:text-slate-100 font-black mb-1.5 flex justify-between">
+          <span>Scope Tier Buckets</span>
+          <span id="active-tier-label" class="text-amber-700 dark:text-amber-300 font-black">TIER 4 (ENT)</span>
+        </div>
+        <div class="grid grid-cols-4 gap-1">
+          <button id="tier-1-btn" class="tier-btn py-1 px-1 rounded-xl text-[9px] font-mono font-black glass-button">T1 MVP</button>
+          <button id="tier-2-btn" class="tier-btn py-1 px-1 rounded-xl text-[9px] font-mono font-black glass-button">T2 STD</button>
+          <button id="tier-3-btn" class="tier-btn py-1 px-1 rounded-xl text-[9px] font-mono font-black glass-button">T3 PRO</button>
+          <button id="tier-4-btn" class="tier-btn py-1 px-1 rounded-xl text-[9px] font-mono font-black glass-button active">T4 ENT</button>
+        </div>
+      </div>
+
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-950 dark:text-slate-100 font-black flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Timeline Speed
+          </span>
+          <span id="val-time-label" class="font-black text-slate-950 dark:text-white">3.0 Weeks</span>
+        </div>
+        <input type="range" id="slider-time" min="1" max="10" step="0.2" value="3" class="w-full accent-sky-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+      </div>
+
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-950 dark:text-slate-100 font-black flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Client Investment
+          </span>
+          <span id="val-cost-label" class="font-black text-slate-950 dark:text-white">$5,500</span>
+        </div>
+        <input type="range" id="slider-cost" min="1000" max="25000" step="250" value="5500" class="w-full accent-emerald-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+      </div>
+
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-950 dark:text-slate-100 font-black flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Craft Fidelity
+          </span>
+          <span id="val-quality-label" class="font-black text-slate-950 dark:text-white">85% • Grade A</span>
+        </div>
+        <input type="range" id="slider-quality" min="20" max="100" step="1" value="85" class="w-full accent-purple-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+      </div>
+
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-950 dark:text-slate-100 font-black flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Scope Volume
+          </span>
+          <span id="val-scope-label" class="font-black text-slate-950 dark:text-white">100%</span>
+        </div>
+        <input type="range" id="slider-scope" min="25" max="100" step="5" value="100" class="w-full accent-amber-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+      </div>
+    </div>
+
+    <svg class="window-resizer" viewBox="0 0 16 16" fill="currentColor">
+      <circle cx="12" cy="12" r="1.5" /><circle cx="8" cy="12" r="1.5" /><circle cx="12" cy="8" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="8" cy="8" r="1.5" /><circle cx="12" cy="4" r="1.5" />
+    </svg>
+  </div>
+
+  <!-- FLOATING WINDOW 2: Metrics & Deliverables -->
+  <div id="win-gauges" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 490px; left: 20px; width: 340px; height: 230px;">
+    <div class="window-header flex justify-between items-center pb-2.5 border-b border-slate-950/20 dark:border-white/20 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-emerald-700 dark:text-emerald-400 font-bold">analytics</span>
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono">Metrics & Deliverables</h3>
+      </div>
+      <button class="win-collapse-btn text-slate-950 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white p-1 rounded-lg">
+        <span class="material-symbols-outlined text-sm">remove</span>
+      </button>
+    </div>
+
+    <div class="window-body space-y-3 pr-1">
+      <div class="grid grid-cols-2 gap-2">
+        <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+          <div class="text-[10px] font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Effective Yield</div>
+          <div id="metric-yield" class="text-sm font-black text-emerald-700 dark:text-emerald-300 font-mono mt-0.5">$61.11 / hr</div>
+        </div>
+        <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+          <div class="text-[10px] font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Feasibility Index</div>
+          <div id="metric-feasibility" class="text-sm font-black text-sky-700 dark:text-sky-300 font-mono mt-0.5">88%</div>
+        </div>
+        <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+          <div class="text-[10px] font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Crunch Risk</div>
+          <div id="metric-crunch" class="text-sm font-black text-purple-700 dark:text-purple-300 font-mono mt-0.5">24%</div>
+        </div>
+        <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+          <div class="text-[10px] font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Est. Workload</div>
+          <div id="metric-hours" class="text-sm font-black text-amber-700 dark:text-amber-300 font-mono mt-0.5">90.0 Hours</div>
+        </div>
+      </div>
+
+      <button id="btn-open-deliverables" class="w-full py-2.5 px-3 rounded-xl text-xs font-mono font-black glass-button flex items-center justify-between">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-indigo-700 dark:text-indigo-400 font-bold">checklist</span> Edit Scope Matrix</span>
+        <span id="active-deliverables-count" class="text-[11px] text-slate-950 dark:text-slate-100 font-mono font-black">4/4 Active</span>
+      </button>
+    </div>
+
+    <svg class="window-resizer" viewBox="0 0 16 16" fill="currentColor">
+      <circle cx="12" cy="12" r="1.5" /><circle cx="8" cy="12" r="1.5" /><circle cx="12" cy="8" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="8" cy="8" r="1.5" /><circle cx="12" cy="4" r="1.5" />
+    </svg>
+  </div>
+
+  <!-- FLOATING WINDOW 3: AI Negotiation Copilot -->
+  <div id="win-copilot" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 80px; right: 20px; width: 340px; height: 320px;">
+    <div class="window-header flex justify-between items-center pb-2.5 border-b border-slate-950/20 dark:border-white/20 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-indigo-700 dark:text-indigo-400 font-bold">psychology</span>
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono">AI Negotiation Copilot</h3>
+      </div>
+      <button class="win-collapse-btn text-slate-950 hover:text-slate-900 dark:text-slate-100 dark:hover:text-white p-1 rounded-lg">
+        <span class="material-symbols-outlined text-sm">remove</span>
+      </button>
+    </div>
+
+    <div class="window-body space-y-3 pr-1 flex flex-col justify-between">
+      <div class="space-y-2">
+        <div class="p-3.5 rounded-2xl bg-indigo-100 dark:bg-indigo-950 border-2 border-indigo-300 dark:border-indigo-700 text-xs leading-relaxed shadow-sm">
+          <div class="flex justify-between items-center mb-1 text-[10px] font-mono font-black text-indigo-950 dark:text-indigo-200">
+            <span>CLIENT PITCH SCRIPT</span>
+            <button id="btn-copy-script" class="hover:text-indigo-600 text-indigo-950 dark:text-indigo-300" title="Copy script"><span class="material-symbols-outlined text-xs">content_copy</span></button>
+          </div>
+          <p id="copilot-pitch-text" class="text-indigo-950 dark:text-indigo-50 font-black font-sans text-xs">
+            "At $5,500 across 3.0 weeks, we can execute full Tier 4 scope with Grade A craft polish."
+          </p>
+        </div>
+
+        <div id="copilot-risk-badge" class="p-3 rounded-2xl bg-emerald-100 dark:bg-emerald-950 border-2 border-emerald-400 dark:border-emerald-700 text-emerald-950 dark:text-emerald-100 text-xs font-mono font-black flex items-center gap-2 shadow-sm">
+          <span class="material-symbols-outlined text-base text-emerald-800 dark:text-emerald-300 font-bold">warning</span>
+          <span id="copilot-risk-text">Balanced delivery trajectory. Sustainable pace.</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-1">
+        <button id="btn-generate-ai" class="flex-1 py-2.5 px-3 rounded-xl text-xs font-mono font-black glass-button text-indigo-950 dark:text-indigo-100 flex items-center justify-center gap-1.5 shadow-sm">
+          <span class="material-symbols-outlined text-sm text-indigo-700 dark:text-indigo-400 font-bold">auto_awesome</span> Generate Proposal
+        </button>
+      </div>
+    </div>
+
+    <svg class="window-resizer" viewBox="0 0 16 16" fill="currentColor">
+      <circle cx="12" cy="12" r="1.5" /><circle cx="8" cy="12" r="1.5" /><circle cx="12" cy="8" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="8" cy="8" r="1.5" /><circle cx="12" cy="4" r="1.5" />
+    </svg>
+  </div>
+
+  <!-- Bottom Floating Dock Bar -->
+  <footer class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 p-1.5 rounded-2xl glass-panel shadow-2xl max-w-[94vw] overflow-x-auto">
+    <button id="btn-open-occupation" class="glass-button px-3.5 py-2.5 rounded-xl text-xs font-mono font-black text-slate-950 dark:text-slate-100 flex items-center gap-1.5 whitespace-nowrap">
+      <span class="material-symbols-outlined text-sm text-indigo-700 dark:text-indigo-400 font-bold">badge</span>
+      <span id="dock-occupation-label">SOFTWARE DEV</span>
+      <span class="material-symbols-outlined text-xs">arrow_drop_down</span>
+    </button>
+
+    <div class="h-4 w-[2px] bg-slate-950/20 dark:bg-white/20 mx-0.5"></div>
+
+    <button id="toggle-win-controls" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap">
+      <span class="material-symbols-outlined text-sm text-sky-600 font-bold">sliders</span> Controls
+    </button>
+    <button id="toggle-win-copilot" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap">
+      <span class="material-symbols-outlined text-sm text-indigo-600 font-bold">psychology</span> Copilot
+    </button>
+    <button id="toggle-win-gauges" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap">
+      <span class="material-symbols-outlined text-sm text-emerald-600 font-bold">analytics</span> Gauges
+    </button>
+  </footer>
+
+  <!-- MODAL: Occupation Selector -->
+  <div id="modal-occupation" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-md rounded-3xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+          <span class="material-symbols-outlined text-indigo-700 dark:text-indigo-400">workspaces</span> Select Field or Occupation
+        </h3>
+        <button class="modal-close-btn text-slate-800 hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
+      </div>
+      <div class="grid grid-cols-1 gap-2" id="occupation-list-container"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: Scope & Quality Matrix Editor -->
+  <div id="modal-deliverables" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-6 shadow-2xl max-h-[88vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <div>
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+            <span class="material-symbols-outlined text-indigo-700 dark:text-indigo-400">checklist</span> Scope & Quality Matrix
+          </h3>
+          <p class="text-[11px] text-slate-800 dark:text-slate-300 font-mono mt-0.5 font-bold">Customize deliverables & craft quality thresholds</p>
+        </div>
+        <button class="modal-close-btn text-slate-800 hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
+      </div>
+
+      <!-- Add New Custom Deliverable Card -->
+      <div class="p-3.5 rounded-2xl glass-card-sub space-y-2 border-2 border-indigo-500/30">
+        <div class="text-[11px] font-mono text-indigo-700 dark:text-indigo-400 font-black uppercase flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">add_circle</span> Add Custom Scope Deliverable
+        </div>
+        <input type="text" id="new-deliverable-name" placeholder="Deliverable title (e.g. Automated CI/CD Pipeline)" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-indigo-500" />
+        <div class="flex items-center justify-between text-xs font-mono pt-1">
+          <span class="text-slate-900 dark:text-slate-200 font-black">Req. Quality Threshold: <span id="new-deliverable-qual-val" class="text-indigo-700 dark:text-indigo-400 font-black">75%</span></span>
+          <input type="range" id="new-deliverable-qual" min="10" max="95" step="5" value="75" class="w-1/2 accent-indigo-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-1.5 cursor-pointer">
+        </div>
+        <button id="btn-add-deliverable" class="w-full mt-1 py-2 px-3 rounded-xl text-xs font-mono font-black glass-button text-indigo-950 dark:text-indigo-100 flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-sm font-bold">add</span> Add Item to Pipeline
+        </button>
+      </div>
+
+      <!-- Active Editable Deliverables List -->
+      <div id="modal-deliverables-list" class="space-y-2.5 pt-1"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: Presets Scenarios -->
+  <div id="modal-scenarios" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-md rounded-3xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+          <span class="material-symbols-outlined text-indigo-700 dark:text-indigo-400">tune</span> Negotiation Preset Scenarios
+        </h3>
+        <button class="modal-close-btn text-slate-800 hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
+      </div>
+      <div class="space-y-2">
+        <button data-scenario="fast" class="scenario-btn w-full p-3 rounded-2xl glass-button text-left flex justify-between items-center">
+          <div>
+            <div class="text-xs font-black text-slate-950 dark:text-white">The Rush Delivery</div>
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 font-mono font-bold">1.0 wks • $6,500 • Grade B Polish</div>
+          </div>
+          <span class="material-symbols-outlined text-sky-700 font-bold">bolt</span>
+        </button>
+        <button data-scenario="budget" class="scenario-btn w-full p-3 rounded-2xl glass-button text-left flex justify-between items-center">
+          <div>
+            <div class="text-xs font-black text-slate-950 dark:text-white">The Budget Anchor</div>
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 font-mono font-bold">5.0 wks • $3,000 • Grade A Polish</div>
+          </div>
+          <span class="material-symbols-outlined text-emerald-700 font-bold">savings</span>
+        </button>
+        <button data-scenario="masterpiece" class="scenario-btn w-full p-3 rounded-2xl glass-button text-left flex justify-between items-center">
+          <div>
+            <div class="text-xs font-black text-slate-950 dark:text-white">Agency Masterpiece</div>
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 font-mono font-bold">4.5 wks • $14,000 • Grade S Polish</div>
+          </div>
+          <span class="material-symbols-outlined text-purple-700 font-bold">diamond</span>
+        </button>
+        <button data-scenario="mvp" class="scenario-btn w-full p-3 rounded-2xl glass-button text-left flex justify-between items-center">
+          <div>
+            <div class="text-xs font-black text-slate-950 dark:text-white">Barebones Prototype</div>
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 font-mono font-bold">1.5 wks • $2,200 • Grade C Prototype</div>
+          </div>
+          <span class="material-symbols-outlined text-amber-700 font-bold">construction</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Engine Configuration & Font Scaling -->
+  <div id="modal-config" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-md rounded-3xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+          <span class="material-symbols-outlined text-indigo-700 dark:text-indigo-400">settings</span> Engine Parameters & Typography
+        </h3>
+        <button class="modal-close-btn text-slate-800 hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
+      </div>
+      
+      <div class="space-y-1.5 p-3.5 rounded-2xl glass-card-sub">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-950 dark:text-slate-100 font-black">Global Font Scaling</span>
+          <span id="font-scale-display" class="font-black text-indigo-700 dark:text-indigo-300">1.30x</span>
+        </div>
+        <input type="range" id="font-scale-slider" min="0.75" max="2.00" step="0.05" value="1.3" class="w-full accent-indigo-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+      </div>
+
+      <div class="space-y-1.5 p-3.5 rounded-2xl glass-card-sub">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-950 dark:text-slate-100 font-black">Base Freelance Rate</span>
+          <span id="config-rate-display" class="font-black text-emerald-700 dark:text-emerald-300">$95 / hr</span>
+        </div>
+        <input type="range" id="config-rate-slider" min="30" max="350" step="5" value="95" class="w-full accent-emerald-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Customization Bazaar -->
+  <div id="modal-bazaar" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-md rounded-3xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-700 dark:text-amber-400">palette</span> Bazaar Shaders & Themes
+        </h3>
+        <button class="modal-close-btn text-slate-800 hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
+      </div>
+      <div>
+        <div class="text-[11px] font-mono text-slate-950 dark:text-slate-100 uppercase font-black mb-2">Crystalline Central Shaders</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="shader-btn p-2.5 rounded-xl glass-button text-xs font-black text-left active" data-shader="classic">Crystalline Classic</button>
+          <button class="shader-btn p-2.5 rounded-xl glass-button text-xs font-black text-left" data-shader="kintsugi">Kintsugi Gold</button>
+          <button class="shader-btn p-2.5 rounded-xl glass-button text-xs font-black text-left" data-shader="liquid">Liquid Chrome</button>
+          <button class="shader-btn p-2.5 rounded-xl glass-button text-xs font-black text-left" data-shader="quartz">Smoked Quartz</button>
+          <button class="shader-btn p-2.5 rounded-xl glass-button text-xs font-black text-left" data-shader="emerald">Emerald Core</button>
+          <button class="shader-btn p-2.5 rounded-xl glass-button text-xs font-black text-left" data-shader="sapphire">Sapphire Void</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      occupation: 'software',
+      timeWeeks: 3.0,
+      costBudget: 5500,
+      qualityPercent: 85,
+      scopePercent: 100,
+      scopeTier: 4,
+      lockMode: 'time',
+      baseRate: 95,
+      fontScale: 1.3,
+      isDarkMode: false,
+      isInteracting: false,
+      pauseTimer: 0,
+      activeShaderPreset: 'classic'
+    };
+
+    /* 4-Pillar Reciprocal Constraint Solver Math Engine */
+    const K_EQUILIBRIUM = (1.0 * 0.85) / ((3.0 / 10.0) * (5500 / 25000));
+
+    function solveReciprocalConstraints(changedPillar) {
+      let solveTarget = state.lockMode;
+
+      // If user is directly dragging/adjusting the current solveTarget, pick an alternate target variable
+      if (changedPillar === solveTarget) {
+        const fallbackMap = { time: 'cost', cost: 'time', quality: 'cost', scope: 'cost' };
+        solveTarget = fallbackMap[changedPillar] || 'cost';
+      }
+
+      const Nt = state.timeWeeks / 10.0;
+      const Nc = state.costBudget / 25000.0;
+      const Nq = state.qualityPercent / 100.0;
+      const Ns = state.scopePercent / 100.0;
+
+      if (solveTarget === 'cost') {
+        const targetNc = (Ns * Nq) / (K_EQUILIBRIUM * Math.max(0.05, Nt));
+        state.costBudget = Math.max(1000, Math.min(25000, Math.round((targetNc * 25000) / 250) * 250));
+      } else if (solveTarget === 'time') {
+        const targetNt = (Ns * Nq) / (K_EQUILIBRIUM * Math.max(0.04, Nc));
+        state.timeWeeks = Math.max(1.0, Math.min(10.0, Math.round((targetNt * 10.0) * 10) / 10));
+      } else if (solveTarget === 'quality') {
+        const targetNq = (K_EQUILIBRIUM * Nt * Nc) / Math.max(0.2, Ns);
+        state.qualityPercent = Math.max(20, Math.min(100, Math.round(targetNq * 100)));
+      } else if (solveTarget === 'scope') {
+        const targetNs = (K_EQUILIBRIUM * Nt * Nc) / Math.max(0.2, Nq);
+        state.scopePercent = Math.max(25, Math.min(100, Math.round((targetNs * 100) / 5) * 5));
+        state.scopeTier = Math.min(4, Math.max(1, Math.ceil(state.scopePercent / 25)));
+      }
+    }
+
+    const OCCUPATIONS = {
+      software: {
+        title: "Software Engineering",
+        badge: "SOFTWARE DEV",
+        submodules: [
+          { name: "Core Business Logic & API", reqQuality: 20 },
+          { name: "Responsive UI/UX Frontend", reqQuality: 45 },
+          { name: "Automated QA & Unit Tests", reqQuality: 75 },
+          { name: "High-Availability CI/CD & Scale", reqQuality: 90 }
+        ]
+      },
+      architecture: {
+        title: "Architectural & Interior Design",
+        badge: "ARCHITECTURE",
+        submodules: [
+          { name: "Spatial Floorplans & Code Compliance", reqQuality: 20 },
+          { name: "Structural Elevation BIM Models", reqQuality: 45 },
+          { name: "Photorealistic Ray-Traced 3D Renders", reqQuality: 75 },
+          { name: "Custom Millwork & Engineering Stamps", reqQuality: 90 }
+        ]
+      },
+      vfx: {
+        title: "Film & VFX Production",
+        badge: "FILM / VFX",
+        submodules: [
+          { name: "Rough 3D Animatic & Blocking", reqQuality: 20 },
+          { name: "Hero Asset Modeling & Texturing", reqQuality: 45 },
+          { name: "Dynamic Pyro Simulation & Lighting", reqQuality: 75 },
+          { name: "4K Multi-Pass Deep Compositing", reqQuality: 90 }
+        ]
+      },
+      branding: {
+        title: "Brand Identity & Strategy",
+        badge: "BRAND DESIGN",
+        submodules: [
+          { name: "Logo Marks & Vector Assets", reqQuality: 20 },
+          { name: "Comprehensive Typography & Color System", reqQuality: 45 },
+          { name: "Stationery & Packaging Prototypes", reqQuality: 75 },
+          { name: "Enterprise Motion Identity & Brand Guidelines", reqQuality: 90 }
+        ]
+      },
+      marketing: {
+        title: "Performance Growth Strategy",
+        badge: "MARKETING",
+        submodules: [
+          { name: "Audience Persona & Baseline Copy", reqQuality: 20 },
+          { name: "Multi-Channel Ad Creative Variations", reqQuality: 45 },
+          { name: "A/B Testing Funnel Optimization", reqQuality: 75 },
+          { name: "Omnichannel Attribution & CMO Dashboard", reqQuality: 90 }
+        ]
+      }
+    };
+
+    const PILLAR_COLORS = {
+      time: 0x0284c7,
+      cost: 0x059669,
+      quality: 0x7c3aed,
+      scope: 0xd97706
+    };
+
+    const SHADER_PRESETS = {
+      classic: { coreColor: 0x0f172a, coreEmissive: 0x0284c7, roughness: 0.22, transmission: 0.55 },
+      kintsugi: { coreColor: 0x1f190b, coreEmissive: 0xd97706, roughness: 0.20, transmission: 0.45 },
+      liquid: { coreColor: 0x0f1d2e, coreEmissive: 0x0284c7, roughness: 0.15, transmission: 0.70 },
+      quartz: { coreColor: 0x1e152a, coreEmissive: 0x9333ea, roughness: 0.25, transmission: 0.60 },
+      emerald: { coreColor: 0x0a1f18, coreEmissive: 0x059669, roughness: 0.20, transmission: 0.50 },
+      sapphire: { coreColor: 0x09152b, coreEmissive: 0x2563eb, roughness: 0.18, transmission: 0.65 }
+    };
+
+    function getQualityGrade(q) {
+      if (q >= 95) return { grade: "GRADE S", label: "Masterpiece Polish" };
+      if (q >= 85) return { grade: "GRADE A", label: "Agency High Craft" };
+      if (q >= 70) return { grade: "GRADE B", label: "Production Quality" };
+      if (q >= 55) return { grade: "GRADE C", label: "Functional Baseline" };
+      if (q >= 40) return { grade: "GRADE D", label: "Draft Prototype" };
+      return { grade: "GRADE F", label: "Raw Minimum" };
+    }
+
+    const canvas = document.getElementById('webgl-canvas');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xcbd5e1);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 1.2, 7.5);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 3.5;
+    controls.maxDistance = 18.0;
+
+    controls.addEventListener('start', () => { triggerInteractionPause(); });
+
+    /* Studio Lighting Rig */
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xc0d4f0, 0.7);
+    scene.add(hemiLight);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const acuteKeyLight = new THREE.DirectionalLight(0xffffff, 0.55);
+    acuteKeyLight.position.set(5, 8, 5);
+    scene.add(acuteKeyLight);
+
+    const softFillLight = new THREE.DirectionalLight(0x93c5fd, 0.3);
+    softFillLight.position.set(-5, -4, -5);
+    scene.add(softFillLight);
+
+    /* 3D System Construction */
+    const systemGroup = new THREE.Group();
+    scene.add(systemGroup);
+
+    const coreGeo = new THREE.BufferGeometry();
+    const corePositions = new Float32Array(36);
+    coreGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
+
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: 0x0f172a,
+      roughness: 0.22,
+      metalness: 0.1,
+      transmission: 0.55,
+      transparent: true,
+      opacity: 0.85,
+      clearcoat: 0.6,
+      clearcoatRoughness: 0.15,
+      ior: 1.52,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.35,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const centralReactorMesh = new THREE.Mesh(coreGeo, coreMat);
+    centralReactorMesh.renderOrder = 1;
+    systemGroup.add(centralReactorMesh);
+
+    const envelopeGeo = new THREE.BufferGeometry();
+    envelopeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(18 * 3), 3));
+    const envelopeLines = new THREE.LineSegments(envelopeGeo, new THREE.LineBasicMaterial({
+      color: 0x64748b,
+      transparent: true,
+      opacity: 0.25
+    }));
+    systemGroup.add(envelopeLines);
+
+    const innerModulesGroup = new THREE.Group();
+    innerModulesGroup.renderOrder = 2;
+    systemGroup.add(innerModulesGroup);
+
+    const nodeCrystalGeo = new THREE.OctahedronGeometry(0.32, 0);
+
+    function createNodeCrystal(colorHex, name, pillarKey) {
+      const group = new THREE.Group();
+      group.name = name;
+      group.userData = { pillarKey: pillarKey, isNode: true };
+
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: colorHex,
+        roughness: 0.22,
+        metalness: 0.15,
+        transmission: 0.35,
+        ior: 1.52,
+        emissive: colorHex,
+        emissiveIntensity: 0.45,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.1,
+        flatShading: true
+      });
+      const mesh = new THREE.Mesh(nodeCrystalGeo, mat);
+      group.add(mesh);
+
+      const haloGeo = new THREE.TorusGeometry(0.42, 0.010, 16, 32);
+      const haloMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.55 });
+      const halo = new THREE.Mesh(haloGeo, haloMat);
+      group.add(halo);
+
+      const hitGeo = new THREE.SphereGeometry(0.55, 12, 12);
+      const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001, depthWrite: false });
+      const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+      hitMesh.userData = { parentNode: group };
+      group.add(hitMesh);
+
+      return group;
+    }
+
+    const nodeTime = createNodeCrystal(PILLAR_COLORS.time, 'node-time', 'time');
+    const nodeCost = createNodeCrystal(PILLAR_COLORS.cost, 'node-cost', 'cost');
+    const nodeQual = createNodeCrystal(PILLAR_COLORS.quality, 'node-quality', 'quality');
+    const nodeScope = createNodeCrystal(PILLAR_COLORS.scope, 'node-scope', 'scope');
+
+    systemGroup.add(nodeTime, nodeCost, nodeQual, nodeScope);
+
+    const DIR_TIME = new THREE.Vector3(-1.4, 0.7, 0.6).normalize();
+    const DIR_COST = new THREE.Vector3(0.0, -1.5, 0.8).normalize();
+    const DIR_QUAL = new THREE.Vector3(1.4, 0.7, 0.6).normalize();
+    const DIR_SCOPE = new THREE.Vector3(0.0, 0.2, -1.6).normalize();
+
+    function setupOccupation3DSubModules() {
+      while (innerModulesGroup.children.length > 0) {
+        innerModulesGroup.remove(innerModulesGroup.children[0]);
+      }
+
+      const activeList = (OCCUPATIONS[state.occupation] || OCCUPATIONS.software).submodules;
+      const modGeo = new THREE.OctahedronGeometry(0.12, 0);
+      const safeRadius = 0.42;
+      const subColors = [PILLAR_COLORS.time, PILLAR_COLORS.cost, PILLAR_COLORS.quality, PILLAR_COLORS.scope];
+
+      activeList.forEach((mod, idx) => {
+        const baseColor = subColors[idx % subColors.length];
+        const mat = new THREE.MeshPhysicalMaterial({
+          color: baseColor,
+          roughness: 0.25,
+          metalness: 0.1,
+          emissive: baseColor,
+          emissiveIntensity: 0.65,
+          transmission: 0.45,
+          ior: 1.5,
+          transparent: true,
+          opacity: 0.95,
+          flatShading: true
+        });
+
+        const mesh = new THREE.Mesh(modGeo, mat);
+        const theta = (idx / activeList.length) * Math.PI * 2;
+        mesh.position.set(Math.cos(theta) * safeRadius, Math.sin(theta) * safeRadius * 0.5, Math.sin(theta) * safeRadius);
+        mesh.userData = { name: mod.name, reqQuality: mod.reqQuality, idx: idx, baseColor: baseColor, isActive: true };
+        innerModulesGroup.add(mesh);
+      });
+
+      updateSubModuleStates();
+    }
+
+    function updateSubModuleStates() {
+      const activeList = (OCCUPATIONS[state.occupation] || OCCUPATIONS.software).submodules;
+      const stepRatio = activeList.length > 0 ? 100 / activeList.length : 25;
+
+      innerModulesGroup.children.forEach((mesh, idx) => {
+        if (!activeList[idx]) return;
+        const mod = activeList[idx];
+        const isActive = (state.qualityPercent >= mod.reqQuality) && (state.scopePercent >= ((idx + 1) * stepRatio));
+
+        const colorHex = isActive ? mesh.userData.baseColor : 0x475569;
+        mesh.material.color.setHex(colorHex);
+        mesh.material.emissive.setHex(colorHex);
+        mesh.material.emissiveIntensity = isActive ? 0.65 : 0.20;
+        mesh.material.opacity = isActive ? 0.95 : 0.50;
+        mesh.userData.isActive = isActive;
+      });
+    }
+
+    function applyShaderPreset(presetKey) {
+      state.activeShaderPreset = presetKey;
+      const preset = SHADER_PRESETS[presetKey] || SHADER_PRESETS.classic;
+
+      coreMat.color.setHex(preset.coreColor);
+      coreMat.emissive.setHex(preset.coreEmissive);
+      coreMat.roughness = preset.roughness;
+      coreMat.transmission = preset.transmission;
+    }
+
+    function updateCalculations() {
+      const baseHours = (state.scopePercent / 100) * 80 * (state.qualityPercent / 85);
+      const totalHours = Math.max(12, baseHours);
+      const effectiveYield = state.costBudget / (state.timeWeeks * 35);
+      const crunchRisk = Math.min(100, Math.max(5, Math.round((totalHours / (state.timeWeeks * 38)) * 50)));
+      const feasibility = Math.min(100, Math.max(10, Math.round((state.costBudget / (totalHours * state.baseRate)) * 85)));
+
+      const qGrade = getQualityGrade(state.qualityPercent);
+      document.getElementById('val-time-label').textContent = `${state.timeWeeks.toFixed(1)} Weeks`;
+      document.getElementById('val-cost-label').textContent = `$${state.costBudget.toLocaleString()}`;
+      document.getElementById('val-quality-label').textContent = `${state.qualityPercent}% • ${qGrade.grade}`;
+      document.getElementById('val-scope-label').textContent = `${state.scopePercent}%`;
+
+      document.getElementById('slider-time').value = state.timeWeeks;
+      document.getElementById('slider-cost').value = state.costBudget;
+      document.getElementById('slider-quality').value = state.qualityPercent;
+      document.getElementById('slider-scope').value = state.scopePercent;
+
+      document.getElementById('tag-time-val').textContent = `${state.timeWeeks.toFixed(1)} wks`;
+      document.getElementById('tag-cost-val').textContent = `$${state.costBudget.toLocaleString()}`;
+      document.getElementById('tag-quality-val').textContent = `${state.qualityPercent}% [${qGrade.grade}]`;
+      document.getElementById('tag-scope-val').textContent = `${state.scopePercent}% (T${state.scopeTier})`;
+
+      document.getElementById('metric-yield').textContent = `$${effectiveYield.toFixed(2)} / hr`;
+      document.getElementById('metric-feasibility').textContent = `${feasibility}%`;
+      document.getElementById('metric-crunch').textContent = `${crunchRisk}%`;
+      document.getElementById('metric-hours').textContent = `${totalHours.toFixed(1)} Hours`;
+
+      const script = `"At $${state.costBudget.toLocaleString()} across ${state.timeWeeks.toFixed(1)} weeks, we execute Tier ${state.scopeTier} scope at ${state.qualityPercent}% ${qGrade.grade} fidelity."`;
+      document.getElementById('copilot-pitch-text').textContent = script;
+
+      const riskEl = document.getElementById('copilot-risk-text');
+      if (crunchRisk > 75) {
+        riskEl.textContent = "High delivery crunch risk! Overtime premium or scope reduction advised.";
+        document.getElementById('copilot-risk-badge').className = "p-3 rounded-2xl bg-rose-100 dark:bg-rose-950 border-2 border-rose-400 dark:border-rose-700 text-rose-950 dark:text-rose-100 text-xs font-mono font-black flex items-center gap-2 shadow-sm";
+      } else {
+        riskEl.textContent = "Balanced delivery trajectory. Sustainable pace.";
+        document.getElementById('copilot-risk-badge').className = "p-3 rounded-2xl bg-emerald-100 dark:bg-emerald-950 border-2 border-emerald-400 dark:border-emerald-700 text-emerald-950 dark:text-emerald-100 text-xs font-mono font-black flex items-center gap-2 shadow-sm";
+      }
+
+      const radTime = 1.0 + (state.timeWeeks / 10.0) * 1.5;
+      const radCost = 1.0 + (state.costBudget / 25000) * 1.6;
+      const radQual = 1.0 + (state.qualityPercent / 100) * 1.5;
+      const radScope = 1.0 + (state.scopePercent / 100) * 1.5;
+
+      const vTime = DIR_TIME.clone().multiplyScalar(radTime);
+      const vCost = DIR_COST.clone().multiplyScalar(radCost);
+      const vQual = DIR_QUAL.clone().multiplyScalar(radQual);
+      const vScope = DIR_SCOPE.clone().multiplyScalar(radScope);
+
+      nodeTime.position.copy(vTime.clone().multiplyScalar(1.25));
+      nodeCost.position.copy(vCost.clone().multiplyScalar(1.25));
+      nodeQual.position.copy(vQual.clone().multiplyScalar(1.25));
+      nodeScope.position.copy(vScope.clone().multiplyScalar(1.25));
+
+      const pos = coreGeo.attributes.position.array;
+      const setTri = (offset, p1, p2, p3) => {
+        pos[offset] = p1.x; pos[offset+1] = p1.y; pos[offset+2] = p1.z;
+        pos[offset+3] = p2.x; pos[offset+4] = p2.y; pos[offset+5] = p2.z;
+        pos[offset+6] = p3.x; pos[offset+7] = p3.y; pos[offset+8] = p3.z;
+      };
+      setTri(0, vTime, vCost, vQual);
+      setTri(9, vTime, vCost, vScope);
+      setTri(18, vTime, vQual, vScope);
+      setTri(27, vCost, vQual, vScope);
+      coreGeo.attributes.position.needsUpdate = true;
+      coreGeo.computeVertexNormals();
+
+      const envPos = envelopeGeo.attributes.position.array;
+      const nodePairs = [
+        [nodeTime, nodeCost],
+        [nodeCost, nodeQual],
+        [nodeQual, nodeTime],
+        [nodeTime, nodeScope],
+        [nodeCost, nodeScope],
+        [nodeQual, nodeScope]
+      ];
+
+      let lineIdx = 0;
+      nodePairs.forEach(([nA, nB]) => {
+        const posA = nA.position;
+        const posB = nB.position;
+        const dir = new THREE.Vector3().subVectors(posB, posA);
+        const len = dir.length();
+        dir.normalize();
+
+        const trim = Math.min(0.35, len * 0.3);
+        const start = posA.clone().addScaledVector(dir, trim);
+        const end = posB.clone().addScaledVector(dir, -trim);
+
+        envPos[lineIdx * 6]     = start.x;
+        envPos[lineIdx * 6 + 1] = start.y;
+        envPos[lineIdx * 6 + 2] = start.z;
+        envPos[lineIdx * 6 + 3] = end.x;
+        envPos[lineIdx * 6 + 4] = end.y;
+        envPos[lineIdx * 6 + 5] = end.z;
+        lineIdx++;
+      });
+      envelopeGeo.attributes.position.needsUpdate = true;
+
+      updateSubModuleStates();
+      updateDeliverablesMatrix();
+    }
+
+    function update3DSpatialLabels() {
+      const projectToScreen = (obj3D, tagEl) => {
+        const wp = new THREE.Vector3();
+        obj3D.getWorldPosition(wp);
+        wp.y += 0.40;
+        wp.project(camera);
+
+        if (wp.z > 1) {
+          tagEl.style.opacity = '0';
+          return;
+        }
+        tagEl.style.opacity = '1';
+        const sx = (wp.x * 0.5 + 0.5) * window.innerWidth;
+        const sy = (-(wp.y * 0.5) + 0.5) * window.innerHeight;
+        tagEl.style.left = `${sx}px`;
+        tagEl.style.top = `${sy}px`;
+      };
+
+      projectToScreen(nodeTime, document.getElementById('tag-time'));
+      projectToScreen(nodeCost, document.getElementById('tag-cost'));
+      projectToScreen(nodeQual, document.getElementById('tag-quality'));
+      projectToScreen(nodeScope, document.getElementById('tag-scope'));
+    }
+
+    function updateDeliverablesMatrix() {
+      const activeList = (OCCUPATIONS[state.occupation] || OCCUPATIONS.software).submodules;
+      const listEl = document.getElementById('modal-deliverables-list');
+      listEl.innerHTML = '';
+      let activeCount = 0;
+      const stepRatio = activeList.length > 0 ? 100 / activeList.length : 25;
+
+      activeList.forEach((mod, idx) => {
+        const isActive = (state.qualityPercent >= mod.reqQuality) && (state.scopePercent >= ((idx + 1) * stepRatio));
+        if (isActive) activeCount++;
+
+        const item = document.createElement('div');
+        item.className = `p-3 rounded-2xl border space-y-2 transition-all ${isActive ? 'bg-emerald-500/15 border-emerald-500/40 text-slate-950 dark:text-slate-100' : 'bg-slate-500/10 border-slate-500/25 text-slate-700 dark:text-slate-300'}`;
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 flex-1 mr-2">
+              <span class="material-symbols-outlined text-sm ${isActive ? 'text-emerald-700 dark:text-emerald-400 font-bold' : 'text-slate-500'}">${isActive ? 'check_circle' : 'cancel'}</span>
+              <input type="text" value="${mod.name}" data-idx="${idx}" class="deliverable-edit-name w-full bg-transparent font-mono text-xs font-black focus:outline-none focus:border-b border-indigo-500" />
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] uppercase font-black px-2 py-0.5 rounded-md ${isActive ? 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-300' : 'bg-slate-500/20 text-slate-600 dark:text-slate-400'}">${isActive ? 'Active' : 'Locked'}</span>
+              <button data-idx="${idx}" class="btn-delete-deliverable text-slate-500 hover:text-rose-600 p-0.5 rounded" title="Remove Deliverable"><span class="material-symbols-outlined text-xs">delete</span></button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] font-mono pt-1">
+            <span class="font-extrabold text-slate-900 dark:text-slate-200">Req. Quality: <span class="font-black text-indigo-700 dark:text-indigo-400">${mod.reqQuality}%</span></span>
+            <input type="range" data-idx="${idx}" min="10" max="95" step="5" value="${mod.reqQuality}" class="deliverable-edit-qual w-1/2 accent-indigo-600 bg-slate-300 dark:bg-slate-700 rounded-lg h-1.5 cursor-pointer">
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+
+      document.getElementById('active-deliverables-count').textContent = `${activeCount}/${activeList.length} Active`;
+
+      listEl.querySelectorAll('.deliverable-edit-name').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const i = parseInt(e.target.getAttribute('data-idx'));
+          if (activeList[i]) {
+            activeList[i].name = e.target.value.trim() || 'Untitled Deliverable';
+            setupOccupation3DSubModules();
+            updateCalculations();
+          }
+        });
+      });
+
+      listEl.querySelectorAll('.deliverable-edit-qual').forEach(slider => {
+        slider.addEventListener('input', (e) => {
+          const i = parseInt(e.target.getAttribute('data-idx'));
+          if (activeList[i]) {
+            activeList[i].reqQuality = parseInt(e.target.value);
+            setupOccupation3DSubModules();
+            updateCalculations();
+          }
+        });
+      });
+
+      listEl.querySelectorAll('.btn-delete-deliverable').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const i = parseInt(btn.getAttribute('data-idx'));
+          if (activeList.length > 1) {
+            activeList.splice(i, 1);
+            setupOccupation3DSubModules();
+            updateCalculations();
+          }
+        });
+      });
+    }
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let draggedNode = null;
+    let dragPillar = null;
+    let dragPlane = new THREE.Plane();
+    let planeIntersect = new THREE.Vector3();
+    let hoveredSubModule = null;
+
+    function triggerInteractionPause() {
+      state.isInteracting = true;
+      state.pauseTimer = 30.0;
+    }
+
+    function getPillarVector(pillar) {
+      if (pillar === 'time') return DIR_TIME;
+      if (pillar === 'cost') return DIR_COST;
+      if (pillar === 'quality') return DIR_QUAL;
+      if (pillar === 'scope') return DIR_SCOPE;
+      return DIR_TIME;
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+
+      const hitObjects = [];
+      [nodeTime, nodeCost, nodeQual, nodeScope].forEach(group => {
+        group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+      });
+
+      const hits = raycaster.intersectObjects(hitObjects, false);
+      if (hits.length > 0) {
+        let root = hits[0].object;
+        while (root.parent && root.parent !== systemGroup) {
+          if (root.userData && root.userData.isNode) break;
+          root = root.parent;
+        }
+
+        if (root.userData && root.userData.pillarKey) {
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          triggerInteractionPause();
+
+          draggedNode = root;
+          dragPillar = root.userData.pillarKey;
+          controls.enabled = false;
+          document.body.style.cursor = 'grabbing';
+
+          const planeNormal = camera.getWorldDirection(new THREE.Vector3()).negate();
+          dragPlane.setFromNormalAndCoplanarPoint(planeNormal, draggedNode.position);
+        }
+      }
+    }, true);
+
+    window.addEventListener('pointermove', (e) => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      if (draggedNode && dragPillar) {
+        triggerInteractionPause();
+        raycaster.setFromCamera(mouse, camera);
+
+        if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+          const localPos = systemGroup.worldToLocal(planeIntersect.clone());
+          const pillarDir = getPillarVector(dragPillar);
+          const rawDist = localPos.dot(pillarDir);
+          const clampedRadius = Math.max(1.1, Math.min(3.8, rawDist));
+
+          if (dragPillar === 'time') {
+            state.timeWeeks = Math.max(1, Math.min(10, ((clampedRadius - 1.0) / 1.5) * 10));
+          } else if (dragPillar === 'cost') {
+            state.costBudget = Math.max(1000, Math.min(25000, Math.round((((clampedRadius - 1.0) / 1.6) * 25000) / 250) * 250));
+          } else if (dragPillar === 'quality') {
+            state.qualityPercent = Math.max(20, Math.min(100, Math.round(((clampedRadius - 1.0) / 1.5) * 100)));
+          } else if (dragPillar === 'scope') {
+            state.scopePercent = Math.max(25, Math.min(100, Math.round((((clampedRadius - 1.0) / 1.5) * 100) / 5) * 5));
+            state.scopeTier = Math.min(4, Math.max(1, Math.ceil(state.scopePercent / 25)));
+          }
+
+          solveReciprocalConstraints(dragPillar);
+          updateCalculations();
+        }
+        return;
+      }
+
+      raycaster.setFromCamera(mouse, camera);
+      const subHits = raycaster.intersectObjects(innerModulesGroup.children);
+      const tooltip = document.getElementById('submodule-tooltip');
+
+      if (subHits.length > 0) {
+        const hit = subHits[0].object;
+        hoveredSubModule = hit;
+        tooltip.style.left = `${e.clientX}px`;
+        tooltip.style.top = `${e.clientY - 14}px`;
+        tooltip.classList.remove('opacity-0');
+        
+        document.getElementById('tooltip-title').textContent = hit.userData.name;
+        document.getElementById('tooltip-req').textContent = `Required Craft Quality: ${hit.userData.reqQuality}%`;
+        const statusEl = document.getElementById('tooltip-status');
+        if (hit.userData.isActive) {
+          statusEl.textContent = "INCLUDED IN PIPELINE";
+          statusEl.className = "text-xs font-black text-emerald-800 dark:text-emerald-300 mt-1";
+        } else {
+          statusEl.textContent = "LOCKED • REQUIRES HIGHER FIDELITY";
+          statusEl.className = "text-xs font-black text-rose-800 dark:text-rose-300 mt-1";
+        }
+      } else {
+        tooltip.classList.add('opacity-0');
+        hoveredSubModule = null;
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (draggedNode) {
+        draggedNode = null;
+        dragPillar = null;
+        controls.enabled = true;
+        document.body.style.cursor = 'default';
+      }
+    });
+
+    function setupDraggableWindows() {
+      let topZIndex = 20;
+
+      document.querySelectorAll('.floating-window').forEach(win => {
+        const header = win.querySelector('.window-header');
+        const collapseBtn = win.querySelector('.win-collapse-btn');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        const bringToFront = () => {
+          topZIndex++;
+          win.style.zIndex = topZIndex;
+        };
+
+        win.addEventListener('mousedown', bringToFront);
+
+        header.addEventListener('mousedown', (e) => {
+          if (e.target.closest('.win-collapse-btn')) return;
+          isDragging = true;
+          bringToFront();
+          startX = e.clientX;
+          startY = e.clientY;
+          const rect = win.getBoundingClientRect();
+          initialLeft = rect.left;
+          initialTop = rect.top;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          triggerInteractionPause();
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+
+          const newLeft = Math.max(10, Math.min(window.innerWidth - win.offsetWidth - 10, initialLeft + dx));
+          const newTop = Math.max(75, Math.min(window.innerHeight - 60, initialTop + dy));
+
+          win.style.left = `${newLeft}px`;
+          win.style.top = `${newTop}px`;
+          win.style.right = 'auto';
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        if (collapseBtn) {
+          collapseBtn.addEventListener('click', () => {
+            win.classList.toggle('collapsed');
+            const icon = collapseBtn.querySelector('.material-symbols-outlined');
+            icon.textContent = win.classList.contains('collapsed') ? 'add' : 'remove';
+          });
+        }
+      });
+    }
+
+    function initUI() {
+      const brandBadge = document.getElementById('brand-badge-container');
+      const brandText = document.getElementById('brand-text-content');
+      brandBadge.addEventListener('click', () => {
+        brandText.classList.toggle('hidden');
+      });
+
+      const occListContainer = document.getElementById('occupation-list-container');
+      Object.keys(OCCUPATIONS).forEach(key => {
+        const occ = OCCUPATIONS[key];
+        const btn = document.createElement('button');
+        btn.className = `w-full p-3 rounded-2xl glass-button text-left flex justify-between items-center ${state.occupation === key ? 'active' : ''}`;
+        btn.innerHTML = `
+          <div>
+            <div class="text-xs font-black text-slate-950 dark:text-white">${occ.title}</div>
+            <div class="text-[11px] text-slate-800 dark:text-slate-200 font-mono font-bold">${occ.submodules.length} Custom Deliverables</div>
+          </div>
+          <span class="material-symbols-outlined text-sm text-indigo-700 dark:text-indigo-400 font-bold">arrow_forward</span>
+        `;
+        btn.addEventListener('click', () => {
+          state.occupation = key;
+          document.getElementById('header-occupation-tag').textContent = occ.badge;
+          document.getElementById('dock-occupation-label').textContent = occ.badge;
+          document.getElementById('modal-occupation').classList.add('hidden');
+          setupOccupation3DSubModules();
+          updateCalculations();
+        });
+        occListContainer.appendChild(btn);
+      });
+
+      const lockBtns = {
+        time: document.getElementById('lock-time-btn'),
+        cost: document.getElementById('lock-cost-btn'),
+        qual: document.getElementById('lock-qual-btn'),
+        scope: document.getElementById('lock-scope-btn')
+      };
+      const lockTargetLabel = document.getElementById('lock-target-text');
+
+      Object.keys(lockBtns).forEach(k => {
+        lockBtns[k].addEventListener('click', () => {
+          Object.values(lockBtns).forEach(b => b.classList.remove('active'));
+          lockBtns[k].classList.add('active');
+          state.lockMode = k;
+          if (lockTargetLabel) lockTargetLabel.textContent = `SOLVE FOR ${k.toUpperCase()}`;
+          updateCalculations();
+        });
+      });
+
+      const tierBtns = [
+        document.getElementById('tier-1-btn'),
+        document.getElementById('tier-2-btn'),
+        document.getElementById('tier-3-btn'),
+        document.getElementById('tier-4-btn')
+      ];
+      tierBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          tierBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.scopeTier = idx + 1;
+          state.scopePercent = (idx + 1) * 25;
+          solveReciprocalConstraints('scope');
+          document.getElementById('active-tier-label').textContent = `TIER ${idx+1} (${['MVP','STD','PRO','ENT'][idx]})`;
+          updateCalculations();
+        });
+      });
+
+      document.getElementById('slider-time').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.timeWeeks = parseFloat(e.target.value);
+        solveReciprocalConstraints('time');
+        updateCalculations();
+      });
+      document.getElementById('slider-cost').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.costBudget = parseInt(e.target.value);
+        solveReciprocalConstraints('cost');
+        updateCalculations();
+      });
+      document.getElementById('slider-quality').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.qualityPercent = parseInt(e.target.value);
+        solveReciprocalConstraints('quality');
+        updateCalculations();
+      });
+      document.getElementById('slider-scope').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.scopePercent = parseInt(e.target.value);
+        state.scopeTier = Math.min(4, Math.max(1, Math.ceil(state.scopePercent / 25)));
+        solveReciprocalConstraints('scope');
+        updateCalculations();
+      });
+      document.getElementById('slider-cost').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.costBudget = parseInt(e.target.value);
+        updateCalculations();
+      });
+      document.getElementById('slider-quality').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.qualityPercent = parseInt(e.target.value);
+        updateCalculations();
+      });
+      document.getElementById('slider-scope').addEventListener('input', (e) => {
+        triggerInteractionPause();
+        state.scopePercent = parseInt(e.target.value);
+        state.scopeTier = Math.min(4, Math.max(1, Math.ceil(state.scopePercent / 25)));
+        updateCalculations();
+      });
+
+      const fontSlider = document.getElementById('font-scale-slider');
+      fontSlider.addEventListener('input', (e) => {
+        state.fontScale = parseFloat(e.target.value);
+        document.documentElement.style.setProperty('--app-font-scale', state.fontScale);
+        document.getElementById('font-scale-display').textContent = `${state.fontScale.toFixed(2)}x`;
+      });
+
+      const newQualSlider = document.getElementById('new-deliverable-qual');
+      const newQualVal = document.getElementById('new-deliverable-qual-val');
+      if (newQualSlider) {
+        newQualSlider.addEventListener('input', (e) => {
+          newQualVal.textContent = `${e.target.value}%`;
+        });
+      }
+
+      const btnAddDeliverable = document.getElementById('btn-add-deliverable');
+      if (btnAddDeliverable) {
+        btnAddDeliverable.addEventListener('click', () => {
+          const nameInput = document.getElementById('new-deliverable-name');
+          const title = nameInput.value.trim();
+          if (!title) return;
+          const reqQual = parseInt(newQualSlider.value);
+          const activeList = (OCCUPATIONS[state.occupation] || OCCUPATIONS.software).submodules;
+          activeList.push({ name: title, reqQuality: reqQual });
+          nameInput.value = '';
+          setupOccupation3DSubModules();
+          updateCalculations();
+        });
+      }
+
+      document.getElementById('config-rate-slider').addEventListener('input', (e) => {
+        state.baseRate = parseInt(e.target.value);
+        document.getElementById('config-rate-display').textContent = `$${state.baseRate} / hr`;
+        updateCalculations();
+      });
+
+      document.querySelectorAll('.shader-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.shader-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const shaderKey = btn.getAttribute('data-shader');
+          applyShaderPreset(shaderKey);
+          document.getElementById('modal-bazaar').classList.add('hidden');
+        });
+      });
+
+      const toggleWin = (btnId, winId) => {
+        const btn = document.getElementById(btnId);
+        const win = document.getElementById(winId);
+        btn.addEventListener('click', () => {
+          const isVisible = win.style.display !== 'none';
+          win.style.display = isVisible ? 'none' : 'flex';
+          btn.classList.toggle('active', !isVisible);
+        });
+      };
+      toggleWin('toggle-win-controls', 'win-controls');
+      toggleWin('toggle-win-copilot', 'win-copilot');
+      toggleWin('toggle-win-gauges', 'win-gauges');
+
+      const bindModal = (btnId, modalId) => {
+        document.getElementById(btnId).addEventListener('click', () => {
+          document.getElementById(modalId).classList.remove('hidden');
+        });
+      };
+      bindModal('btn-open-occupation', 'modal-occupation');
+      bindModal('btn-open-scenarios', 'modal-scenarios');
+      bindModal('btn-open-config', 'modal-config');
+      bindModal('btn-open-bazaar', 'modal-bazaar');
+      bindModal('btn-open-deliverables', 'modal-deliverables');
+
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.closest('.fixed').classList.add('hidden');
+        });
+      });
+
+      document.getElementById('btn-toggle-dark').addEventListener('click', () => {
+        state.isDarkMode = !state.isDarkMode;
+        document.documentElement.classList.toggle('dark', state.isDarkMode);
+        scene.background.setHex(state.isDarkMode ? 0x0b1120 : 0xcbd5e1);
+      });
+
+      document.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sc = btn.getAttribute('data-scenario');
+          if (sc === 'fast') { state.timeWeeks = 1.0; state.costBudget = 6500; state.qualityPercent = 75; state.scopePercent = 50; }
+          if (sc === 'budget') { state.timeWeeks = 5.0; state.costBudget = 3000; state.qualityPercent = 85; state.scopePercent = 75; }
+          if (sc === 'masterpiece') { state.timeWeeks = 4.5; state.costBudget = 14000; state.qualityPercent = 98; state.scopePercent = 100; }
+          if (sc === 'mvp') { state.timeWeeks = 1.5; state.costBudget = 2200; state.qualityPercent = 55; state.scopePercent = 25; }
+          document.getElementById('modal-scenarios').classList.add('hidden');
+          updateCalculations();
+        });
+      });
+
+      document.getElementById('btn-copy-script').addEventListener('click', () => {
+        const text = document.getElementById('copilot-pitch-text').textContent;
+        navigator.clipboard.writeText(text);
+      });
+    }
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
+      if (state.pauseTimer > 0) {
+        state.pauseTimer -= delta;
+        if (state.pauseTimer <= 0) {
+          state.isInteracting = false;
+        }
+      }
+
+      if (!state.isInteracting) {
+        systemGroup.rotation.y += 0.003;
+        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.08;
+      }
+
+      nodeTime.rotation.y += 0.01;
+      nodeCost.rotation.y += 0.01;
+      nodeQual.rotation.y += 0.01;
+      nodeScope.rotation.y += 0.01;
+
+      innerModulesGroup.rotation.y -= 0.008;
+
+      controls.update();
+      update3DSpatialLabels();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    // --- CONTINUOUS SLOW-MOTION ANIMATED FAVICON RUNNER (4.5s Loop - Exact Parity with Master Engine) ---
+    function initContinuousAnimatedFavicon() {
+      let favLink = document.querySelector("link[rel~='icon']");
+      if (!favLink) {
+        favLink = document.createElement('link');
+        favLink.rel = 'icon';
+        document.head.appendChild(favLink);
+      }
+      favLink.type = 'image/png';
+
+      const favCanvas = document.createElement('canvas');
+      favCanvas.width = 64;
+      favCanvas.height = 64;
+      const ctx = favCanvas.getContext('2d');
+      if (!ctx) return;
+
+      const durationMs = 4500; // Slower 4.5 second smooth loop
+      let startT = performance.now();
+
+      function drawFaviconFrame(now) {
+        const elapsed = (now - startT) % durationMs;
+        const progress = elapsed / durationMs; // 0.0 -> 1.0
+
+        ctx.clearRect(0, 0, 64, 64);
+
+        // Isometric Base Points
+        const topFace = [[32, 6], [56, 20], [32, 34], [8, 20]];
+        const leftFace = [[8, 20], [32, 34], [32, 60], [8, 46]];
+        const rightFace = [[32, 34], [56, 20], [56, 46], [32, 60]];
+
+        function fillPoly(pts, color) {
+          ctx.beginPath();
+          ctx.moveTo(pts[0][0], pts[0][1]);
+          for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+          ctx.closePath();
+          ctx.fillStyle = color;
+          ctx.fill();
+        }
+
+        fillPoly(topFace, '#1e293b');
+        fillPoly(leftFace, '#090d16');
+        fillPoly(rightFace, '#0f172a');
+
+        // Draw 3D Scanning Laser Chevron with Slower Sweep
+        if (progress > 0.08 && progress < 0.92) {
+          const scanProgress = (progress - 0.08) / 0.84; // 0 -> 1
+          const yOff = scanProgress * 38;
+          
+          ctx.beginPath();
+          ctx.moveTo(8, 20 + yOff * 0.65);
+          ctx.lineTo(32, 34 + yOff * 0.65);
+          ctx.lineTo(56, 20 + yOff * 0.65);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 3.5;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(8, 20 + yOff * 0.65);
+          ctx.lineTo(32, 34 + yOff * 0.65);
+          ctx.lineTo(56, 20 + yOff * 0.65);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Draw Isometric Cube Wireframe Edges (Crisp miter vector lines - zero dots)
+        ctx.lineJoin = 'miter';
+        ctx.lineCap = 'butt';
+
+        ctx.beginPath();
+        ctx.moveTo(32, 6);
+        ctx.lineTo(56, 20);
+        ctx.lineTo(56, 46);
+        ctx.lineTo(32, 60);
+        ctx.lineTo(8, 46);
+        ctx.lineTo(8, 20);
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(8, 20); ctx.lineTo(32, 34); ctx.lineTo(56, 20);
+        ctx.moveTo(32, 34); ctx.lineTo(32, 60);
+        ctx.strokeStyle = 'rgba(255,255,255,0.32)';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        // Top specular glint
+        ctx.beginPath();
+        ctx.moveTo(32, 6); ctx.lineTo(56, 20);
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        favLink.href = favCanvas.toDataURL('image/png');
+        setTimeout(() => requestAnimationFrame(drawFaviconFrame), 100);
+      }
+
+      requestAnimationFrame(drawFaviconFrame);
+    }
+
+    initContinuousAnimatedFavicon();
+    setupDraggableWindows();
+    setupOccupation3DSubModules();
+    initUI();
+    updateCalculations();
+    animate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Clean Route Rewrites
+/explore        /showcase.html        301
+/overview       /showcase.html        301
+/about          /showcase.html        301
+/marketing      /showcase.html        301
+/showcase       /showcase.html        200

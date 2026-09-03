@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blackboxes 3D Spatial Engines & Innovation Suite</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    :root, html {
+      --ff-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ff-mono: 'JetBrains Mono', monospace;
+      font-family: var(--ff-sans);
+    }
+    body {
+      background: radial-gradient(circle at 50% 20%, #0d1527 0%, #060913 60%, #020408 100%);
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+    #hero-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0; pointer-events: none; opacity: 0.65;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.80);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56, 189, 248, 0.5);
+      box-shadow: 0 25px 50px rgba(14, 165, 233, 0.2);
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body class="relative min-h-screen">
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-12">
+    <!-- Header -->
+    <header class="text-center space-y-3 pt-6">
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 font-mono text-xs font-bold">
+          <span>⚡ ZERO-BUILD • OFFLINE-FIRST • 3D SPATIAL ENGINES</span>
+        </div>
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-black shadow-lg shadow-emerald-500/10">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="root-pool-badge">Live Cumulative Pool: $485 USD • 19 Backers</span>
+        </div>
+      </div>
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+        BLACKBOXES <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-400 to-rose-400">ECOSYSTEM</span>
+      </h1>
+      <p class="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 font-sans leading-relaxed">
+        Autonomous suite of 3D reciprocal constraint engines, WebGL reactors, spatial audio studios, and simulation tools. Featuring standardized AI agent APIs (`window.blackboxesAPI`), procedural geometry models, and interactive ambient showcases.
+      </p>
+    </header>
+
+    <!-- Project Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- 0. Box'em (Master Tool) -->
+      <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-mono font-black text-lg">💎</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">225 PROFESSIONS</span>
+          </div>
+          <h2 class="text-lg font-black text-white font-mono">BOX'EM</h2>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+            The master 3D reciprocal constraint engine ($N_S \cdot N_Q = K \cdot N_T \cdot N_C$). Balances timeline, investment, quality, and deliverables across 225 researched industries.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
+          <a href="Box_em/index.html" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-sky-500/20">
+            <span>Launch Engine</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+          <a href="Box_em/showcase.html" class="text-xs font-mono font-bold text-sky-400 hover:text-white">Showcase Portal →</a>
+        </div>
+      </div>
+
+      <!-- 1. Orbit'em -->
+      <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-emerald-600 flex items-center justify-center text-white font-mono font-black text-lg">Ω</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">CLOUD FINOPS</span>
+          </div>
+          <h2 class="text-lg font-black text-white font-mono">ORBIT'EM</h2>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+            3D Cloud Architecture & FinOps Constraint Engine ($N_A \cdot N_P = K \cdot N_C \cdot N_\Omega$). Balances 99.999% SLA uptime, p99 latency, monthly spend, and ops complexity.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
+          <a href="Orbit_em/index.html" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
+            <span>Launch Engine</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+          <a href="Orbit_em/showcase.html" class="text-xs font-mono font-bold text-emerald-400 hover:text-white">Showcase Portal →</a>
+        </div>
+      </div>
+
+      <!-- 2. Pulse'em -->
+      <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-600 flex items-center justify-center text-white font-mono font-black text-lg">♥</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">BIOMETRIC LONGEVITY</span>
+          </div>
+          <h2 class="text-lg font-black text-white font-mono">PULSE'EM</h2>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+            3D Biometric, Longevity & Metabolic Reactor ($N_R \cdot N_L = K \cdot N_S \cdot N_E$). Zero-telemetry, in-browser physiological balancer with real-time heartbeat audio synthesizer.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
+          <a href="Pulse_em/index.html" class="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-rose-500/20">
+            <span>Launch Engine</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+          <a href="Pulse_em/showcase.html" class="text-xs font-mono font-bold text-rose-400 hover:text-white">Showcase Portal →</a>
+        </div>
+      </div>
+
+      <!-- 3. Cap'em -->
+      <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-600 flex items-center justify-center text-slate-950 font-mono font-black text-lg">$</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">STARTUP VALUATION</span>
+          </div>
+          <h2 class="text-lg font-black text-white font-mono">CAP'EM</h2>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+            3D Startup Cap Table, Dilution & Valuation Matrix ($N_E \cdot N_V = K \cdot N_R \cdot N_C$). Models SAFE note stacking, ESOP option pool dilution, and post-money valuation trade-offs.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
+          <a href="Cap_em/index.html" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+            <span>Launch Engine</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+          <a href="Cap_em/showcase.html" class="text-xs font-mono font-bold text-amber-400 hover:text-white">Showcase Portal →</a>
+        </div>
+      </div>
+
+      <!-- 4. Synth'em -->
+      <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-indigo-600 flex items-center justify-center text-white font-mono font-black text-lg">♫</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-pink-500/20 text-pink-400 border border-pink-500/30">SPATIAL AUDIO DSP</span>
+          </div>
+          <h2 class="text-lg font-black text-white font-mono">SYNTH'EM</h2>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+            3D Spatial Audio Granular Synth Studio ($N_H \cdot N_D = K \cdot N_P \cdot N_S$). Real-time polyphonic synthesizer with playable keyboard and audio-reactive 3D resonator shaders.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
+          <a href="Synth_em/index.html" class="px-4 py-2 rounded-xl bg-pink-500 hover:bg-pink-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-pink-500/20">
+            <span>Launch Engine</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+          <a href="Synth_em/showcase.html" class="text-xs font-mono font-bold text-pink-400 hover:text-white">Showcase Portal →</a>
+        </div>
+      </div>
+
+      <!-- 5. Balanc'em -->
+      <div class="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 to-rose-600 flex items-center justify-center text-white font-mono font-black text-lg">⚔</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">GAME COMBAT META</span>
+          </div>
+          <h2 class="text-lg font-black text-white font-mono">BALANC'EM</h2>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans">
+            3D Game Mechanics & Combat Balancing Engine ($N_{DPS} \cdot N_{EHP} = K \cdot N_C \cdot N_S$). Visualizes RPG class balancing, TTK, and armor curves; exports Unreal/Unity DataTables.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
+          <a href="Balanc_em/index.html" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-rose-600/20">
+            <span>Launch Engine</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+          <a href="Balanc_em/showcase.html" class="text-xs font-mono font-bold text-rose-400 hover:text-white">Showcase Portal →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Live Supporter Ticker Stream -->
+    <div class="glass-card p-4 rounded-3xl flex items-center justify-between text-xs font-mono">
+      <div class="flex items-center gap-2 text-slate-300 overflow-hidden">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+        <span class="font-bold text-sky-400 shrink-0">ECOSYSTEM SUPPORTER FEED:</span>
+        <span id="ticker-feed-text" class="truncate">AWS Cloud Lead ($50) • Harvard Longevity Lab ($100) • YC Founder ($150) • Grammy Audio Engineer ($25) • Unreal Combat Director ($75)</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Live Cumulative Pool Hydration
+    (function initPoolSync() {
+      const STORAGE_KEY = 'blackboxes_cumulative_donation_pool';
+      const DEFAULT_POOL = {
+        totalUsd: 485,
+        backerCount: 19,
+        recent: [
+          { donorName: 'alex.cloud', amountUsd: 50.00, engine: "Orbit'em" },
+          { donorName: 'dr.valkyrie', amountUsd: 100.00, engine: "Pulse'em" },
+          { donorName: 'venture_craft', amountUsd: 150.00, engine: "Cap'em" },
+          { donorName: 'synthwave99', amountUsd: 25.00, engine: "Synth'em" },
+          { donorName: 'hyper_carry', amountUsd: 75.00, engine: "Balanc'em" },
+          { donorName: 'axialon_backer', amountUsd: 85.00, engine: "Box'em" }
+        ]
+      };
+      let pool = DEFAULT_POOL;
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed.totalUsd === 'number') pool = parsed;
+        } else {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_POOL));
+        }
+      } catch (e) {}
+
+      const badge = document.getElementById('root-pool-badge');
+      const count = pool.backerCount || pool.backersCount || 19;
+      if (badge) badge.textContent = `Live Cumulative Pool: $${Math.round(pool.totalUsd || 485).toLocaleString()} USD • ${count} Backers`;
+
+      if (pool.recent && pool.recent.length > 0) {
+        const feedText = document.getElementById('ticker-feed-text');
+        if (feedText) {
+          feedText.textContent = pool.recent.map(r => `${r.donorName} ($${Math.round(r.amountUsd)} to ${r.engine})`).join(' • ');
+        }
+      }
+    })();
+
+    // 3D Background Starfield & Floating Crystal Polytopes
+    const canvas = document.getElementById('hero-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 20;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Starfield points
+    const geo = new THREE.BufferGeometry();
+    const pos = [];
+    for (let i = 0; i < 350; i++) {
+      pos.push((Math.random() - 0.5) * 44, (Math.random() - 0.5) * 44, (Math.random() - 0.5) * 44);
+    }
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    const mat = new THREE.PointsMaterial({ color: 0x38bdf8, size: 0.18, transparent: true, opacity: 0.65 });
+    const points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    // Floating 3D Octahedron Crystal Polytope
+    const crystalGeo = new THREE.OctahedronGeometry(1.8, 0);
+    const crystalMat = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true, transparent: true, opacity: 0.45 });
+    const crystal = new THREE.Mesh(crystalGeo, crystalMat);
+    crystal.position.set(12, -4, -5);
+    scene.add(crystal);
+
+    const crystal2Geo = new THREE.IcosahedronGeometry(1.2, 0);
+    const crystal2Mat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.35 });
+    const crystal2 = new THREE.Mesh(crystal2Geo, crystal2Mat);
+    crystal2.position.set(-13, 6, -8);
+    scene.add(crystal2);
+
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    function animate(t) {
+      requestAnimationFrame(animate);
+      points.rotation.y = t * 0.00008;
+      points.rotation.x = t * 0.00004;
+
+      crystal.rotation.x += 0.005;
+      crystal.rotation.y += 0.008;
+      crystal.position.x = 12 + mouseX * 1.5;
+      crystal.position.y = -4 - mouseY * 1.5;
+
+      crystal2.rotation.y -= 0.006;
+      crystal2.rotation.z += 0.004;
+      crystal2.position.x = -13 + mouseX * 1.2;
+      crystal2.position.y = 6 - mouseY * 1.2;
+
+      renderer.render(scene, camera);
+    }
+    animate(0);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

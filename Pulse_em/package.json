@@ -1,0 +1,24 @@
+{
+  "name": "pulseem",
+  "version": "1.0.0",
+  "description": "Blackboxes Pulse'em - 3D Biometric, Longevity & Metabolic Trade-off Reactor",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/engine.test.js"
+  },
+  "keywords": [
+    "blackboxes",
+    "pulseem",
+    "webgl",
+    "threejs",
+    "biometrics",
+    "longevity",
+    "reciprocal-constraint-engine"
+  ],
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.180.0"
+  }
+}

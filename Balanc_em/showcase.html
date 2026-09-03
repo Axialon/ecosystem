@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Balanc'em - 3D RPG Combat Meta & Game Economy Balancing Engine</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="src/data/game_archetypes.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    :root {
+      --ff-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ff-mono: 'JetBrains Mono', monospace;
+      font-family: var(--ff-sans);
+    }
+    body {
+      background: radial-gradient(circle at 60% 40%, #2e0d0d 0%, #170505 50%, #080101 100%);
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.70);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(239, 68, 68, 0.20);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(239, 68, 68, 0.50);
+      box-shadow: 0 16px 32px rgba(239, 68, 68, 0.15);
+    }
+    .hero-glow {
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 70%);
+    }
+    #ambient-bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.90;
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body class="dark antialiased selection:bg-rose-500 selection:text-white relative">
+
+  <!-- Interactive Ethereal Background Canvas with Tiny Floating 3D Double Tetrahedrons (Box'em Standard) -->
+  <canvas id="ambient-bg-canvas"></canvas>
+
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-rose-500/20 px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-white transition-colors mr-2">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          <span class="hidden sm:inline">Ecosystem</span>
+        </a>
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 to-red-700 flex items-center justify-center text-white shadow-lg shadow-rose-500/40 font-black text-sm font-mono">
+          ⚔
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight text-white">BALANC'EM</span>
+          <span class="text-[10px] font-mono text-rose-400 block -mt-1 font-bold">3D COMBAT META ENGINE</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-red-700 text-white font-mono text-xs font-black shadow-lg shadow-rose-500/25 hover:brightness-110 transition-all flex items-center gap-1.5">
+          <span>Launch Power Tool</span>
+          <span class="material-symbols-outlined text-sm">open_in_new</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Ecosystem Suite Navigator -->
+    <nav aria-label="Ecosystem Engines" class="mt-2 -mx-6 -mb-3.5 bg-slate-950/80 border-t border-rose-500/20 px-6 py-1.5 overflow-x-auto">
+      <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 text-xs font-mono">
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-slate-400 font-bold uppercase tracking-wider text-[11px]">BlackBoxes Suite:</span>
+          <a href="../index.html" class="px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold">
+            <span class="material-symbols-outlined text-sm">hub</span> Hub
+          </a>
+          <a href="../Box_em/showcase.html" class="px-2.5 py-1 rounded-lg glass-button text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-bold">
+            <span class="material-symbols-outlined text-sm">deployed_code</span> Box'em
+          </a>
+          <a href="../Orbit_em/showcase.html" class="px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 flex items-center gap-1 font-bold">
+            <span class="material-symbols-outlined text-sm">cloud</span> Orbit'em
+          </a>
+          <a href="../Pulse_em/showcase.html" class="px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 flex items-center gap-1 font-bold">
+            <span class="material-symbols-outlined text-sm">monitor_heart</span> Pulse'em
+          </a>
+          <a href="../Cap_em/showcase.html" class="px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 flex items-center gap-1 font-bold">
+            <span class="material-symbols-outlined text-sm">account_balance</span> Cap'em
+          </a>
+          <a href="../Synth_em/showcase.html" class="px-2.5 py-1 rounded-lg glass-button text-fuchsia-400 hover:text-fuchsia-300 flex items-center gap-1 font-bold">
+            <span class="material-symbols-outlined text-sm">graphic_eq</span> Synth'em
+          </a>
+          <a href="../Balanc_em/showcase.html" class="px-2.5 py-1 rounded-lg bg-red-600/30 border border-red-500/50 text-white font-black flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-red-400">swords</span> Balanc'em
+          </a>
+        </div>
+        <div class="hidden md:flex items-center gap-2 shrink-0">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-slate-300 font-bold">Live Pool:</span>
+          <span id="ecosystem-pool-display" class="text-emerald-400 font-black">$485 USD • 19 Backers</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <section class="relative min-h-[92vh] flex items-center pt-32 pb-12 px-4 max-w-7xl mx-auto">
+    <div class="absolute inset-0 hero-glow pointer-events-none"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full relative z-10">
+      
+      <div class="lg:col-span-6 space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-400/30 text-rose-300 font-mono text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
+          RPG Combat Power Budget & TTK Balancing
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+          Balance RPG Classes & Boss Encounters <span class="bg-gradient-to-r from-rose-400 via-red-300 to-amber-400 bg-clip-text text-transparent">in 3D Spatial Geometry.</span>
+        </h1>
+
+        <p class="text-base text-slate-300 leading-relaxed max-w-xl">
+          Class balance is a multi-dimensional polytope. When DPS spikes, survivability (EHP) or cooldown costs must compress. Balanc'em gives game designers instant visual feedback.
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2">
+          <div class="p-3 rounded-2xl glass-card text-xs font-mono space-y-1">
+            <span class="material-symbols-outlined text-rose-400 text-lg">swords</span>
+            <div class="font-bold text-white">DPS vs EHP</div>
+            <div class="text-[10px] text-slate-300">Continuous reciprocal math</div>
+          </div>
+          <div class="p-3 rounded-2xl glass-card text-xs font-mono space-y-1">
+            <span class="material-symbols-outlined text-amber-400 text-lg">code</span>
+            <div class="font-bold text-white">Lua & C# Scripts</div>
+            <div class="text-[10px] text-slate-300">Unity/Unreal curves</div>
+          </div>
+          <div class="p-3 rounded-2xl glass-card text-xs font-mono space-y-1">
+            <span class="material-symbols-outlined text-red-400 text-lg">view_in_ar</span>
+            <div class="font-bold text-white">Combat .GLB</div>
+            <div class="text-[10px] text-slate-300">3D spatial asset export</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pt-4">
+          <a href="index.html" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-red-700 text-white font-mono text-sm font-black shadow-xl shadow-rose-500/30 hover:brightness-110 transition-all flex items-center gap-2">
+            <span>Open Combat Meta Studio</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </a>
+          <a href="#interactive-scenarios" class="px-5 py-3 rounded-2xl glass-panel text-slate-300 hover:text-white font-mono text-xs font-bold transition-all">
+            Explore 6 Archetypes
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6 relative h-[480px] sm:h-[560px] rounded-3xl glass-panel overflow-hidden border border-rose-400/30">
+        <canvas id="hero-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+        
+        <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none text-xs font-mono">
+          <div class="px-3 py-1.5 rounded-xl glass-panel border-rose-400/40 text-rose-300 font-bold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping"></span>
+            <span id="live-arch-title">Soulslike Boss / Heavy Knight</span>
+          </div>
+          <div class="px-3 py-1.5 rounded-xl glass-panel border-rose-400/40 text-emerald-400 font-bold" id="live-hud-dps">
+            780 DPS
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="interactive-scenarios" class="py-16 px-4 max-w-7xl mx-auto space-y-8">
+    <div class="text-center space-y-2 max-w-2xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
+        COMBAT CLASS BENCHMARKS
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-400">
+        Test high-skill Glass Cannons, raid bosses, stealth assassins, and support healers.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="archetypes-grid"></div>
+  </section>
+
+  <section class="py-16 px-4 max-w-5xl mx-auto">
+    <div class="glass-panel p-8 rounded-3xl border border-rose-500/30 space-y-4">
+      <h3 class="text-lg font-black font-mono text-white flex items-center gap-2">
+        <span class="material-symbols-outlined text-rose-400">integration_instructions</span>
+        <span>Embed Live 3D Balanc'em in Game Design Docs (GDDs)</span>
+      </h3>
+      <p class="text-xs text-slate-300">
+        Copy this responsive 1-line HTML embed code to include the 3D combat balancer in Notion, Confluence, or game design repositories.
+      </p>
+      <div class="flex items-center gap-2">
+        <input type="text" id="embed-code" readonly value='<iframe src="https://blackboxes.engine/balance" width="100%" height="600" frameborder="0"></iframe>' class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono text-rose-300 outline-none" />
+        <button id="btn-copy-embed" class="px-5 py-3 rounded-2xl bg-rose-500 text-white font-mono text-xs font-bold shrink-0 hover:bg-rose-600 transition-colors">
+          Copy Embed
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="relative z-20 py-8 px-4 border-t border-rose-500/20 max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping"></span>
+      <span class="font-bold text-rose-300">GAME DEV BACKERS:</span>
+      <span>IndieGame Studio ($50) • RPG Collective ($25) • CombatDesigners ($100)</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="../index.html" class="hover:text-white">Master Ecosystem</a>
+      <a href="index.html" class="hover:text-white">Power Tool</a>
+    </div>
+  </footer>
+
+  <script>
+    const ARCHETYPES = window.BALANCEM_ARCHETYPES || [];
+    let currentArch = ARCHETYPES[0];
+
+    const canvas = document.getElementById('hero-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 1.2, 7.2);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.8;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.95));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.7);
+    keyLight.position.set(6, 7, 5);
+    scene.add(keyLight);
+    const fillLight = new THREE.DirectionalLight(0xef4444, 1.4);
+    fillLight.position.set(-6, -2, -4);
+    scene.add(fillLight);
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
+    rimLight.position.set(0, 6, -4);
+    scene.add(rimLight);
+
+    const systemGroup = new THREE.Group();
+    scene.add(systemGroup);
+
+    const coreGroup = new THREE.Group();
+    systemGroup.add(coreGroup);
+
+    const corePolyGeo = new THREE.BufferGeometry();
+    const posArray = new Float32Array(8 * 3 * 3);
+    corePolyGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: 0xbe123c,
+      emissive: 0xf43f5e,
+      emissiveIntensity: 0.65,
+      roughness: 0.10,
+      transmission: 0.65,
+      transparent: true,
+      opacity: 0.90,
+      ior: 1.75,
+      clearcoat: 1.0,
+      side: THREE.DoubleSide
+    });
+    const coreMesh = new THREE.Mesh(corePolyGeo, coreMat);
+    coreGroup.add(coreMesh);
+    const coreWireframe = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xfecdd3, transparent: true, opacity: 0.85 }));
+    coreGroup.add(coreWireframe);
+
+    const NODE_DIRS = {
+      dps: new THREE.Vector3(0, 1.8, 0.2).normalize(),
+      ehp: new THREE.Vector3(1.7, 0.4, 0.6).normalize(),
+      skill: new THREE.Vector3(-1.7, 0.4, 0.6).normalize(),
+      resource: new THREE.Vector3(0, -1.8, -0.4).normalize(),
+      mobility: new THREE.Vector3(-1.4, -1.0, -0.6).normalize(),
+      crit: new THREE.Vector3(1.4, -1.0, -0.6).normalize()
+    };
+
+    const NODE_CONFIGS = {
+      dps: { name: 'Damage (DPS)', color: 0x0284c7, emissive: 0x38bdf8, hex: '#38bdf8' },
+      ehp: { name: 'Armor (EHP)', color: 0x7c3aed, emissive: 0xa78bfa, hex: '#a78bfa' },
+      skill: { name: 'Skill (APM)', color: 0xd97706, emissive: 0xfbbf24, hex: '#fbbf24' },
+      resource: { name: 'Cooldown Cost', color: 0x059669, emissive: 0x34d399, hex: '#34d399' },
+      mobility: { name: 'Mobility Speed', color: 0x0891b2, emissive: 0x22d3ee, hex: '#22d3ee' },
+      crit: { name: 'Crit Multiplier', color: 0xe11d48, emissive: 0xfb7185, hex: '#fb7185' }
+    };
+
+    const nodeGroups = {}, nodeBillboards = {}, coreStruts = {}, perimeterStruts = [];
+
+    function createBillboardSprite(title, colorHexStr) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 140;
+      const ctx = canvas.getContext('2d');
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+
+      const redraw = (textVal) => {
+        ctx.clearRect(0, 0, 512, 140);
+        ctx.fillStyle = 'rgba(11, 19, 36, 0.94)';
+        ctx.strokeStyle = colorHexStr;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.roundRect(8, 8, 496, 124, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = colorHexStr;
+        ctx.beginPath();
+        ctx.arc(44, 42, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = colorHexStr;
+        ctx.font = 'bold 30px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(title, 72, 42);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 42px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(textVal, 72, 92);
+
+        texture.needsUpdate = true;
+      };
+
+      const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false, depthWrite: false });
+      const sprite = new THREE.Sprite(spriteMat);
+      sprite.renderOrder = 9999;
+      sprite.scale.set(1.45, 0.40, 1);
+      sprite.userData = { redraw };
+      return sprite;
+    }
+
+    Object.entries(NODE_CONFIGS).forEach(([key, cfg]) => {
+      const g = new THREE.Group();
+      const mesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0), new THREE.MeshStandardMaterial({ color: cfg.color, emissive: cfg.emissive, emissiveIntensity: 0.85, roughness: 0.1 }));
+      g.add(mesh);
+      mesh.add(new THREE.LineSegments(new THREE.WireframeGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 })));
+      systemGroup.add(g);
+      nodeGroups[key] = g;
+
+      const bb = createBillboardSprite(cfg.name, cfg.hex);
+      systemGroup.add(bb);
+      nodeBillboards[key] = bb;
+
+      const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1, 8), new THREE.MeshBasicMaterial({ color: cfg.emissive, transparent: true, opacity: 0.75 }));
+      systemGroup.add(strut);
+      coreStruts[key] = strut;
+    });
+
+    const perimeterPairs = [
+      ['dps', 'ehp'], ['ehp', 'crit'], ['crit', 'resource'],
+      ['resource', 'mobility'], ['mobility', 'skill'], ['skill', 'dps']
+    ];
+    perimeterPairs.forEach(([k1, k2]) => {
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.40 }));
+      line.userData = { k1, k2 };
+      systemGroup.add(line);
+      perimeterStruts.push(line);
+    });
+
+    function updateShowcase3D(arch) {
+      const def = arch.defaults;
+      const critVal = def.critMultiplier ?? def.criticalMultiplier ?? 1.5;
+      const rads = {
+        dps: 0.7 + ((def.damagePerSecondDps - 50) / (5000 - 50)) * 1.8,
+        ehp: 0.7 + ((def.effectiveHealthPoolEhp - 200) / (50000 - 200)) * 1.8,
+        skill: 0.7 + ((def.skillCeilingApm - 20) / (400 - 20)) * 1.7,
+        resource: 0.7 + ((def.resourceCostCooldown - 10) / (250 - 10)) * 1.7,
+        mobility: 0.7 + ((def.mobilitySpeed - 10) / (100 - 10)) * 1.7,
+        crit: 0.7 + ((critVal - 1.0) / (4.0 - 1.0)) * 1.7
+      };
+
+      const vDPS = NODE_DIRS.dps.clone().multiplyScalar(rads.dps);
+      const vEHP = NODE_DIRS.ehp.clone().multiplyScalar(rads.ehp);
+      const vSkl = NODE_DIRS.skill.clone().multiplyScalar(rads.skill);
+      const vRes = NODE_DIRS.resource.clone().multiplyScalar(rads.resource);
+      const vMob = NODE_DIRS.mobility.clone().multiplyScalar(rads.mobility);
+      const vCrt = NODE_DIRS.crit.clone().multiplyScalar(rads.crit);
+
+      if (corePolyGeo) {
+        const p = corePolyGeo.attributes.position.array;
+        const setTri = (offset, p1, p2, p3) => {
+          p[offset]   = p1.x; p[offset+1] = p1.y; p[offset+2] = p1.z;
+          p[offset+3] = p2.x; p[offset+4] = p2.y; p[offset+5] = p2.z;
+          p[offset+6] = p3.x; p[offset+7] = p3.y; p[offset+8] = p3.z;
+        };
+        setTri(0,  vDPS, vEHP, vCrt);
+        setTri(9,  vDPS, vCrt, vRes);
+        setTri(18, vDPS, vRes, vMob);
+        setTri(27, vDPS, vMob, vSkl);
+        setTri(36, vRes, vCrt, vEHP);
+        setTri(45, vRes, vEHP, vSkl);
+        setTri(54, vRes, vSkl, vMob);
+        setTri(63, vRes, vMob, vCrt);
+        corePolyGeo.attributes.position.needsUpdate = true;
+        corePolyGeo.computeVertexNormals();
+
+        if (coreWireframe) {
+          coreWireframe.geometry.dispose();
+          coreWireframe.geometry = new THREE.WireframeGeometry(corePolyGeo);
+        }
+      }
+
+      const labels = {
+        dps: `${def.damagePerSecondDps} DPS`,
+        ehp: `${def.effectiveHealthPoolEhp.toLocaleString()} EHP`,
+        skill: `${def.skillCeilingApm} APM`,
+        resource: `${def.resourceCostCooldown} Cost`,
+        mobility: `${def.mobilitySpeed} u/s`,
+        crit: `${Number(critVal).toFixed(1)}x`
+      };
+
+      const yUnit = new THREE.Vector3(0, 1, 0);
+
+      Object.entries(NODE_DIRS).forEach(([key, dir]) => {
+        const r = rads[key] * 1.28;
+        const node = nodeGroups[key];
+        const bb = nodeBillboards[key];
+        const strut = coreStruts[key];
+        if (node) {
+          const pos = dir.clone().multiplyScalar(r);
+          node.position.copy(pos);
+          if (bb) {
+            bb.position.copy(pos.clone().add(dir.clone().multiplyScalar(0.48)));
+            bb.userData.redraw(labels[key]);
+          }
+          if (strut) {
+            strut.position.copy(pos.clone().multiplyScalar(0.5));
+            strut.scale.set(1, r, 1);
+            strut.quaternion.setFromUnitVectors(yUnit, dir);
+          }
+        }
+      });
+
+      perimeterStruts.forEach(line => {
+        const k1 = line.userData.k1;
+        const k2 = line.userData.k2;
+        if (nodeGroups[k1] && nodeGroups[k2]) {
+          const p1 = nodeGroups[k1].position;
+          const p2 = nodeGroups[k2].position;
+          const posAttr = line.geometry.attributes.position;
+          posAttr.setXYZ(0, p1.x, p1.y, p1.z);
+          posAttr.setXYZ(1, p2.x, p2.y, p2.z);
+          posAttr.needsUpdate = true;
+        }
+      });
+    }
+
+    function selectArchetype(arch) {
+      currentArch = arch;
+      document.getElementById('live-arch-title').textContent = arch.name;
+      document.getElementById('live-hud-dps').textContent = `${arch.defaults.damagePerSecondDps} DPS`;
+      document.getElementById('embed-code').value = `<iframe src="https://blackboxes.engine/balance?arch=${arch.id}" width="100%" height="600" frameborder="0"></iframe>`;
+      updateShowcase3D(arch);
+    }
+
+    function renderArchetypesGrid() {
+      const gridEl = document.getElementById('archetypes-grid');
+      gridEl.innerHTML = '';
+      ARCHETYPES.forEach(arch => {
+        const card = document.createElement('div');
+        card.className = 'p-5 rounded-3xl glass-card space-y-3 cursor-pointer';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-1 rounded-lg text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-400/30">${arch.id.toUpperCase()}</span>
+            <span class="text-xs font-mono font-extrabold text-emerald-400">${arch.defaults.damagePerSecondDps} DPS</span>
+          </div>
+          <h3 class="text-base font-extrabold text-white">${arch.name}</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">${arch.desc}</p>
+          <div class="pt-2 border-t border-slate-700/50 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>EHP: ${arch.defaults.effectiveHealthPoolEhp.toLocaleString()}</span>
+            <span>APM: ${arch.defaults.skillCeilingApm}</span>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          selectArchetype(arch);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        gridEl.appendChild(card);
+      });
+    }
+
+    document.getElementById('btn-copy-embed').addEventListener('click', () => {
+      const input = document.getElementById('embed-code');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      document.getElementById('btn-copy-embed').textContent = 'Copied!';
+      setTimeout(() => { document.getElementById('btn-copy-embed').textContent = 'Copy Embed'; }, 2000);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (systemGroup) systemGroup.rotation.y += 0.002;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    renderArchetypesGrid();
+    selectArchetype(ARCHETYPES[0]);
+    animate(0);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    });
+
+    // 1. Ethereal Ambient Background Canvas with Tiny 3D Double Tetrahedrons (Box'em Standard)
+    (function initDoubleTetrahedronAmbientBg() {
+      const bgCanvas = document.getElementById('ambient-bg-canvas');
+      if (!bgCanvas) return;
+      const ctx = bgCanvas.getContext('2d');
+      let w, h;
+      const crystals = [];
+      const crystalCount = 38;
+      let mouseX = 0, mouseY = 0;
+
+      const baseVertices = [
+        [0, -1, 0], [0, 1, 0], [-1, 0, 0], [1, 0, 0], [0, 0, -1], [0, 0, 1]
+      ];
+      const faces = [
+        [0, 2, 5], [0, 5, 3], [0, 3, 4], [0, 4, 2],
+        [1, 5, 2], [1, 3, 5], [1, 4, 3], [1, 2, 4]
+      ];
+      const palette = ['#ef4444', '#f87171', '#f59e0b', '#dc2626', '#14b8a6'];
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        bgCanvas.width = w * dpr;
+        bgCanvas.height = h * dpr;
+        ctx.scale(dpr, dpr);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      for (let i = 0; i < crystalCount; i++) {
+        const bvx = (Math.random() - 0.5) * 0.35;
+        const bvy = (Math.random() - 0.5) * 0.35;
+        crystals.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          z: Math.random() * 200 + 50,
+          vx: bvx, vy: bvy, baseVx: bvx, baseVy: bvy,
+          rotX: Math.random() * Math.PI, rotY: Math.random() * Math.PI, rotZ: Math.random() * Math.PI,
+          vRotX: (Math.random() - 0.5) * 0.02, vRotY: (Math.random() - 0.5) * 0.02, vRotZ: (Math.random() - 0.5) * 0.02,
+          size: Math.random() * 10 + 6,
+          color: palette[i % palette.length],
+          baseAlpha: Math.random() * 0.35 + 0.25
+        });
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX; mouseY = e.clientY;
+      });
+
+      function renderBg() {
+        ctx.clearRect(0, 0, w, h);
+        const grad = ctx.createRadialGradient(mouseX || w/2, mouseY || h/2, 20, mouseX || w/2, mouseY || h/2, 500);
+        grad.addColorStop(0, 'rgba(239, 68, 68, 0.07)');
+        grad.addColorStop(0.5, 'rgba(245, 158, 11, 0.03)');
+        grad.addColorStop(1, 'rgba(3, 7, 18, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        for (let i = 0; i < crystals.length; i++) {
+          const c = crystals[i];
+          if (mouseX && mouseY) {
+            const dx = c.x - mouseX, dy = c.y - mouseY;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 0 && dist < 150) {
+              const force = Math.pow(1 - dist / 150, 1.4) * 0.40;
+              c.vx += (dx / dist) * force;
+              c.vy += (dy / dist) * force;
+              c.rotY += 0.015 * force;
+            }
+          }
+          c.vx = c.vx * 0.94 + c.baseVx * 0.06;
+          c.vy = c.vy * 0.94 + c.baseVy * 0.06;
+          c.x += c.vx; c.y += c.vy;
+          c.rotX += c.vRotX; c.rotY += c.vRotY; c.rotZ += c.vRotZ;
+          if (c.x < -20) c.x = w + 20; if (c.x > w + 20) c.x = -20;
+          if (c.y < -20) c.y = h + 20; if (c.y > h + 20) c.y = -20;
+
+          const rad = c.size;
+          const cosX = Math.cos(c.rotX), sinX = Math.sin(c.rotX);
+          const cosY = Math.cos(c.rotY), sinY = Math.sin(c.rotY);
+          const cosZ = Math.cos(c.rotZ), sinZ = Math.sin(c.rotZ);
+
+          const projVertices = baseVertices.map(v => {
+            let x = v[0] * rad, y = v[1] * rad, z = v[2] * rad;
+            let y1 = y * cosX - z * sinX, z1 = y * sinX + z * cosX;
+            let x2 = x * cosY + z1 * sinY, z2 = -x * sinY + z1 * cosY;
+            let x3 = x2 * cosZ - y1 * sinZ, y3 = x2 * sinZ + y1 * cosZ;
+            return [c.x + x3, c.y + y3, z2];
+          });
+
+          ctx.save();
+          faces.forEach(f => {
+            const vA = projVertices[f[0]], vB = projVertices[f[1]], vC = projVertices[f[2]];
+            const nz = (vB[0] - vA[0]) * (vC[1] - vA[1]) - (vB[1] - vA[1]) * (vC[0] - vA[0]);
+            if (nz > 0) {
+              ctx.beginPath();
+              ctx.moveTo(vA[0], vA[1]);
+              ctx.lineTo(vB[0], vB[1]);
+              ctx.lineTo(vC[0], vC[1]);
+              ctx.closePath();
+              ctx.fillStyle = c.color;
+              ctx.globalAlpha = c.baseAlpha * 0.65;
+              ctx.fill();
+              ctx.strokeStyle = c.color;
+              ctx.globalAlpha = c.baseAlpha;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          });
+          ctx.restore();
+
+          for (let j = i + 1; j < crystals.length; j++) {
+            const c2 = crystals[j];
+            const dist = Math.hypot(c.x - c2.x, c.y - c2.y);
+            if (dist < 130) {
+              const alpha = (1 - dist / 130) * 0.16;
+              ctx.strokeStyle = `rgba(239, 68, 68, ${alpha})`;
+              ctx.lineWidth = 0.6;
+              ctx.beginPath();
+              ctx.moveTo(c.x, c.y);
+              ctx.lineTo(c2.x, c2.y);
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(renderBg);
+      }
+      renderBg();
+    })();
+
+    // 2. Live Cumulative Donation Pool Sync
+    (function syncEcosystemPool() {
+      const STORAGE_KEY = 'blackboxes_cumulative_donation_pool';
+      const DEFAULT_POOL = { totalUsd: 485, backersCount: 19 };
+      let pool = DEFAULT_POOL;
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed.totalUsd === 'number') pool = parsed;
+        } else {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_POOL));
+        }
+      } catch (e) {}
+      const el = document.getElementById('ecosystem-pool-display');
+      const count = pool.backerCount || pool.backersCount || 19;
+      if (el) el.textContent = `$${Math.round(pool.totalUsd || 485).toLocaleString()} USD • ${count} Backers`;
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+name: Box'em CI & Verification Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Schema & Security Acceptance Tests
+        run: |
+          npm test
+
+      - name: Verify Single-File Bundle Integrity
+        run: |
+          test -f index.html
+          echo "Single-file bundle verified successfully."

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blackboxes.engine/schema/pulseem/v1.json",
+  "title": "Pulse'em Biometric Configuration Schema",
+  "type": "object",
+  "required": ["version", "meta", "constraints", "submodules", "visuals"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "meta": {
+      "type": "object",
+      "required": ["brand", "app", "title", "protocol"],
+      "properties": {
+        "brand": { "type": "string", "const": "Blackboxes" },
+        "app": { "type": "string", "const": "Pulse'em" },
+        "title": { "type": "string", "maxLength": 100 },
+        "protocol": { "type": "string" },
+        "author": { "type": "string", "maxLength": 60 }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["trainingStrainTrimp", "autonomicRecoveryHrv", "metabolicFuelingPercent", "longevityScore", "lockMode"],
+      "properties": {
+        "trainingStrainTrimp": { "type": "number", "minimum": 50, "maximum": 1500 },
+        "autonomicRecoveryHrv": { "type": "number", "minimum": 10, "maximum": 200 },
+        "metabolicFuelingPercent": { "type": "number", "minimum": 20, "maximum": 200 },
+        "longevityScore": { "type": "number", "minimum": 10, "maximum": 150 },
+        "lockMode": { "type": "string", "enum": ["strain", "recovery", "fuel", "longevity"] }
+      }
+    },
+    "submodules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "impact", "target"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "impact": { "type": "string" },
+          "target": { "type": "string" }
+        }
+      }
+    },
+    "visuals": {
+      "type": "object",
+      "required": ["shaderPreset", "theme"],
+      "properties": {
+        "shaderPreset": { "type": "string" },
+        "theme": { "type": "string", "enum": ["dark", "light"] }
+      }
+    }
+  }
+}

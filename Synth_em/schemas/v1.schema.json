@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blackboxes.engine/schema/synthem/v1.json",
+  "title": "Synth'em Audio Patch Configuration Schema",
+  "type": "object",
+  "required": ["version", "meta", "constraints", "submodules", "visuals"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "meta": {
+      "type": "object",
+      "required": ["brand", "app", "title", "genre"],
+      "properties": {
+        "brand": { "type": "string", "const": "Blackboxes" },
+        "app": { "type": "string", "const": "Synth'em" },
+        "title": { "type": "string", "maxLength": 100 },
+        "genre": { "type": "string" },
+        "author": { "type": "string", "maxLength": 60 }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["harmonicDrivePercent", "dynamicCrestDb", "pitchRatio", "reverbDecaySec", "lockMode"],
+      "properties": {
+        "harmonicDrivePercent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "dynamicCrestDb": { "type": "number", "minimum": 1, "maximum": 30 },
+        "pitchRatio": { "type": "number", "minimum": 0.5, "maximum": 2.0 },
+        "reverbDecaySec": { "type": "number", "minimum": 0.1, "maximum": 12.0 },
+        "lockMode": { "type": "string", "enum": ["harmonics", "dynamics", "pitch", "reverb"] }
+      }
+    },
+    "submodules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "dspParam", "mixLevel"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "dspParam": { "type": "string" },
+          "mixLevel": { "type": "number" }
+        }
+      }
+    },
+    "visuals": {
+      "type": "object",
+      "required": ["shaderPreset", "theme"],
+      "properties": {
+        "shaderPreset": { "type": "string" },
+        "theme": { "type": "string", "enum": ["dark", "light"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" shape-rendering="geometricPrecision">
+  <defs>
+    <style>
+      @keyframes favLaserSweep {
+        0%, 10% { transform: translateY(0px); opacity: 0; }
+        15% { opacity: 1; }
+        80% { opacity: 1; }
+        90%, 100% { transform: translateY(70px); opacity: 0; }
+      }
+      .fav-laser {
+        animation: favLaserSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        transform-box: view-box;
+      }
+    </style>
+    <linearGradient id="favTopG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b485d"/>
+      <stop offset="35%" stop-color="#1e293b"/>
+      <stop offset="75%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="favLeftG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="45%" stop-color="#050914"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="favRightG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="favLaserG" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="75%" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="favCubeClip">
+      <polygon points="50,4 90,26 90,70 50,92 10,70 10,26"/>
+    </clipPath>
+  </defs>
+  
+  <g clip-path="url(#favCubeClip)">
+    <!-- 1. Solid Hexagon Backing -->
+    <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="#000000"/>
+    
+    <!-- 2. Obsidian Crystalline Facets -->
+    <polygon points="50,4 90,26 50,48 10,26" fill="url(#favTopG)"/>
+    <polygon points="10,26 50,48 50,92 10,70" fill="url(#favLeftG)"/>
+    <polygon points="50,48 90,26 90,70 50,92" fill="url(#favRightG)"/>
+    
+    <!-- 3. 3D Warp Scanning Chevron -->
+    <g class="fav-laser">
+      <path d="M 10,18 L 50,40 L 90,18" fill="none" stroke="url(#favLaserG)" stroke-width="4.0" stroke-linecap="butt" stroke-linejoin="miter"/>
+      <path d="M 10,18 L 50,40 L 90,18" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="butt" stroke-linejoin="miter"/>
+    </g>
+  </g>
+  
+  <!-- 4. Outer Silhouette & Internal Y Seam (Crisp miter join, zero dots) -->
+  <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.6" stroke-linejoin="miter"/>
+  <path d="M 10,26 L 50,48 L 90,26 M 50,48 L 50,92" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.6" stroke-linejoin="miter" stroke-linecap="butt"/>
+  <line x1="50" y1="4" x2="90" y2="26" stroke="rgba(255,255,255,0.45)" stroke-width="1.4" stroke-linecap="butt"/>
+</svg>

@@ -1,0 +1,25 @@
+{
+  "name": "synthem",
+  "version": "1.0.0",
+  "description": "Blackboxes Synth'em - 3D Spatial Audio Granular Synth & Generative Constraint Studio",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/engine.test.js"
+  },
+  "keywords": [
+    "blackboxes",
+    "synthem",
+    "webgl",
+    "threejs",
+    "web-audio-api",
+    "granular-synth",
+    "spatial-audio",
+    "reciprocal-constraint-engine"
+  ],
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.180.0"
+  }
+}

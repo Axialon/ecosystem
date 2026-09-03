@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Blackboxes - Balanc'em 3D RPG Combat Meta & Game Economy Engine</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+  <script src="src/data/game_archetypes.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    :root, html {
+      --ff-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ff-mono: 'JetBrains Mono', monospace;
+      font-family: var(--ff-sans);
+      --panel-bg: rgba(15, 23, 42, 0.90);
+      --panel-border: rgba(239, 68, 68, 0.30);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-border: rgba(239, 68, 68, 0.25);
+    }
+    body, html {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: radial-gradient(circle at 60% 40%, #2e0d0d 0%, #170505 50%, #080101 100%);
+      color: var(--text-main); user-select: none;
+    }
+    #webgl-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    .glass-panel {
+      background: var(--panel-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--panel-border); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    .glass-card { background: var(--card-bg); border: 1px solid var(--card-border); }
+    .glass-card-sub { background: rgba(15, 23, 42, 0.65); border: 1px solid var(--card-border); }
+    .glass-button {
+      background: var(--card-bg); border: 1px solid var(--panel-border);
+      transition: all 0.15s ease; cursor: pointer;
+    }
+    .glass-button:hover { transform: translateY(-1px); filter: brightness(1.2); border-color: rgba(239, 68, 68, 0.6); }
+    .glass-button:active { transform: translateY(1px); }
+    .glass-button.active {
+      background: rgba(239, 68, 68, 0.25) !important;
+      border-color: rgba(239, 68, 68, 0.85) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+    }
+
+    /* Floating Windows - Box'em Standard: Resize + Drag + Move */
+    .floating-window {
+      position: absolute;
+      z-index: 40;
+      min-width: 320px;
+      min-height: 56px;
+      max-width: calc(100vw - 2rem);
+      max-height: calc(100vh - 5rem);
+      resize: both;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 50px 0 rgba(15, 23, 42, 0.45);
+    }
+    @media (max-width: 768px) {
+      .floating-window {
+        left: 0.75rem !important;
+        right: 0.75rem !important;
+        width: calc(100vw - 1.5rem) !important;
+        max-width: calc(100vw - 1.5rem) !important;
+        min-width: 0 !important;
+        top: 5.5rem !important;
+        max-height: calc(100dvh - 11.5rem) !important;
+        resize: none !important;
+      }
+    }
+    .floating-window.collapsed {
+      height: 54px !important;
+      min-height: 54px !important;
+      resize: none !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    .floating-window.collapsed .window-header {
+      height: 100% !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      border-bottom: none !important;
+      display: flex;
+      align-items: center;
+    }
+    .floating-window.collapsed .window-body,
+    .floating-window.collapsed .window-resizer {
+      display: none !important;
+    }
+    .window-header {
+      cursor: grab;
+      user-select: none;
+    }
+    .window-header:active {
+      cursor: grabbing;
+    }
+    .window-body {
+      overflow-y: auto;
+      flex: 1 1 auto;
+      padding-bottom: 0.75rem;
+      padding-right: 0.35rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(239, 68, 68, 0.35) transparent;
+    }
+    .window-resizer {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      cursor: nwse-resize;
+      pointer-events: auto;
+      opacity: 0.7;
+      color: rgba(239, 68, 68, 0.6);
+      transition: opacity 0.15s, color 0.15s;
+    }
+    .window-resizer:hover {
+      opacity: 1;
+      color: rgba(239, 68, 68, 1);
+    }
+
+    /* Visual Scrollbar Alignment - Box'em Design */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(239, 68, 68, 0.5);
+    }
+
+    /* Custom Branded Dropdown Menu */
+    .branded-dropdown { position: relative; display: inline-block; }
+    .branded-dropdown-menu {
+      position: absolute; top: calc(100% + 8px); left: 0; width: 280px;
+      max-height: 320px; overflow-y: auto; z-index: 60;
+      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(24px);
+      border: 1px solid rgba(239, 68, 68, 0.40); border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body class="dark">
+  <canvas id="webgl-canvas"></canvas>
+
+  <div id="webgl-fallback-notice" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/90 text-center">
+    <div class="max-w-md p-6 rounded-3xl glass-panel space-y-3">
+      <span class="material-symbols-outlined text-4xl text-rose-400">warning</span>
+      <h3 class="text-base font-bold text-white">WebGL Initialization Notice</h3>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Hardware WebGL rendering is unavailable. Balanc'em combat meta mathematical engines and Lua curve export remain active.
+      </p>
+      <button onclick="document.getElementById('webgl-fallback-notice').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-rose-500 text-white font-bold text-xs">
+        Continue in 2D Solver Mode
+      </button>
+    </div>
+  </div>
+
+  <!-- Top Left Brand Island (Box'em Standard) -->
+  <div id="brand-island" class="absolute top-3.5 left-4 z-40 pointer-events-auto">
+    <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg">
+      <a href="../index.html" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 to-red-700 flex items-center justify-center text-white shadow-lg shadow-rose-500/40 font-black text-sm font-mono hover:scale-105 transition-transform" title="Back to Ecosystem">
+        ⚔
+      </a>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none text-white font-mono">BALANC'EM</h1>
+          <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 rounded-md border border-rose-400/40">3D COMBAT META</span>
+        </div>
+        <p class="text-[10px] text-slate-300 font-mono">RPG Economy & Combat Balancing Engine</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Right Actions & Classes Island (Box'em Standard) -->
+  <div id="top-right-bar-container" class="absolute top-3.5 right-4 z-50 pointer-events-auto flex items-center gap-2">
+    <!-- Branded Custom Class Dropdown -->
+    <div class="branded-dropdown" id="dropdown-class-wrapper">
+      <button id="btn-dropdown-class" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-2 border border-rose-400/40 shadow-lg">
+        <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
+        <span id="current-class-name">Soulslike Boss / Heavy Knight</span>
+        <span class="material-symbols-outlined text-sm text-rose-400">expand_more</span>
+      </button>
+
+      <div id="dropdown-class-menu" class="branded-dropdown-menu hidden p-2 space-y-1"></div>
+    </div>
+
+    <!-- Top Right Actions Menu Button -->
+    <div class="relative">
+      <button id="btn-top-menu-trigger" class="glass-button px-3.5 py-2 rounded-2xl text-xs font-mono font-bold text-slate-200 flex items-center gap-1.5 border border-rose-500/40 hover:border-rose-400 shadow-lg" title="Open Quick Actions Menu">
+        <span class="material-symbols-outlined text-base text-rose-400">apps</span>
+        <span class="hidden sm:inline">Actions</span>
+        <span class="material-symbols-outlined text-sm text-slate-400 transition-transform duration-200" id="icon-top-menu-chevron">expand_more</span>
+      </button>
+
+      <!-- Actions Menu Popover Grid -->
+      <div id="top-menu-dropdown" class="hidden absolute top-12 right-0 w-72 sm:w-80 glass-panel p-3 rounded-2xl shadow-2xl border border-rose-500/40 backdrop-blur-2xl transition-all duration-200 origin-top-right z-50">
+        <div class="text-[10px] font-mono font-black uppercase text-slate-400 tracking-wider mb-2 px-1 flex items-center justify-between">
+          <span>Combat Meta Quick Actions</span>
+          <span class="text-[9px] text-rose-400 font-normal">Balanc'em Engine</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center font-mono">
+          <a href="showcase.html" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-amber-400 hover:border-amber-500 transition-all group" title="View 3D Scenario Showcase">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">stars</span>
+            <span class="text-[10px] font-black text-white">Showcase</span>
+          </a>
+          <button id="btn-open-class-matrix" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-rose-400 hover:border-rose-400 transition-all group" title="Combat Archetypes Library">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">shield</span>
+            <span class="text-[10px] font-black text-white">Classes</span>
+          </button>
+          <button id="btn-open-export" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-emerald-400 hover:border-emerald-400 transition-all group" title="Export Suite: .balance.json | .glb | Lua">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">file_download</span>
+            <span class="text-[10px] font-black text-white">Export</span>
+          </button>
+          <button id="btn-open-copilot-menu" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-indigo-400 hover:border-indigo-400 transition-all group" title="Combat Meta Copilot Advisory">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">psychology</span>
+            <span class="text-[10px] font-black text-white">Copilot</span>
+          </button>
+          <button id="btn-open-sponsor" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-pink-400 hover:border-pink-400 transition-all group" title="Supporters & Voluntary Backing Pool">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">volunteer_activism</span>
+            <span class="text-[10px] font-black text-white">Sponsors</span>
+          </button>
+          <button id="btn-cycle-shader" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-purple-400 hover:border-purple-400 transition-all group" title="Cycle Combat Polytope Shaders">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">palette</span>
+            <span class="text-[10px] font-black text-white">Shaders</span>
+          </button>
+          <button id="btn-open-config" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-teal-400 hover:border-teal-400 transition-all group" title="Unified Scaling & Geometry Suite">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">tune</span>
+            <span class="text-[10px] font-black text-white">Scaling</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Project Button -->
+    <button id="btn-sponsor-dialog" class="px-3.5 py-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-mono text-xs font-bold shadow-lg shadow-amber-500/30 flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all">
+      <span class="material-symbols-outlined text-sm text-pink-200">favorite</span>
+      <span class="hidden sm:inline">Back Project</span>
+    </button>
+  </div>
+
+  <!-- FLOATING WINDOW 1: Combat Vectors Controls (Box'em Standard) -->
+  <div id="win-controls" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 75px; left: 20px; width: 380px; height: 580px;">
+    <div class="window-header flex justify-between items-center pb-2.5 border-b border-rose-500/30 mb-2.5">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl text-rose-400 font-bold">tune</span>
+        <h3 class="text-sm font-black uppercase tracking-wider text-white font-mono">Combat Vectors</h3>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span id="combat-meta-badge" class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">STATUS: BALANCED</span>
+        <button class="win-collapse-btn text-slate-300 hover:text-white p-1 rounded-lg font-mono text-sm" title="Minimize Window">−</button>
+        <button class="win-close-btn text-slate-300 hover:text-white p-1 rounded-lg font-mono text-sm" title="Close Window">✕</button>
+      </div>
+    </div>
+
+    <div class="window-body space-y-3 pr-1">
+      <div>
+        <div class="text-[11px] font-mono uppercase text-slate-300 font-black mb-1 flex justify-between">
+          <span>Active Target Lock</span>
+          <span id="lock-target-text" class="text-rose-400 font-black">SOLVE FOR EHP</span>
+        </div>
+        <div class="grid grid-cols-6 gap-1">
+          <button id="lock-ehp-btn" class="lock-mode-btn py-1.5 px-0.5 rounded-xl text-[9px] font-mono font-black glass-button active" data-pillar="ehp">EHP</button>
+          <button id="lock-dps-btn" class="lock-mode-btn py-1.5 px-0.5 rounded-xl text-[9px] font-mono font-black glass-button" data-pillar="dps">DPS</button>
+          <button id="lock-resource-btn" class="lock-mode-btn py-1.5 px-0.5 rounded-xl text-[9px] font-mono font-black glass-button" data-pillar="resource">RES</button>
+          <button id="lock-skill-btn" class="lock-mode-btn py-1.5 px-0.5 rounded-xl text-[9px] font-mono font-black glass-button" data-pillar="skill">APM</button>
+          <button id="lock-mobility-btn" class="lock-mode-btn py-1.5 px-0.5 rounded-xl text-[9px] font-mono font-black glass-button" data-pillar="mobility">SPD</button>
+          <button id="lock-crit-btn" class="lock-mode-btn py-1.5 px-0.5 rounded-xl text-[9px] font-mono font-black glass-button" data-pillar="crit">CRIT</button>
+        </div>
+      </div>
+
+      <!-- Pillar 1: Damage Per Second (DPS) -->
+      <div class="space-y-1 glass-card-sub p-2.5 rounded-2xl" id="card-dps">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="font-bold flex items-center gap-1.5 text-sky-400">
+            <span class="w-3 h-3 rounded-full bg-sky-400"></span> Damage (DPS)
+          </span>
+          <input type="number" id="input-dps" class="w-16 px-1 py-0.5 text-right font-mono font-bold rounded bg-slate-800 text-white text-xs border border-slate-700" />
+        </div>
+        <input type="range" id="slider-dps" min="50" max="5000" step="25" class="w-full accent-sky-400 cursor-pointer" />
+      </div>
+
+      <!-- Pillar 2: Effective Health Pool (EHP) -->
+      <div class="space-y-1 glass-card-sub p-2.5 rounded-2xl" id="card-ehp">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="font-bold flex items-center gap-1.5 text-purple-400">
+            <span class="w-3 h-3 rounded-full bg-purple-400"></span> Armor (EHP)
+          </span>
+          <input type="number" id="input-ehp" class="w-20 px-1 py-0.5 text-right font-mono font-bold rounded bg-slate-800 text-white text-xs border border-slate-700" />
+        </div>
+        <input type="range" id="slider-ehp" min="200" max="50000" step="200" class="w-full accent-purple-400 cursor-pointer" />
+      </div>
+
+      <!-- Pillar 3: Resource / Cooldown Cost -->
+      <div class="space-y-1 glass-card-sub p-2.5 rounded-2xl" id="card-resource">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="font-bold flex items-center gap-1.5 text-emerald-400">
+            <span class="w-3 h-3 rounded-full bg-emerald-400"></span> Cooldown Cost
+          </span>
+          <input type="number" id="input-resource" class="w-16 px-1 py-0.5 text-right font-mono font-bold rounded bg-slate-800 text-white text-xs border border-slate-700" />
+        </div>
+        <input type="range" id="slider-resource" min="10" max="250" step="5" class="w-full accent-emerald-400 cursor-pointer" />
+      </div>
+
+      <!-- Pillar 4: Skill Ceiling (APM) -->
+      <div class="space-y-1 glass-card-sub p-2.5 rounded-2xl" id="card-skill">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="font-bold flex items-center gap-1.5 text-amber-400">
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span> Skill Ceiling (APM)
+          </span>
+          <input type="number" id="input-skill" class="w-16 px-1 py-0.5 text-right font-mono font-bold rounded bg-slate-800 text-white text-xs border border-slate-700" />
+        </div>
+        <input type="range" id="slider-skill" min="20" max="400" step="5" class="w-full accent-amber-400 cursor-pointer" />
+      </div>
+
+      <!-- Pillar 5: Mobility Speed (Units/s) -->
+      <div class="space-y-1 glass-card-sub p-2.5 rounded-2xl" id="card-mobility">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="font-bold flex items-center gap-1.5 text-cyan-400">
+            <span class="w-3 h-3 rounded-full bg-cyan-400"></span> Mobility (Units/s)
+          </span>
+          <input type="number" id="input-mobility" class="w-16 px-1 py-0.5 text-right font-mono font-bold rounded bg-slate-800 text-white text-xs border border-slate-700" />
+        </div>
+        <input type="range" id="slider-mobility" min="10" max="100" step="1" class="w-full accent-cyan-400 cursor-pointer" />
+      </div>
+
+      <!-- Pillar 6: Crit Multiplier (x) -->
+      <div class="space-y-1 glass-card-sub p-2.5 rounded-2xl" id="card-crit">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="font-bold flex items-center gap-1.5 text-rose-400">
+            <span class="w-3 h-3 rounded-full bg-rose-400"></span> Crit Multiplier (x)
+          </span>
+          <input type="number" id="input-crit" step="0.1" class="w-16 px-1 py-0.5 text-right font-mono font-bold rounded bg-slate-800 text-white text-xs border border-slate-700" />
+        </div>
+        <input type="range" id="slider-crit" min="1.0" max="4.0" step="0.1" class="w-full accent-rose-400 cursor-pointer" />
+      </div>
+
+      <!-- Combat Polytope Shaders Selector -->
+      <div class="space-y-1.5 pt-1">
+        <span class="text-xs font-mono font-bold text-slate-300">Combat Polytope Shaders (20 Tiers)</span>
+        <div class="grid grid-cols-2 gap-1 text-[11px] font-mono" id="shader-grid"></div>
+      </div>
+    </div>
+    <svg class="window-resizer" viewBox="0 0 16 16" fill="currentColor">
+      <circle cx="12" cy="12" r="1.5" /><circle cx="8" cy="12" r="1.5" /><circle cx="12" cy="8" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="8" cy="8" r="1.5" /><circle cx="12" cy="4" r="1.5" />
+    </svg>
+  </div>
+
+  <!-- FLOATING WINDOW 2: Combat Meta Advisory Copilot (Box'em Standard) -->
+  <div id="win-copilot" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 75px; right: 20px; width: 380px; height: 580px;">
+    <div class="window-header flex justify-between items-center pb-2.5 border-b border-rose-500/30 mb-2.5">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl text-rose-400 font-bold">psychology</span>
+        <h3 class="text-sm font-black uppercase tracking-wider text-white font-mono">Combat Meta Copilot</h3>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button class="win-collapse-btn text-slate-300 hover:text-white p-1 rounded-lg font-mono text-sm" title="Minimize Window">−</button>
+        <button class="win-close-btn text-slate-300 hover:text-white p-1 rounded-lg font-mono text-sm" title="Close Window">✕</button>
+      </div>
+    </div>
+
+    <div class="window-body space-y-3 pr-1 flex flex-col justify-between">
+      <div class="space-y-2.5">
+        <div class="p-3.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 text-xs leading-relaxed shadow-sm">
+          <div class="flex justify-between items-center mb-1 text-[10px] font-mono font-black text-rose-300">
+            <span>METAGAME ENCOUNTER ADVISORY</span>
+            <button id="btn-copy-pitch" class="hover:text-rose-200 text-rose-400" title="Copy script"><span class="material-symbols-outlined text-xs">content_copy</span></button>
+          </div>
+          <p id="copilot-pitch-text" class="text-rose-100 font-mono text-xs leading-relaxed font-bold">
+            "Heavy Knight sits at 18.2s TTK with 28,000 EHP, demanding high burst damage counters while rewarding defensive stamina."
+          </p>
+        </div>
+
+        <div id="copilot-status-badge" class="p-3 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 text-xs font-mono font-black flex items-center gap-2">
+          <span class="material-symbols-outlined text-base text-emerald-400 font-bold">balance</span>
+          <span id="copilot-status-text" class="text-xs font-mono font-black">METAGAME EQUILIBRIUM • BALANCED</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+            <div class="text-[10px] font-mono text-slate-400 uppercase font-bold">DPS / EHP Ratio</div>
+            <div id="metric-ratio" class="text-base font-black text-rose-400 font-mono mt-0.5">0.05</div>
+          </div>
+          <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+            <div class="text-[10px] font-mono text-slate-400 uppercase font-bold">Effective TTK</div>
+            <div id="metric-ttk" class="text-base font-black text-purple-400 font-mono mt-0.5">18.2s</div>
+          </div>
+          <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+            <div class="text-[10px] font-mono text-slate-400 uppercase font-bold">APM Demand</div>
+            <div id="metric-apm" class="text-base font-black text-amber-400 font-mono mt-0.5">85 APM</div>
+          </div>
+          <div class="p-2.5 rounded-2xl glass-card-sub text-center">
+            <div class="text-[10px] font-mono text-slate-400 uppercase font-bold">Burst Crit</div>
+            <div id="metric-burst" class="text-base font-black text-cyan-400 font-mono mt-0.5">1.8x</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button id="btn-auto-optimize" class="w-full py-2.5 px-3 rounded-xl text-xs font-mono font-black glass-button text-rose-200 flex items-center justify-center gap-2 border-rose-400/40 hover:bg-rose-500/20 shadow-md">
+          <span class="material-symbols-outlined text-base text-rose-400 font-bold">auto_awesome</span> Auto-Balance Metagame
+        </button>
+      </div>
+    </div>
+    <svg class="window-resizer" viewBox="0 0 16 16" fill="currentColor">
+      <circle cx="12" cy="12" r="1.5" /><circle cx="8" cy="12" r="1.5" /><circle cx="12" cy="8" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="8" cy="8" r="1.5" /><circle cx="12" cy="4" r="1.5" />
+    </svg>
+  </div>
+
+  <!-- Bottom Floating Dock Bar (Box'em Standard Tray) -->
+  <footer class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2.5 rounded-2xl glass-panel shadow-2xl max-w-[94vw] overflow-x-auto scrollbar-none whitespace-nowrap">
+    <button id="btn-open-class-dock" class="glass-button px-3.5 py-2 rounded-xl text-xs font-mono font-black text-rose-400 flex items-center gap-1.5 whitespace-nowrap shadow-md flex-shrink-0">
+      <span class="material-symbols-outlined text-base font-bold">swords</span>
+      <span>20+ Combat Archetypes</span>
+    </button>
+
+    <div class="h-6 w-[2px] bg-slate-700/50 mx-1 flex-shrink-0"></div>
+
+    <button id="btn-reset-windows" class="glass-button p-2 rounded-xl text-xs font-mono font-black text-slate-300 flex items-center flex-shrink-0" title="Snap Back & Reset Window Layout">
+      <span class="material-symbols-outlined text-base">dashboard_customize</span>
+    </button>
+    <button id="toggle-win-controls" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
+      <span class="material-symbols-outlined text-base text-rose-400 font-bold">tune</span> Controls
+    </button>
+    <button id="toggle-win-copilot" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
+      <span class="material-symbols-outlined text-base text-indigo-400 font-bold">psychology</span> Copilot
+    </button>
+  </footer>
+
+  <!-- Bottom-Right Live Cumulative Supporter & Donation Tracker (Across All 6 Engines) -->
+  <div id="live-donation-tracker" class="fixed bottom-4 right-4 z-50 pointer-events-auto transition-all duration-200 hidden lg:block">
+    <div class="glass-panel px-3.5 py-2.5 rounded-2xl flex items-center gap-2.5 shadow-lg cursor-pointer select-none hover:border-amber-500 transition-all border border-amber-500/30">
+      <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-lg font-bold">volunteer_activism</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-xs font-mono font-black text-slate-100 uppercase">Backing Pool</span>
+          <span id="tracker-amount-badge" class="text-xs font-mono font-black text-amber-400">$485 USD</span>
+        </div>
+        <div id="tracker-backer-count" class="text-[10px] text-slate-400 font-mono font-bold">Live 6-Engine Pool • 19 Backers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Submodule Detail Card (Integrated Model-Scaled 1.3x Font, Dismissable) -->
+  <div id="submodule-detail-card" class="hidden fixed z-50 glass-panel px-5 py-4 rounded-3xl border-2 border-rose-400 font-mono w-[350px] shadow-2xl pointer-events-auto transition-transform duration-150" style="backdrop-filter: blur(24px); transform: translate(-50%, -100%); transform-origin: bottom center;">
+    <div class="flex items-center justify-between gap-2 pb-2 border-b border-white/20 mb-2">
+      <div class="flex items-center gap-2.5 overflow-hidden">
+        <span id="detail-dot" class="w-3.5 h-3.5 rounded-full bg-emerald-400 shrink-0 animate-pulse"></span>
+        <strong id="detail-title" class="text-white text-sm font-black truncate">Combat Ability Detail</strong>
+      </div>
+      <button id="btn-close-detail" class="text-slate-400 hover:text-white p-1 rounded-lg shrink-0">
+        <span class="material-symbols-outlined text-base">close</span>
+      </button>
+    </div>
+    <div id="detail-category" class="text-xs text-rose-300 font-bold uppercase">COMBAT SPEC</div>
+    <div id="detail-metric" class="text-sm font-bold text-slate-200 mt-0.5">Power Score: 92/100</div>
+    <div id="detail-status" class="text-xs font-black text-emerald-400 mt-1">ACTIVE • IN COMBAT ROTATION</div>
+    <div class="text-[12px] text-slate-400 mt-1.5 font-bold">Click outside or [✕] to dismiss</div>
+  </div>
+
+  <!-- MODAL: Unified Visual, Node & Sub-Node Scaling Suite (Box'em Standard) -->
+  <div id="modal-config" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-6 shadow-2xl max-h-[88vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-white/20">
+        <div>
+          <h3 class="text-base font-black uppercase tracking-wider text-white font-mono flex items-center gap-2">
+            <span class="material-symbols-outlined text-rose-400">tune</span> Scaling & Geometry Suite
+          </h3>
+          <p class="text-xs text-slate-300 font-mono mt-0.5 font-bold">Independent fine-grain control for nodes, subnodes, tags & cards</p>
+        </div>
+        <button id="btn-close-config" class="text-slate-400 hover:text-white p-1.5 rounded-xl"><span class="material-symbols-outlined text-xl">close</span></button>
+      </div>
+
+      <div class="space-y-3 font-mono">
+        <!-- Slider 1: Global UI Font Size -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-rose-500/20">
+          <div class="flex justify-between text-xs font-mono">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-rose-400 font-bold">text_fields</span>
+              <span>1. Global UI Font Size</span>
+            </span>
+            <span id="font-scale-display" class="font-black text-rose-300">1.00x</span>
+          </div>
+          <input type="range" id="font-scale-slider" min="0.70" max="1.50" step="0.05" value="1.00" class="w-full accent-rose-400 cursor-pointer">
+        </div>
+
+        <!-- Slider 2: 3D Graph Node Models Size -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-rose-500/20">
+          <div class="flex justify-between text-xs font-mono">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-rose-400 font-bold">diamond</span>
+              <span>2. 3D Node Models Size</span>
+            </span>
+            <span id="node-scale-display" class="font-black text-rose-300">1.00x</span>
+          </div>
+          <input type="range" id="node-scale-slider" min="0.40" max="2.20" step="0.05" value="1.00" class="w-full accent-rose-400 cursor-pointer">
+          <div class="text-[10px] text-slate-400">Scales the primary combat attribute vertices & polytope envelope.</div>
+        </div>
+
+        <!-- Slider 3: Inside Sub-Node Objects Size -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-amber-500/20">
+          <div class="flex justify-between text-xs font-mono">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-amber-400 font-bold">interests</span>
+              <span>3. Inside Sub-Node Objects Size</span>
+            </span>
+            <span id="subnode-scale-display" class="font-black text-amber-300">1.00x</span>
+          </div>
+          <input type="range" id="subnode-scale-slider" min="0.40" max="2.20" step="0.05" value="1.00" class="w-full accent-amber-400 cursor-pointer">
+          <div class="text-[10px] text-slate-400">Scales floating ability spell & weapon shards inside the balancing arena.</div>
+        </div>
+
+        <!-- Slider 4: 3D Hover Tag Billboard Size -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-purple-500/20">
+          <div class="flex justify-between text-xs font-mono">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-purple-400 font-bold">label</span>
+              <span>4. 3D Hover Tag Billboard Size</span>
+            </span>
+            <span id="spatial-font-scale-display" class="font-black text-purple-300">1.00x</span>
+          </div>
+          <input type="range" id="spatial-font-scale-slider" min="0.50" max="2.00" step="0.05" value="1.00" class="w-full accent-purple-400 cursor-pointer">
+          <div class="text-[10px] text-slate-400">Scales the 3D HUD vector tags in physical coordinates.</div>
+        </div>
+
+        <!-- Slider 5: Pop-Up Detail Card Size -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-emerald-500/20">
+          <div class="flex justify-between text-xs font-mono">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-emerald-400 font-bold">call_to_action</span>
+              <span>5. Pop-Up Detail Card Size</span>
+            </span>
+            <span id="detail-card-scale-display" class="font-black text-emerald-300">1.00x</span>
+          </div>
+          <input type="range" id="detail-card-scale-slider" min="0.60" max="1.60" step="0.05" value="1.00" class="w-full accent-emerald-400 cursor-pointer">
+          <div class="text-[10px] text-slate-400">Scales interactive combat ability detail pop-up cards.</div>
+        </div>
+
+        <!-- Control 6: Node Models Geometry Type -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-rose-500/20">
+          <div class="flex justify-between text-xs font-mono mb-1">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-rose-400 font-bold">category</span>
+              <span>6. Primary Node Geometry Model</span>
+            </span>
+          </div>
+          <select id="select-node-geometry" class="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 text-white border border-rose-500/40 cursor-pointer">
+            <option value="octahedron" selected>Octahedron (Combat Crystal)</option>
+            <option value="dodecahedron">Dodecahedron (Balancing Polytope)</option>
+            <option value="icosahedron">Icosahedron (Faceted Armor Gem)</option>
+            <option value="box">Hypercube (Hitbox Matrix)</option>
+            <option value="sphere">Sphere (Smooth Mana Core)</option>
+            <option value="tetrahedron">Tetrahedron (Dual Flux Apex)</option>
+          </select>
+        </div>
+
+        <!-- Control 7: Sub-Node Inside Objects Geometry Type -->
+        <div class="space-y-1 p-3 rounded-2xl glass-card-sub border border-amber-500/20">
+          <div class="flex justify-between text-xs font-mono mb-1">
+            <span class="text-slate-100 font-black flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-amber-400 font-bold">token</span>
+              <span>7. Inside Sub-Node Geometry Model</span>
+            </span>
+          </div>
+          <select id="select-subnode-geometry" class="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 text-white border border-amber-500/40 cursor-pointer">
+            <option value="octahedron" selected>Octahedron (Micro Crystal)</option>
+            <option value="icosahedron">Icosahedron (Geodesic Gem)</option>
+            <option value="sphere">Sphere (Ability Orb)</option>
+            <option value="box">Cube (Micro Module)</option>
+            <option value="tetrahedron">Tetrahedron (Pyramid Seed)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-export" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="w-full max-w-lg glass-panel p-6 rounded-3xl space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-500/30 pb-3">
+        <h3 class="text-base font-black font-mono text-white">BALANC'EM EXPORT SUITE</h3>
+        <button class="btn-close-modal text-slate-400 hover:text-white font-mono text-lg">✕</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+        <button id="btn-export-json" class="p-3 rounded-xl glass-button text-left font-bold text-rose-400 space-y-1">
+          <div>📦 .balance.json</div>
+          <div class="text-[10px] text-slate-300">GDD balance curve schema</div>
+        </button>
+        <button id="btn-export-glb" class="p-3 rounded-xl glass-button text-left font-bold text-amber-400 space-y-1">
+          <div>💎 Standalone 3D .glb</div>
+          <div class="text-[10px] text-slate-300">Combat polytope asset</div>
+        </button>
+        <button id="btn-export-lua" class="p-3 rounded-xl glass-button text-left font-bold text-sky-400 space-y-1">
+          <div>📜 Lua Combat Script</div>
+          <div class="text-[10px] text-slate-300">Unity / Unreal tuning curve</div>
+        </button>
+        <button id="btn-export-markdown" class="p-3 rounded-xl glass-button text-left font-bold text-emerald-400 space-y-1">
+          <div>📝 Game Design Doc (GDD)</div>
+          <div class="text-[10px] text-slate-300">Markdown balance spec</div>
+        </button>
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs font-mono font-bold text-slate-300">1-Line Responsive &lt;iframe&gt; Embed</label>
+        <textarea id="embed-code-box" readonly class="w-full h-16 p-2 rounded-xl bg-slate-950 border border-slate-700 font-mono text-[10px] text-rose-300 resize-none"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-sponsor" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="w-full max-w-md glass-panel p-6 rounded-3xl space-y-4 shadow-2xl text-center">
+      <div class="flex items-center justify-between border-b border-slate-500/30 pb-2">
+        <h3 class="text-sm font-black font-mono text-white">OPEN GAME DEV SPONSORSHIP</h3>
+        <button class="btn-close-modal text-slate-400 hover:text-white font-mono text-lg">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-300 font-sans">
+        Balanc'em is 100% free for indie game developers. Sponsors permanently unlock Damascus Flame and Volcanic Rage combat shaders.
+      </p>
+
+      <div class="w-full h-36 rounded-2xl bg-slate-950 border border-rose-400/40 overflow-hidden relative">
+        <canvas id="donation-3d-canvas" class="w-full h-full"></canvas>
+        <div id="hologram-label" class="absolute bottom-2 left-0 right-0 text-[10px] font-mono text-amber-400 font-bold">
+          Tier 1 Combat Sponsor ($5+)
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs font-mono font-bold text-slate-200">
+          <span>Contribution:</span>
+          <span id="sponsor-amount-label" class="text-rose-400 font-extrabold">$15</span>
+        </div>
+        <input type="range" id="slider-sponsor" min="5" max="100" step="5" value="15" class="w-full accent-rose-400" />
+      </div>
+
+      <button id="btn-claim-backer" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-mono font-black text-xs shadow-lg shadow-rose-500/30 hover:brightness-110">
+        Unlock Combat Perks (Simulate)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const ARCHETYPES = window.BALANCEM_ARCHETYPES || [];
+    let currentArch = ARCHETYPES[0];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramArch = urlParams.get('arch');
+    if (paramArch) {
+      const matched = ARCHETYPES.find(a => a.id === paramArch);
+      if (matched) currentArch = matched;
+    }
+
+    const state = {
+      damagePerSecondDps: Math.max(50, Math.min(5000, Number(urlParams.get('dps')) || currentArch.defaults.damagePerSecondDps)),
+      effectiveHealthPoolEhp: Math.max(200, Math.min(50000, Number(urlParams.get('ehp')) || currentArch.defaults.effectiveHealthPoolEhp)),
+      resourceCostCooldown: Math.max(10, Math.min(250, Number(urlParams.get('resource')) || currentArch.defaults.resourceCostCooldown)),
+      skillCeilingApm: Math.max(20, Math.min(400, Number(urlParams.get('skill')) || currentArch.defaults.skillCeilingApm)),
+      mobilitySpeed: Math.max(10, Math.min(100, Number(urlParams.get('mobility')) || currentArch.defaults.mobilitySpeed)),
+      critMultiplier: Math.max(1.0, Math.min(4.0, Number(urlParams.get('crit')) || currentArch.defaults.criticalMultiplier || currentArch.defaults.critMultiplier || 1.5)),
+      lockMode: 'ehp'
+    };
+
+    try {
+      const saved = localStorage.getItem('balancem_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed.damagePerSecondDps === 'number') {
+          Object.assign(state, parsed);
+        }
+      }
+    } catch (e) {}
+
+    const SHADERS = {
+      damascus: { name: 'Damascus Flame', color: 0xbe123c, emissive: 0xf43f5e, roughness: 0.10, transmission: 0.65, tier: 'Free' },
+      volcanic: { name: 'Volcanic Rage', color: 0xc2410c, emissive: 0xf97316, roughness: 0.14, transmission: 0.55, tier: 'Free' },
+      frosted: { name: 'Frosted Armor', color: 0x0284c7, emissive: 0x38bdf8, roughness: 0.12, transmission: 0.70, tier: 'Tier 1' },
+      voidraid: { name: 'Void Raid Boss', color: 0x4c1d95, emissive: 0xc084fc, roughness: 0.05, transmission: 0.75, tier: 'Tier 2' }
+    };
+
+    // 6 Directional Vectors
+    const NODE_DIRS = {
+      dps: new THREE.Vector3(0, 1.8, 0.2).normalize(),
+      ehp: new THREE.Vector3(1.7, 0.4, 0.6).normalize(),
+      skill: new THREE.Vector3(-1.7, 0.4, 0.6).normalize(),
+      resource: new THREE.Vector3(0, -1.8, -0.4).normalize(),
+      mobility: new THREE.Vector3(-1.4, -1.0, -0.6).normalize(),
+      crit: new THREE.Vector3(1.4, -1.0, -0.6).normalize()
+    };
+
+    const NODE_CONFIGS = {
+      dps: { name: 'Damage (DPS)', color: 0x0284c7, emissive: 0x38bdf8, hex: '#38bdf8' },
+      ehp: { name: 'Armor (EHP)', color: 0x7c3aed, emissive: 0xa78bfa, hex: '#a78bfa' },
+      skill: { name: 'Skill (APM)', color: 0xd97706, emissive: 0xfbbf24, hex: '#fbbf24' },
+      resource: { name: 'Cooldown Cost', color: 0x059669, emissive: 0x34d399, hex: '#34d399' },
+      mobility: { name: 'Mobility Speed', color: 0x0891b2, emissive: 0x22d3ee, hex: '#22d3ee' },
+      crit: { name: 'Crit Multiplier', color: 0xe11d48, emissive: 0xfb7185, hex: '#fb7185' }
+    };
+
+    let scene, camera, renderer, controls;
+    let systemGroup, corePolyGroup, coreHullMesh, envelopeGroup;
+    let nodeGroups = {}, nodeBillboards = {}, envelopeStruts = [];
+    let submoduleGroup, submoduleMeshes = [];
+    let corePolyGeo;
+
+    function createBillboardSprite(title, colorHexStr) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 140;
+      const ctx = canvas.getContext('2d');
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+
+      const redraw = (textVal) => {
+        ctx.clearRect(0, 0, 512, 140);
+        ctx.fillStyle = 'rgba(11, 19, 36, 0.94)';
+        ctx.strokeStyle = colorHexStr;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.roundRect(8, 8, 496, 124, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = colorHexStr;
+        ctx.beginPath();
+        ctx.arc(44, 42, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = colorHexStr;
+        ctx.font = 'bold 30px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(title, 72, 42);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 42px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(textVal, 72, 92);
+
+        texture.needsUpdate = true;
+      };
+
+      const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false, depthWrite: false });
+      const sprite = new THREE.Sprite(spriteMat);
+      sprite.renderOrder = 9999;
+      sprite.scale.set(1.45, 0.40, 1);
+      sprite.userData = { redraw };
+      return sprite;
+    }
+
+    try {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 1.2, 8.2);
+
+      renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-canvas'), antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.addEventListener('start', () => { triggerInteractionPause(); });
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.95));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.7);
+      keyLight.position.set(6, 7, 5);
+      scene.add(keyLight);
+      const fillLight = new THREE.DirectionalLight(0xef4444, 1.4);
+      fillLight.position.set(-6, -2, -4);
+      scene.add(fillLight);
+      const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
+      rimLight.position.set(0, 6, -4);
+      scene.add(rimLight);
+
+      systemGroup = new THREE.Group();
+      scene.add(systemGroup);
+
+      corePolyGroup = new THREE.Group();
+      systemGroup.add(corePolyGroup);
+
+      // 6-Apex Combat Polytope Volume (8 triangles spanning 6 apexes)
+      corePolyGeo = new THREE.BufferGeometry();
+      const posArray = new Float32Array(8 * 3 * 3);
+      corePolyGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+      const coreMat = new THREE.MeshPhysicalMaterial({
+        color: SHADERS.damascus.color,
+        emissive: SHADERS.damascus.emissive,
+        emissiveIntensity: 0.35,
+        roughness: 0.05,
+        transmission: 0.92,
+        thickness: 1.2,
+        transparent: true,
+        opacity: 0.85,
+        ior: 1.75,
+        clearcoat: 1.0,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        depthTest: true
+      });
+      coreHullMesh = new THREE.Mesh(corePolyGeo, coreMat);
+      coreHullMesh.renderOrder = 10;
+      corePolyGroup.add(coreHullMesh);
+
+      // 6 Reactive Outer Nodes
+      Object.entries(NODE_CONFIGS).forEach(([pillarKey, cfg]) => {
+        const nGroup = new THREE.Group();
+        nGroup.name = `node-${pillarKey}`;
+        nGroup.userData = { pillarKey, isNode: true };
+
+        const geo = new THREE.OctahedronGeometry(0.28, 0);
+        const mat = new THREE.MeshStandardMaterial({ color: cfg.color, emissive: cfg.emissive, emissiveIntensity: 0.85, roughness: 0.1, metalness: 0.7 });
+        const mesh = new THREE.Mesh(geo, mat);
+        nGroup.add(mesh);
+        mesh.add(new THREE.LineSegments(new THREE.WireframeGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 })));
+
+        const innerGeo = new THREE.OctahedronGeometry(0.13, 0);
+        const innerMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const innerJewel = new THREE.Mesh(innerGeo, innerMat);
+        nGroup.add(innerJewel);
+        nGroup.userData.mesh = mesh;
+        nGroup.userData.innerJewel = innerJewel;
+
+        const hitGeo = new THREE.SphereGeometry(0.65, 12, 12);
+        const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001, depthWrite: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.userData = { pillarKey, isHitSphere: true };
+        nGroup.add(hitMesh);
+
+        systemGroup.add(nGroup);
+        nodeGroups[pillarKey] = nGroup;
+
+        const billboard = createBillboardSprite(cfg.name, cfg.hex);
+        systemGroup.add(billboard);
+        nodeBillboards[pillarKey] = billboard;
+      });
+
+      // Subtle Sleek Grey Cylindrical Struts Connecting Outer Nodes (Box'em Standard)
+      envelopeGroup = new THREE.Group();
+      envelopeGroup.renderOrder = 1;
+      systemGroup.add(envelopeGroup);
+
+      const strutGeo = new THREE.CylinderGeometry(0.006, 0.006, 1, 16);
+      const strutMat = new THREE.MeshBasicMaterial({
+        color: 0x64748b,
+        transparent: true,
+        opacity: 0.40,
+        depthWrite: false,
+        depthTest: true
+      });
+
+      envelopeStruts = [];
+      const outerPairs = [
+        ['dps', 'ehp'],
+        ['dps', 'crit'],
+        ['dps', 'mobility'],
+        ['dps', 'skill'],
+        ['resource', 'ehp'],
+        ['resource', 'crit'],
+        ['resource', 'mobility'],
+        ['resource', 'skill'],
+        ['ehp', 'crit'],
+        ['crit', 'mobility'],
+        ['mobility', 'skill'],
+        ['skill', 'ehp']
+      ];
+
+      outerPairs.forEach(([k1, k2]) => {
+        const strutMesh = new THREE.Mesh(strutGeo, strutMat);
+        strutMesh.renderOrder = 1;
+        strutMesh.userData = { k1, k2 };
+        envelopeGroup.add(strutMesh);
+        envelopeStruts.push(strutMesh);
+      });
+
+      submoduleGroup = new THREE.Group();
+      submoduleGroup.renderOrder = 2;
+      systemGroup.add(submoduleGroup);
+    } catch (e) {
+      document.getElementById('webgl-fallback-notice').classList.remove('hidden');
+    }
+
+    function rebuildSubmoduleAbilities() {
+      if (!submoduleGroup) return;
+      while (submoduleGroup.children.length > 0) submoduleGroup.remove(submoduleGroup.children[0]);
+      submoduleMeshes = [];
+
+      const mods = currentArch.submodules || [];
+      const count = mods.length;
+      const safeRadius = 0.60;
+
+      mods.forEach((mod, idx) => {
+        const theta = (idx / Math.max(1, count)) * Math.PI * 2;
+        const x = Math.cos(theta) * safeRadius;
+        const y = Math.sin(theta * 2) * 0.22;
+        const z = Math.sin(theta) * safeRadius;
+
+        const gemGeo = new THREE.OctahedronGeometry(0.16, 0);
+        const gemMat = new THREE.MeshStandardMaterial({
+          color: 0xef4444,
+          emissive: 0xbe123c,
+          emissiveIntensity: 0.95,
+          metalness: 0.80,
+          roughness: 0.20,
+          depthWrite: false,
+          depthTest: true
+        });
+        const gemMesh = new THREE.Mesh(gemGeo, gemMat);
+        gemMesh.renderOrder = 2;
+        gemMesh.position.set(x, y, z);
+        gemMesh.userData = { ...mod, idx, isSubmodule: true, baseColor: 0xef4444, isActive: true };
+
+        submoduleGroup.add(gemMesh);
+        submoduleMeshes.push(gemMesh);
+      });
+    }
+
+    // --- RECIPROCAL COMBAT POWER BUDGET SOLVER ---
+    function solveReciprocalTradeoffs(changedPillar) {
+      const locked = state.lockMode;
+
+      if (changedPillar === 'dps') {
+        const dNorm = (state.damagePerSecondDps - 50) / (5000 - 50);
+        if (locked !== 'ehp') state.effectiveHealthPoolEhp = Math.max(200, Math.round(42000 - Math.pow(dNorm, 0.7) * 39500));
+        if (locked !== 'skill') state.skillCeilingApm = Math.round(40 + dNorm * 330);
+        if (locked !== 'crit') state.critMultiplier = Number((1.2 + dNorm * 2.6).toFixed(1));
+        if (locked !== 'resource') state.resourceCostCooldown = Math.round(20 + dNorm * 210);
+        if (locked !== 'mobility') state.mobilitySpeed = Math.round(20 + Math.sin(dNorm * Math.PI) * 65 + dNorm * 15);
+      } else if (changedPillar === 'ehp') {
+        const eNorm = (state.effectiveHealthPoolEhp - 200) / (50000 - 200);
+        if (locked !== 'dps') state.damagePerSecondDps = Math.max(50, Math.round(4200 - Math.pow(eNorm, 0.75) * 3950));
+        if (locked !== 'mobility') state.mobilitySpeed = Math.max(10, Math.round(90 - eNorm * 72));
+        if (locked !== 'skill') state.skillCeilingApm = Math.max(20, Math.round(320 - eNorm * 250));
+        if (locked !== 'crit') state.critMultiplier = Number(Math.max(1.0, 3.5 - eNorm * 2.3).toFixed(1));
+        if (locked !== 'resource') state.resourceCostCooldown = Math.round(40 + eNorm * 180);
+      } else if (changedPillar === 'mobility') {
+        const mNorm = (state.mobilitySpeed - 10) / (100 - 10);
+        if (locked !== 'ehp') state.effectiveHealthPoolEhp = Math.max(200, Math.round(38000 - mNorm * 34000));
+        if (locked !== 'dps') state.damagePerSecondDps = Math.round(300 + mNorm * 3800);
+        if (locked !== 'skill') state.skillCeilingApm = Math.round(50 + mNorm * 310);
+        if (locked !== 'crit') state.critMultiplier = Number((1.2 + mNorm * 2.4).toFixed(1));
+      } else if (changedPillar === 'skill') {
+        const sNorm = (state.skillCeilingApm - 20) / (400 - 20);
+        if (locked !== 'dps') state.damagePerSecondDps = Math.round(200 + Math.pow(sNorm, 1.2) * 4500);
+        if (locked !== 'crit') state.critMultiplier = Number((1.1 + sNorm * 2.7).toFixed(1));
+        if (locked !== 'mobility') state.mobilitySpeed = Math.round(20 + sNorm * 75);
+        if (locked !== 'ehp') state.effectiveHealthPoolEhp = Math.max(200, Math.round(35000 - sNorm * 31000));
+      } else if (changedPillar === 'crit') {
+        const cNorm = (state.critMultiplier - 1.0) / (4.0 - 1.0);
+        if (locked !== 'dps') state.damagePerSecondDps = Math.round(400 + cNorm * 3900);
+        if (locked !== 'skill') state.skillCeilingApm = Math.round(60 + cNorm * 300);
+        if (locked !== 'ehp') state.effectiveHealthPoolEhp = Math.max(200, Math.round(32000 - cNorm * 27000));
+      } else if (changedPillar === 'resource') {
+        const rNorm = (state.resourceCostCooldown - 10) / (250 - 10);
+        if (locked !== 'dps') state.damagePerSecondDps = Math.round(300 + rNorm * 4200);
+      }
+    }
+
+    // --- DYNAMIC 3D SPATIAL REACTION & POLYTOPE MORPHING ---
+    function update3DSpatialReaction() {
+      const rads = {
+        dps: 0.7 + ((state.damagePerSecondDps - 50) / (5000 - 50)) * 1.8,
+        ehp: 0.7 + ((state.effectiveHealthPoolEhp - 200) / (50000 - 200)) * 1.8,
+        skill: 0.7 + ((state.skillCeilingApm - 20) / (400 - 20)) * 1.7,
+        resource: 0.7 + ((state.resourceCostCooldown - 10) / (250 - 10)) * 1.7,
+        mobility: 0.7 + ((state.mobilitySpeed - 10) / (100 - 10)) * 1.7,
+        crit: 0.7 + ((state.critMultiplier - 1.0) / (4.0 - 1.0)) * 1.7
+      };
+
+      const vDPS = NODE_DIRS.dps.clone().multiplyScalar(rads.dps);
+      const vEHP = NODE_DIRS.ehp.clone().multiplyScalar(rads.ehp);
+      const vSkl = NODE_DIRS.skill.clone().multiplyScalar(rads.skill);
+      const vRes = NODE_DIRS.resource.clone().multiplyScalar(rads.resource);
+      const vMob = NODE_DIRS.mobility.clone().multiplyScalar(rads.mobility);
+      const vCrt = NODE_DIRS.crit.clone().multiplyScalar(rads.crit);
+
+      if (corePolyGeo) {
+        const p = corePolyGeo.attributes.position.array;
+        const setTri = (offset, p1, p2, p3) => {
+          p[offset]   = p1.x; p[offset+1] = p1.y; p[offset+2] = p1.z;
+          p[offset+3] = p2.x; p[offset+4] = p2.y; p[offset+5] = p2.z;
+          p[offset+6] = p3.x; p[offset+7] = p3.y; p[offset+8] = p3.z;
+        };
+
+        // 8 Triangles forming a closed 6-vertex combat power polytope volume hull
+        setTri(0,  vDPS, vEHP, vCrt);
+        setTri(9,  vDPS, vCrt, vRes);
+        setTri(18, vDPS, vRes, vMob);
+        setTri(27, vDPS, vMob, vSkl);
+        setTri(36, vRes, vCrt, vEHP);
+        setTri(45, vRes, vEHP, vSkl);
+        setTri(54, vRes, vSkl, vMob);
+        setTri(63, vRes, vMob, vCrt);
+
+        corePolyGeo.attributes.position.needsUpdate = true;
+        corePolyGeo.computeVertexNormals();
+      }
+
+      const labels = {
+        dps: `${state.damagePerSecondDps} DPS`,
+        ehp: `${state.effectiveHealthPoolEhp.toLocaleString()} EHP`,
+        skill: `${state.skillCeilingApm} APM`,
+        resource: `${state.resourceCostCooldown} Cost`,
+        mobility: `${state.mobilitySpeed} u/s`,
+        crit: `${state.critMultiplier.toFixed(1)}x`
+      };
+
+      Object.entries(NODE_DIRS).forEach(([key, dir]) => {
+        const r = rads[key] * 1.28;
+        const node = nodeGroups[key];
+        const billboard = nodeBillboards[key];
+
+        if (node) {
+          const targetPos = dir.clone().multiplyScalar(r);
+          node.position.copy(targetPos);
+
+          if (billboard) {
+            billboard.position.copy(targetPos.clone().add(dir.clone().multiplyScalar(0.48)));
+            billboard.userData.redraw(labels[key]);
+          }
+        }
+      });
+
+      // Update Outer Envelope Struts (Box'em Architecture)
+      const yUnit = new THREE.Vector3(0, 1, 0);
+      envelopeStruts.forEach(strut => {
+        const k1 = strut.userData.k1;
+        const k2 = strut.userData.k2;
+        const nA = nodeGroups[k1];
+        const nB = nodeGroups[k2];
+        if (nA && nB) {
+          const posA = nA.position;
+          const posB = nB.position;
+          const diff = new THREE.Vector3().subVectors(posB, posA);
+          const len = diff.length();
+          const dir = diff.clone().normalize();
+          const mid = new THREE.Vector3().addVectors(posA, posB).multiplyScalar(0.5);
+
+          strut.position.copy(mid);
+          strut.scale.set(1, Math.max(0.01, len - 0.40), 1);
+          strut.quaternion.setFromUnitVectors(yUnit, dir);
+        }
+      });
+
+      const powerRatio = Number(((state.damagePerSecondDps * state.effectiveHealthPoolEhp) / (780 * 18500)).toFixed(2));
+      const badge = document.getElementById('combat-meta-badge');
+      if (badge) {
+        if (powerRatio > 1.3) {
+          badge.textContent = 'STATUS: OVERPOWERED (OP)';
+          badge.className = 'px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-400/40';
+        } else if (powerRatio < 0.7) {
+          badge.textContent = 'STATUS: UNDERPOWERED';
+          badge.className = 'px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40';
+        } else {
+          badge.textContent = 'STATUS: BALANCED META';
+          badge.className = 'px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40';
+        }
+      }
+
+      // Update Combat Meta Copilot (Box'em Standard)
+      const dpsEhpRatio = Number((state.damagePerSecondDps / state.effectiveHealthPoolEhp).toFixed(3));
+      const ttk = Number((state.effectiveHealthPoolEhp / Math.max(50, state.damagePerSecondDps)).toFixed(1));
+      const copilotPitch = document.getElementById('copilot-pitch-text');
+      if (copilotPitch) {
+        copilotPitch.textContent = `"${currentArch.name} sits at ${ttk}s TTK with ${state.effectiveHealthPoolEhp.toLocaleString('en-US')} EHP, demanding ${state.skillCeilingApm} APM while dealing ${state.damagePerSecondDps} DPS."`;
+      }
+
+      const copilotStatus = document.getElementById('copilot-status-text');
+      const copilotBadge = document.getElementById('copilot-status-badge');
+      if (copilotStatus && copilotBadge) {
+        if (powerRatio > 1.3) {
+          copilotBadge.className = 'p-3 rounded-2xl bg-rose-950/80 border border-rose-500/40 text-rose-200 text-xs font-mono font-black flex items-center gap-2';
+          copilotStatus.textContent = 'METAGAME THREAT • OP CHEESE DETECTED';
+        } else if (powerRatio < 0.7) {
+          copilotBadge.className = 'p-3 rounded-2xl bg-amber-950/80 border border-amber-500/40 text-amber-200 text-xs font-mono font-black flex items-center gap-2';
+          copilotStatus.textContent = 'UNDERPOWERED • NEEDS STAT BUFF';
+        } else {
+          copilotBadge.className = 'p-3 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 text-xs font-mono font-black flex items-center gap-2';
+          copilotStatus.textContent = 'METAGAME EQUILIBRIUM • BALANCED';
+        }
+      }
+
+      const mRatio = document.getElementById('metric-ratio');
+      if (mRatio) mRatio.textContent = `${dpsEhpRatio}`;
+
+      const mTtk = document.getElementById('metric-ttk');
+      if (mTtk) mTtk.textContent = `${ttk}s`;
+
+      const mApm = document.getElementById('metric-apm');
+      if (mApm) mApm.textContent = `${state.skillCeilingApm} APM`;
+
+      const mBurst = document.getElementById('metric-burst');
+      if (mBurst) mBurst.textContent = `${state.critMultiplier}x`;
+
+      try {
+        localStorage.setItem('balancem_state', JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function syncUIInputs() {
+      document.getElementById('slider-dps').value = state.damagePerSecondDps;
+      document.getElementById('input-dps').value = state.damagePerSecondDps;
+      document.getElementById('slider-ehp').value = state.effectiveHealthPoolEhp;
+      document.getElementById('input-ehp').value = state.effectiveHealthPoolEhp;
+      document.getElementById('slider-resource').value = state.resourceCostCooldown;
+      document.getElementById('input-resource').value = state.resourceCostCooldown;
+      document.getElementById('slider-skill').value = state.skillCeilingApm;
+      document.getElementById('input-skill').value = state.skillCeilingApm;
+      document.getElementById('slider-mobility').value = state.mobilitySpeed;
+      document.getElementById('input-mobility').value = state.mobilitySpeed;
+      document.getElementById('slider-crit').value = state.critMultiplier;
+      document.getElementById('input-crit').value = state.critMultiplier;
+      document.getElementById('embed-code-box').value = `<iframe src="https://blackboxes.engine/balance?arch=${currentArch.id}&dps=${state.damagePerSecondDps}&ehp=${state.effectiveHealthPoolEhp}" width="100%" height="600" frameborder="0"></iframe>`;
+    }
+
+    function initBrandedDropdown() {
+      const menu = document.getElementById('dropdown-class-menu');
+      menu.innerHTML = '';
+      ARCHETYPES.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'p-2.5 rounded-xl hover:bg-rose-500/20 cursor-pointer space-y-0.5 border border-transparent hover:border-rose-400/30 transition-all';
+        item.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-mono font-bold text-white">
+            <span>${a.name}</span>
+            <span class="text-[10px] text-rose-400">${a.defaults.damagePerSecondDps} DPS</span>
+          </div>
+          <p class="text-[10px] text-slate-300 leading-tight">${a.desc}</p>
+        `;
+        item.addEventListener('click', () => {
+          currentArch = a;
+          document.getElementById('current-class-name').textContent = a.name;
+          state.damagePerSecondDps = a.defaults.damagePerSecondDps;
+          state.effectiveHealthPoolEhp = a.defaults.effectiveHealthPoolEhp;
+          state.resourceCostCooldown = a.defaults.resourceCostCooldown;
+          state.skillCeilingApm = a.defaults.skillCeilingApm;
+          state.mobilitySpeed = a.defaults.mobilitySpeed;
+          state.critMultiplier = a.defaults.criticalMultiplier || a.defaults.critMultiplier || 1.5;
+          menu.classList.add('hidden');
+          rebuildSubmoduleAbilities();
+          syncUIInputs();
+          update3DSpatialReaction();
+        });
+        menu.appendChild(item);
+      });
+
+      document.getElementById('btn-dropdown-class').addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+      });
+
+      window.addEventListener('click', () => { menu.classList.add('hidden'); });
+    }
+
+    function initUI() {
+      initBrandedDropdown();
+
+      const bindPillar = (id, stateKey) => {
+        const slider = document.getElementById(`slider-${id}`);
+        const input = document.getElementById(`input-${id}`);
+        const update = (val) => {
+          state[stateKey] = Number(val);
+          solveReciprocalTradeoffs(id);
+          syncUIInputs();
+          update3DSpatialReaction();
+        };
+        slider.addEventListener('input', (e) => update(e.target.value));
+        input.addEventListener('change', (e) => update(e.target.value));
+      };
+
+      bindPillar('dps', 'damagePerSecondDps');
+      bindPillar('ehp', 'effectiveHealthPoolEhp');
+      bindPillar('resource', 'resourceCostCooldown');
+      bindPillar('skill', 'skillCeilingApm');
+      bindPillar('mobility', 'mobilitySpeed');
+      bindPillar('crit', 'critMultiplier');
+
+      // Lock Mode Toggles (Box'em Standard)
+      document.querySelectorAll('.lock-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const pillar = btn.getAttribute('data-pillar');
+          state.lockMode = pillar;
+          document.querySelectorAll('.lock-mode-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const targetText = document.getElementById('lock-target-text');
+          if (targetText) targetText.textContent = `SOLVE FOR ${pillar.toUpperCase()}`;
+        });
+      });
+
+      // Auto-Optimize Button
+      const btnAutoOpt = document.getElementById('btn-auto-optimize');
+      if (btnAutoOpt) {
+        btnAutoOpt.addEventListener('click', () => {
+          state.damagePerSecondDps = 750;
+          state.effectiveHealthPoolEhp = 18500;
+          state.resourceCostCooldown = 45;
+          state.skillCeilingApm = 110;
+          state.mobilitySpeed = 48;
+          state.critMultiplier = 2.0;
+          syncUIInputs();
+          update3DSpatialReaction();
+          triggerInteractionPause();
+        });
+      }
+
+      // Copy Pitch Script
+      const btnCopyPitch = document.getElementById('btn-copy-pitch');
+      if (btnCopyPitch) {
+        btnCopyPitch.addEventListener('click', () => {
+          const pitch = document.getElementById('copilot-pitch-text')?.textContent || '';
+          navigator.clipboard.writeText(pitch);
+        });
+      }
+
+      // Shaders
+      const shaderGrid = document.getElementById('shader-grid');
+      if (shaderGrid) {
+        Object.entries(SHADERS).forEach(([key, s]) => {
+          const btn = document.createElement('button');
+          btn.className = 'p-1.5 rounded-lg glass-button text-left flex justify-between items-center';
+          btn.innerHTML = `<span>${s.name}</span><span class="text-[9px] text-rose-400">${s.tier}</span>`;
+          btn.addEventListener('click', () => {
+            if (coreHullMesh) {
+              coreHullMesh.material.color.setHex(s.color);
+              coreHullMesh.material.emissive.setHex(s.emissive);
+              coreHullMesh.material.roughness = s.roughness;
+              coreHullMesh.material.transmission = s.transmission;
+            }
+          });
+          shaderGrid.appendChild(btn);
+        });
+      }
+
+      setupDraggableWindows();
+      initWindowToggles();
+      initTopActionsMenu();
+      syncDonationPoolUI();
+
+      rebuildSubmoduleAbilities();
+      syncUIInputs();
+      update3DSpatialReaction();
+      initDonationHologram();
+
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === 'Escape') {
+          document.getElementById('modal-export').classList.add('hidden');
+          document.getElementById('modal-sponsor').classList.add('hidden');
+          document.getElementById('modal-config')?.classList.add('hidden');
+          document.getElementById('dropdown-class-menu').classList.add('hidden');
+          document.getElementById('top-menu-dropdown')?.classList.add('hidden');
+          const detailCard = document.getElementById('submodule-detail-card');
+          if (detailCard) detailCard.classList.add('hidden');
+        } else if (e.code === 'Space') {
+          e.preventDefault();
+          state.isInteracting = !state.isInteracting;
+          state.pauseTimer = state.isInteracting ? 9999 : 0;
+        } else if (e.key === 'r' || e.key === 'R') {
+          if (currentArch && currentArch.defaults) {
+            Object.assign(state, currentArch.defaults);
+            if (currentArch.defaults.criticalMultiplier && !currentArch.defaults.critMultiplier) {
+              state.critMultiplier = currentArch.defaults.criticalMultiplier;
+            }
+            syncUIInputs();
+            update3DSpatialReaction();
+            triggerInteractionPause();
+          }
+        }
+      });
+    }
+
+    // --- CUMULATIVE MULTI-ENGINE DONATION POOL (ACROSS ALL 6) ---
+    const CUMULATIVE_POOL_KEY = 'blackboxes_cumulative_donation_pool';
+
+    function getCumulativeDonationPool() {
+      let pool = null;
+      try {
+        const raw = localStorage.getItem(CUMULATIVE_POOL_KEY);
+        if (raw) pool = JSON.parse(raw);
+      } catch (e) {}
+
+      if (!pool || typeof pool.totalUsd !== 'number') {
+        pool = {
+          totalUsd: 485.00,
+          backerCount: 19,
+          recent: [
+            { donorName: 'alex.cloud', amountUsd: 50.00, tier: 3, engine: "Orbit'em" },
+            { donorName: 'dr.valkyrie', amountUsd: 100.00, tier: 4, engine: "Pulse'em" },
+            { donorName: 'venture_craft', amountUsd: 150.00, tier: 4, engine: "Cap'em" },
+            { donorName: 'synthwave99', amountUsd: 25.00, tier: 2, engine: "Synth'em" },
+            { donorName: 'hyper_carry', amountUsd: 75.00, tier: 3, engine: "Balanc'em" },
+            { donorName: 'axialon_backer', amountUsd: 85.00, tier: 3, engine: "Box'em" }
+          ]
+        };
+        try {
+          localStorage.setItem(CUMULATIVE_POOL_KEY, JSON.stringify(pool));
+        } catch (e) {}
+      }
+      return pool;
+    }
+
+    function syncDonationPoolUI() {
+      const pool = getCumulativeDonationPool();
+      const badgeEl = document.getElementById('tracker-amount-badge');
+      if (badgeEl) badgeEl.textContent = `$${Math.round(pool.totalUsd).toLocaleString('en-US')} USD`;
+
+      const countEl = document.getElementById('tracker-backer-count');
+      if (countEl) countEl.textContent = `Live 6-Engine Pool • ${pool.backerCount} Backers`;
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === CUMULATIVE_POOL_KEY) syncDonationPoolUI();
+    });
+
+    // --- BOX'EM FLOATING DRAGGABLE WINDOWS CONTROLLER ---
+    let globalTopZIndex = 40;
+    function setupDraggableWindows() {
+      document.querySelectorAll('.floating-window').forEach(win => {
+        const header = win.querySelector('.window-header');
+        const collapseBtn = win.querySelector('.win-collapse-btn');
+        const closeBtn = win.querySelector('.win-close-btn');
+        const resizer = win.querySelector('.window-resizer');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        const bringToFront = () => {
+          globalTopZIndex++;
+          win.style.zIndex = globalTopZIndex;
+        };
+
+        win.addEventListener('pointerdown', bringToFront);
+
+        if (header) {
+          header.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button') || e.target.closest('input')) return;
+            isDragging = true;
+            bringToFront();
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = win.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+            header.style.cursor = 'grabbing';
+            e.preventDefault();
+          });
+        }
+
+        window.addEventListener('pointermove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          win.style.left = `${Math.max(8, Math.min(window.innerWidth - win.offsetWidth - 8, initialLeft + dx))}px`;
+          win.style.top = `${Math.max(64, Math.min(window.innerHeight - 60, initialTop + dy))}px`;
+          win.style.right = 'auto';
+        });
+
+        window.addEventListener('pointerup', () => {
+          if (isDragging) {
+            isDragging = false;
+            if (header) header.style.cursor = 'grab';
+          }
+        });
+
+        // Resizer Handle (Box'em Standard)
+        if (resizer) {
+          let isResizing = false;
+          let startW, startH, rStartX, rStartY;
+
+          resizer.addEventListener('pointerdown', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            isResizing = true;
+            bringToFront();
+            rStartX = e.clientX;
+            rStartY = e.clientY;
+            startW = win.offsetWidth;
+            startH = win.offsetHeight;
+            try { resizer.setPointerCapture(e.pointerId); } catch(_) {}
+          });
+
+          window.addEventListener('pointermove', (e) => {
+            if (!isResizing) return;
+            const newW = Math.max(300, Math.min(window.innerWidth - win.offsetLeft - 10, startW + (e.clientX - rStartX)));
+            const newH = Math.max(140, Math.min(window.innerHeight - win.offsetTop - 10, startH + (e.clientY - rStartY)));
+            win.style.width = `${newW}px`;
+            win.style.height = `${newH}px`;
+          });
+
+          window.addEventListener('pointerup', (e) => {
+            if (isResizing) {
+              isResizing = false;
+              try { resizer.releasePointerCapture(e.pointerId); } catch(_) {}
+            }
+          });
+        }
+
+        if (collapseBtn) {
+          collapseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            win.classList.toggle('collapsed');
+            collapseBtn.textContent = win.classList.contains('collapsed') ? '+' : '−';
+          });
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            win.style.display = 'none';
+            const winId = win.id;
+            if (winId === 'win-controls') document.getElementById('toggle-win-controls')?.classList.remove('active');
+            if (winId === 'win-copilot') document.getElementById('toggle-win-copilot')?.classList.remove('active');
+          });
+        }
+      });
+    }
+
+    // --- BOTTOM TRAY DOCK CONTROLLER ---
+    function initWindowToggles() {
+      const toggle = (btnId, winId) => {
+        const btn = document.getElementById(btnId);
+        const win = document.getElementById(winId);
+        if (btn && win) {
+          btn.addEventListener('click', () => {
+            const isVisible = win.style.display !== 'none';
+            win.style.display = isVisible ? 'none' : 'flex';
+            btn.classList.toggle('active', !isVisible);
+            if (!isVisible) {
+              globalTopZIndex++;
+              win.style.zIndex = globalTopZIndex;
+            }
+          });
+        }
+      };
+
+      toggle('toggle-win-controls', 'win-controls');
+      toggle('toggle-win-copilot', 'win-copilot');
+
+      const btnReset = document.getElementById('btn-reset-windows');
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          const winCtrl = document.getElementById('win-controls');
+          const winCop = document.getElementById('win-copilot');
+          if (winCtrl) {
+            winCtrl.style.display = 'flex';
+            winCtrl.style.top = '75px';
+            winCtrl.style.left = '20px';
+            winCtrl.style.right = 'auto';
+            winCtrl.style.width = '380px';
+            winCtrl.style.height = '580px';
+            winCtrl.classList.remove('collapsed');
+            document.getElementById('toggle-win-controls')?.classList.add('active');
+          }
+          if (winCop) {
+            winCop.style.display = 'flex';
+            winCop.style.top = '75px';
+            winCop.style.right = '20px';
+            winCop.style.left = 'auto';
+            winCop.style.width = '380px';
+            winCop.style.height = '580px';
+            winCop.classList.remove('collapsed');
+            document.getElementById('toggle-win-copilot')?.classList.add('active');
+          }
+        });
+      }
+
+      const btnClassDock = document.getElementById('btn-open-class-dock');
+      if (btnClassDock) {
+        btnClassDock.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const menu = document.getElementById('dropdown-class-menu');
+          if (menu) menu.classList.toggle('hidden');
+        });
+      }
+    }
+
+    // --- TOP RIGHT ACTIONS MENU POPOVER ---
+    function initTopActionsMenu() {
+      const btnTrigger = document.getElementById('btn-top-menu-trigger');
+      const dropdown = document.getElementById('top-menu-dropdown');
+      const iconChevron = document.getElementById('icon-top-menu-chevron');
+
+      if (btnTrigger && dropdown) {
+        btnTrigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isClosed = dropdown.classList.contains('hidden');
+          if (isClosed) {
+            dropdown.classList.remove('hidden');
+            if (iconChevron) iconChevron.style.transform = 'rotate(180deg)';
+          } else {
+            dropdown.classList.add('hidden');
+            if (iconChevron) iconChevron.style.transform = 'rotate(0deg)';
+          }
+        });
+
+        dropdown.querySelectorAll('button, a').forEach(el => {
+          el.addEventListener('click', () => {
+            dropdown.classList.add('hidden');
+            if (iconChevron) iconChevron.style.transform = 'rotate(0deg)';
+          });
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!dropdown.contains(e.target) && !btnTrigger.contains(e.target)) {
+            dropdown.classList.add('hidden');
+            if (iconChevron) iconChevron.style.transform = 'rotate(0deg)';
+          }
+        });
+      }
+
+      // Modals & Menu Action Triggers
+      const bindModal = (btnId, modalId) => {
+        const btn = document.getElementById(btnId);
+        const modal = document.getElementById(modalId);
+        if (btn && modal) {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            modal.classList.remove('hidden');
+          });
+        }
+      };
+
+      bindModal('btn-open-export', 'modal-export');
+      bindModal('btn-open-sponsor', 'modal-sponsor');
+      bindModal('live-donation-tracker', 'modal-sponsor');
+      bindModal('btn-sponsor-dialog', 'modal-sponsor');
+
+      const btnOpenCopilot = document.getElementById('btn-open-copilot-menu');
+      if (btnOpenCopilot) {
+        btnOpenCopilot.addEventListener('click', () => {
+          const winCop = document.getElementById('win-copilot');
+          if (winCop) {
+            winCop.style.display = 'flex';
+            globalTopZIndex++;
+            winCop.style.zIndex = globalTopZIndex;
+            document.getElementById('toggle-win-copilot')?.classList.add('active');
+          }
+        });
+      }
+
+      const btnClassMatrix = document.getElementById('btn-open-class-matrix');
+      if (btnClassMatrix) {
+        btnClassMatrix.addEventListener('click', (e) => {
+          e.stopPropagation();
+          document.getElementById('dropdown-class-menu')?.classList.toggle('hidden');
+        });
+      }
+
+      // Shader cycler in Actions menu
+      let shaderKeys = Object.keys(SHADERS);
+      let currentShaderIdx = 0;
+      const btnCycle = document.getElementById('btn-cycle-shader');
+      if (btnCycle) {
+        btnCycle.addEventListener('click', () => {
+          currentShaderIdx = (currentShaderIdx + 1) % shaderKeys.length;
+          const s = SHADERS[shaderKeys[currentShaderIdx]];
+          if (coreHullMesh && s) {
+            coreHullMesh.material.color.setHex(s.color);
+            coreHullMesh.material.emissive.setHex(s.emissive);
+            coreHullMesh.material.roughness = s.roughness;
+            coreHullMesh.material.transmission = s.transmission;
+          }
+        });
+      }
+
+      document.querySelectorAll('.btn-close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('modal-export')?.classList.add('hidden');
+          document.getElementById('modal-sponsor')?.classList.add('hidden');
+        });
+      });
+    }
+
+    // Direct 3D Node Dragging & Raycasting
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let draggedPillar = null;
+    const dragPlane = new THREE.Plane();
+    const planeIntersect = new THREE.Vector3();
+    let pinnedDetailSubmodule = null;
+
+    function triggerInteractionPause() {
+      state.isInteracting = true;
+      state.pauseTimer = 3.0;
+    }
+
+    function updateDetailCard(data, x, y) {
+      const detailCard = document.getElementById('submodule-detail-card');
+      if (!detailCard) return;
+      const cardScale = (state.detailCardScale || 1.0) * (state.nodeModelsScale || state.nodeScale || 1.0);
+      detailCard.style.left = `${Math.min(window.innerWidth - 180, Math.max(180, x))}px`;
+      detailCard.style.top = `${Math.max(110, y - 20)}px`;
+      detailCard.style.transform = `translate(-50%, -100%) scale(${cardScale})`;
+      detailCard.style.transformOrigin = 'bottom center';
+
+      document.getElementById('detail-title').textContent = data.name || 'Ability Spec';
+      document.getElementById('detail-category').textContent = (data.type || 'COMBAT').toUpperCase();
+      document.getElementById('detail-metric').textContent = `Power Impact: ${data.powerScore || 85}/100`;
+      
+      const dotEl = document.getElementById('detail-dot');
+      const statusEl = document.getElementById('detail-status');
+      const isViable = state.damagePerSecondDps >= 500;
+      if (isViable) {
+        dotEl.className = 'w-3.5 h-3.5 rounded-full bg-emerald-400 shrink-0 animate-pulse';
+        statusEl.className = 'text-xs font-black text-emerald-400 mt-1';
+        statusEl.textContent = `OPTIMAL • COMBAT EFFECTIVENESS HIGH`;
+      } else {
+        dotEl.className = 'w-3.5 h-3.5 rounded-full bg-rose-400 shrink-0 animate-pulse';
+        statusEl.className = 'text-xs font-black text-rose-400 mt-1';
+        statusEl.textContent = `SUB-OPTIMAL • BOOST DPS OR MULTIPLIER`;
+      }
+    }
+
+    const btnCloseDetail = document.getElementById('btn-close-detail');
+    if (btnCloseDetail) {
+      btnCloseDetail.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const detailCard = document.getElementById('submodule-detail-card');
+        if (detailCard) detailCard.classList.add('hidden');
+        pinnedDetailSubmodule = null;
+      });
+    }
+
+    window.addEventListener('pointerdown', (e) => {
+      if (!camera) return;
+      if (e.target.closest('aside') || e.target.closest('nav') || e.target.closest('#modal-export') || e.target.closest('#modal-sponsor') || e.target.closest('button')) return;
+
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+
+      // Check for submodule click detail popup (Box'em Standard)
+      const subHits = raycaster.intersectObjects(submoduleGroup.children);
+      const detailCard = document.getElementById('submodule-detail-card');
+
+      if (subHits.length > 0) {
+        const hit = subHits[0].object;
+        pinnedDetailSubmodule = hit;
+        updateDetailCard(hit.userData, e.clientX, e.clientY);
+        detailCard.classList.remove('hidden');
+        triggerInteractionPause();
+        return;
+      } else {
+        if (!e.target.closest('#submodule-detail-card')) {
+          if (detailCard) detailCard.classList.add('hidden');
+          pinnedDetailSubmodule = null;
+        }
+      }
+
+      const hitSpheres = [];
+      Object.values(nodeGroups).forEach(g => {
+        g.traverse(c => { if (c.isMesh && c.userData && c.userData.isHitSphere) hitSpheres.push(c); });
+      });
+
+      const hits = raycaster.intersectObjects(hitSpheres);
+      if (hits.length > 0) {
+        draggedPillar = hits[0].object.userData.pillarKey;
+        controls.enabled = false;
+        triggerInteractionPause();
+        document.body.style.cursor = 'grabbing';
+        const planeNormal = camera.getWorldDirection(new THREE.Vector3()).negate();
+        const nodeWorldPos = new THREE.Vector3();
+        hits[0].object.getWorldPosition(nodeWorldPos);
+        dragPlane.setFromNormalAndCoplanarPoint(planeNormal, nodeWorldPos);
+      }
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!camera) return;
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      // Cursor hover feedback & billboard dynamic scaling
+      if (!draggedPillar) {
+        raycaster.setFromCamera(mouse, camera);
+        const hitSpheres = [];
+        Object.values(nodeGroups).forEach(g => {
+          g.traverse(c => { if (c.isMesh && c.userData && c.userData.isHitSphere) hitSpheres.push(c); });
+        });
+        const hits = raycaster.intersectObjects(hitSpheres);
+        if (hits.length > 0) {
+          const hoveredKey = hits[0].object.userData.pillarKey;
+          document.body.style.cursor = 'grab';
+          Object.entries(nodeBillboards).forEach(([k, bb]) => {
+            if (k === hoveredKey) bb.scale.set(1.68, 0.46, 1);
+            else bb.scale.set(1.45, 0.40, 1);
+          });
+        } else {
+          // Check if hovering over submodule for pointer cursor
+          const subHits = raycaster.intersectObjects(submoduleGroup.children);
+          if (subHits.length > 0) {
+            document.body.style.cursor = 'pointer';
+          } else {
+            document.body.style.cursor = 'default';
+          }
+          Object.values(nodeBillboards).forEach(bb => bb.scale.set(1.45, 0.40, 1));
+        }
+      }
+
+      if (draggedPillar) {
+        triggerInteractionPause();
+        document.body.style.cursor = 'grabbing';
+        raycaster.setFromCamera(mouse, camera);
+        if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+          const localPos = systemGroup.worldToLocal(planeIntersect.clone());
+          const pillarDir = NODE_DIRS[draggedPillar];
+          const rawDist = localPos.dot(pillarDir);
+          const delta = Math.max(0.0, Math.min(1.0, ((rawDist / 1.28) - 0.7) / 1.8));
+
+          if (draggedPillar === 'dps') state.damagePerSecondDps = Math.round(50 + delta * 4950);
+          if (draggedPillar === 'ehp') state.effectiveHealthPoolEhp = Math.round(200 + delta * 49800);
+          if (draggedPillar === 'resource') state.resourceCostCooldown = Math.round(10 + delta * 240);
+          if (draggedPillar === 'skill') state.skillCeilingApm = Math.round(20 + delta * 380);
+          if (draggedPillar === 'mobility') state.mobilitySpeed = Math.round(10 + delta * 90);
+          if (draggedPillar === 'crit') state.critMultiplier = Number((1.0 + delta * 3.0).toFixed(1));
+
+          solveReciprocalTradeoffs(draggedPillar);
+          syncUIInputs();
+          update3DSpatialReaction();
+        }
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      draggedPillar = null;
+      document.body.style.cursor = 'default';
+      if (controls) controls.enabled = true;
+    });
+
+    // Modals & Export
+    document.getElementById('btn-export-dialog')?.addEventListener('click', () => {
+      document.getElementById('modal-export').classList.remove('hidden');
+    });
+    document.getElementById('btn-sponsor-dialog')?.addEventListener('click', () => {
+      document.getElementById('modal-sponsor').classList.remove('hidden');
+    });
+    document.querySelectorAll('.btn-close-modal').forEach(b => {
+      b.addEventListener('click', () => {
+        document.getElementById('modal-export').classList.add('hidden');
+        document.getElementById('modal-sponsor').classList.add('hidden');
+      });
+    });
+
+    document.getElementById('btn-export-json').addEventListener('click', () => {
+      const payload = {
+        version: "1.0.0",
+        meta: { brand: "Blackboxes", app: "Balanc'em", title: currentArch.name, archetype: currentArch.id },
+        constraints: state,
+        submodules: currentArch.submodules,
+        visuals: { shaderPreset: "damascus", theme: "dark" }
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${currentArch.id}_balance.json`;
+      a.click();
+    });
+
+    document.getElementById('btn-export-glb').addEventListener('click', () => {
+      if (!systemGroup) return;
+      const exporter = new THREE.GLTFExporter();
+      exporter.parse(systemGroup, (gltf) => {
+        const blob = new Blob([gltf], { type: 'application/octet-stream' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${currentArch.id}_combat_polytope.glb`;
+        a.click();
+      }, { binary: true });
+    });
+
+    document.getElementById('btn-export-lua').addEventListener('click', () => {
+      const luaContent = `-- Balanc'em Auto-Generated Lua Combat Curve
+-- Archetype: ${currentArch.name}
+local CombatMeta = {
+    classId = "${currentArch.id}",
+    dps = ${state.damagePerSecondDps},
+    ehp = ${state.effectiveHealthPoolEhp},
+    resourceCost = ${state.resourceCostCooldown},
+    apmCeiling = ${state.skillCeilingApm},
+    mobility = ${state.mobilitySpeed},
+    critMultiplier = ${state.critMultiplier}
+}
+
+function CombatMeta:CalculateDamage(baseDmg, isCrit)
+    if isCrit then
+        return baseDmg * self.critMultiplier
+    end
+    return baseDmg
+end
+
+return CombatMeta
+`;
+      const blob = new Blob([luaContent], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${currentArch.id}_combat.lua`;
+      a.click();
+    });
+
+    // 3D Sword Hologram
+    let holoScene, holoCamera, holoRenderer, holoMesh;
+    function initDonationHologram() {
+      const canvas = document.getElementById('donation-3d-canvas');
+      if (!canvas) return;
+      try {
+        holoScene = new THREE.Scene();
+        holoCamera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 50);
+        holoCamera.position.set(0, 0, 4);
+
+        holoRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        holoRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+        const hLight = new THREE.DirectionalLight(0xef4444, 2.0);
+        hLight.position.set(2, 3, 2);
+        holoScene.add(hLight);
+        holoScene.add(new THREE.AmbientLight(0xffffff, 0.8));
+
+        holoMesh = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.9, 0),
+          new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xbe123c, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.15 })
+        );
+        holoScene.add(holoMesh);
+
+        document.getElementById('slider-sponsor').addEventListener('input', (e) => {
+          const val = e.target.value;
+          document.getElementById('sponsor-amount-label').textContent = `$${val}`;
+          const label = document.getElementById('hologram-label');
+          if (val >= 25) {
+            label.textContent = '💎 Tier 2 Studio Patron ($25+) - All Shaders Unlocked';
+            holoMesh.material.color.setHex(0xc084fc);
+          } else {
+            label.textContent = '👑 Tier 1 Combat Sponsor ($5+)';
+            holoMesh.material.color.setHex(0xef4444);
+          }
+        });
+      } catch (e) {}
+    }
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
+      if (state.pauseTimer > 0) {
+        state.pauseTimer -= delta;
+        if (state.pauseTimer <= 0) {
+          state.isInteracting = false;
+        }
+      }
+
+      if (!state.isInteracting) {
+        systemGroup.rotation.y += 0.002;
+        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05;
+      }
+
+      // Spin internal crystals
+      Object.values(nodeGroups).forEach((node) => {
+        if (node.userData.mesh) node.userData.mesh.rotation.y += 0.008;
+        if (node.userData.innerJewel) node.userData.innerJewel.rotation.y -= 0.012;
+      });
+
+      if (submoduleGroup) {
+        submoduleGroup.rotation.y -= 0.008;
+        submoduleGroup.rotation.x = Math.sin(elapsed * 0.6) * 0.12;
+        submoduleGroup.children.forEach((gem, idx) => {
+          gem.rotation.y += 0.02;
+          gem.rotation.x += 0.015;
+          gem.position.y = Math.sin(elapsed * 2.0 + idx) * 0.05 + (Math.sin((idx / Math.max(1, submoduleMeshes.length)) * Math.PI * 4) * 0.18);
+        });
+      }
+
+      if (controls && controls.enabled) controls.update();
+      if (renderer && scene && camera) renderer.render(scene, camera);
+
+      if (holoRenderer && holoMesh) {
+        holoMesh.rotation.y = elapsed * 0.8;
+        holoRenderer.render(holoScene, holoCamera);
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      if (camera && renderer) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+    });
+
+    // --- GEOMETRY FACTORY & SCALING SUITE (Box'em Standard) ---
+    function getGeometryByType(type, size = 0.28) {
+      switch ((type || '').toLowerCase()) {
+        case 'dodecahedron': return new THREE.DodecahedronGeometry(size * 0.9, 0);
+        case 'icosahedron': return new THREE.IcosahedronGeometry(size * 0.9, 0);
+        case 'box': case 'cube': return new THREE.BoxGeometry(size * 1.3, size * 1.3, size * 1.3);
+        case 'sphere': return new THREE.SphereGeometry(size, 16, 16);
+        case 'tetrahedron': return new THREE.TetrahedronGeometry(size * 1.2, 0);
+        case 'octahedron':
+        default:
+          return new THREE.OctahedronGeometry(size, 0);
+      }
+    }
+
+    function initScalingSuite() {
+      // 1. Font scale
+      const fontSlider = document.getElementById('font-scale-slider');
+      if (fontSlider) {
+        fontSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 1.0;
+          document.getElementById('font-scale-display').textContent = `${val.toFixed(2)}x`;
+          document.documentElement.style.fontSize = `${16 * val}px`;
+        });
+      }
+
+      // 2. Node models scale
+      const nodeSlider = document.getElementById('node-scale-slider');
+      if (nodeSlider) {
+        nodeSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 1.0;
+          state.nodeModelsScale = val;
+          document.getElementById('node-scale-display').textContent = `${val.toFixed(2)}x`;
+          Object.values(nodeGroups).forEach(g => {
+            if (g) g.scale.set(val, val, val);
+          });
+          const detailCard = document.getElementById('submodule-detail-card');
+          if (detailCard) {
+            const cardScale = (state.detailCardScale || 1.0) * val;
+            detailCard.style.transform = `translate(-50%, -100%) scale(${cardScale})`;
+            detailCard.style.transformOrigin = 'bottom center';
+          }
+        });
+      }
+
+      // 3. Inside subnode scale
+      const subnodeSlider = document.getElementById('subnode-scale-slider');
+      if (subnodeSlider) {
+        subnodeSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 1.0;
+          state.insideObjectsScale = val;
+          document.getElementById('subnode-scale-display').textContent = `${val.toFixed(2)}x`;
+          if (submoduleGroup) {
+            submoduleGroup.scale.set(val, val, val);
+          }
+        });
+      }
+
+      // 4. Spatial billboard font scale
+      const spatialSlider = document.getElementById('spatial-font-scale-slider');
+      if (spatialSlider) {
+        spatialSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 1.0;
+          state.spatialFontScale = val;
+          document.getElementById('spatial-font-scale-display').textContent = `${val.toFixed(2)}x`;
+          Object.values(nodeBillboards).forEach(bb => {
+            if (bb) bb.style.transform = `scale(${val})`;
+          });
+        });
+      }
+
+      // 5. Detail card scale
+      const detailSlider = document.getElementById('detail-card-scale-slider');
+      if (detailSlider) {
+        detailSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 1.0;
+          state.detailCardScale = val;
+          document.getElementById('detail-card-scale-display').textContent = `${val.toFixed(2)}x`;
+          const detailCard = document.getElementById('submodule-detail-card');
+          if (detailCard) {
+            const cardScale = val * (state.nodeModelsScale || state.nodeScale || 1.0);
+            detailCard.style.transform = `translate(-50%, -100%) scale(${cardScale})`;
+            detailCard.style.transformOrigin = 'bottom center';
+          }
+        });
+      }
+
+      // 6. Geometry Selectors
+      const nodeGeoSel = document.getElementById('select-node-geometry');
+      if (nodeGeoSel) {
+        nodeGeoSel.addEventListener('change', (e) => {
+          if (window.blackboxesAPI) window.blackboxesAPI.setNodeGeometry(e.target.value);
+        });
+      }
+      const subnodeGeoSel = document.getElementById('select-subnode-geometry');
+      if (subnodeGeoSel) {
+        subnodeGeoSel.addEventListener('change', (e) => {
+          if (window.blackboxesAPI) window.blackboxesAPI.setSubnodeGeometry(e.target.value);
+        });
+      }
+
+      // Modal trigger
+      const btnOpenConfig = document.getElementById('btn-open-config');
+      const modalConfig = document.getElementById('modal-config');
+      const btnCloseConfig = document.getElementById('btn-close-config');
+      if (btnOpenConfig && modalConfig) {
+        btnOpenConfig.addEventListener('click', () => {
+          modalConfig.classList.remove('hidden');
+          document.getElementById('top-menu-dropdown')?.classList.add('hidden');
+        });
+      }
+      if (btnCloseConfig && modalConfig) {
+        btnCloseConfig.addEventListener('click', () => {
+          modalConfig.classList.add('hidden');
+        });
+      }
+    }
+
+    // --- BLACKBOXES STANDARDIZED AGENT & AUTOMATION API ---
+    window.blackboxesAPI = {
+      engine: "Balanc'em",
+      getState: () => ({ ...state }),
+      setNodeScale: (val) => {
+        state.nodeModelsScale = parseFloat(val);
+        const slider = document.getElementById('node-scale-slider');
+        if (slider) slider.value = val;
+        const disp = document.getElementById('node-scale-display');
+        if (disp) disp.textContent = `${state.nodeModelsScale.toFixed(2)}x`;
+        Object.values(nodeGroups).forEach(g => {
+          if (g) g.scale.set(state.nodeModelsScale, state.nodeModelsScale, state.nodeModelsScale);
+        });
+        const detailCard = document.getElementById('submodule-detail-card');
+        if (detailCard) {
+          const cardScale = (state.detailCardScale || 1.0) * state.nodeModelsScale;
+          detailCard.style.transform = `translate(-50%, -100%) scale(${cardScale})`;
+          detailCard.style.transformOrigin = 'bottom center';
+        }
+      },
+      setSubnodeScale: (val) => {
+        state.insideObjectsScale = parseFloat(val);
+        const slider = document.getElementById('subnode-scale-slider');
+        if (slider) slider.value = val;
+        const disp = document.getElementById('subnode-scale-display');
+        if (disp) disp.textContent = `${state.insideObjectsScale.toFixed(2)}x`;
+        if (submoduleGroup) {
+          submoduleGroup.scale.set(state.insideObjectsScale, state.insideObjectsScale, state.insideObjectsScale);
+        }
+      },
+      setDetailCardScale: (val) => {
+        state.detailCardScale = parseFloat(val);
+        const slider = document.getElementById('detail-card-scale-slider');
+        if (slider) slider.value = val;
+        const disp = document.getElementById('detail-card-scale-display');
+        if (disp) disp.textContent = `${state.detailCardScale.toFixed(2)}x`;
+        const detailCard = document.getElementById('submodule-detail-card');
+        if (detailCard) {
+          const cardScale = state.detailCardScale * (state.nodeModelsScale || state.nodeScale || 1.0);
+          detailCard.style.transform = `translate(-50%, -100%) scale(${cardScale})`;
+          detailCard.style.transformOrigin = 'bottom center';
+        }
+      },
+      setNodeGeometry: (type) => {
+        state.nodeGeometry = type;
+        const geo = getGeometryByType(type, 0.28);
+        Object.values(nodeGroups).forEach(g => {
+          if (g && g.userData && g.userData.mesh) {
+            if (g.userData.mesh.geometry) g.userData.mesh.geometry.dispose();
+            g.userData.mesh.geometry = geo;
+            if (g.userData.edgeLines) {
+              if (g.userData.edgeLines.geometry) g.userData.edgeLines.geometry.dispose();
+              g.userData.edgeLines.geometry = new THREE.EdgesGeometry(geo);
+            }
+          }
+        });
+        const sel = document.getElementById('select-node-geometry');
+        if (sel) sel.value = type;
+      },
+      setSubnodeGeometry: (type) => {
+        state.subnodeGeometry = type;
+        const geo = getGeometryByType(type, 0.16);
+        if (submoduleGroup) {
+          submoduleGroup.children.forEach(mesh => {
+            if (mesh.geometry) mesh.geometry.dispose();
+            mesh.geometry = geo;
+          });
+        }
+        const sel = document.getElementById('select-subnode-geometry');
+        if (sel) sel.value = type;
+      },
+      getAvailableGeometries: () => ['octahedron', 'dodecahedron', 'icosahedron', 'box', 'sphere', 'tetrahedron'],
+      exportState: (fmt = 'json') => {
+        if (fmt === 'json') return JSON.stringify(state, null, 2);
+        return null;
+      },
+      resetWindows: () => {
+        document.getElementById('btn-reset-windows')?.click();
+      }
+    };
+
+    initUI();
+    initScalingSuite();
+    animate(0);
+  </script>
+</body>
+</html>

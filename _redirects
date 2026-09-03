@@ -1,0 +1,21 @@
+# Blackboxes Ecosystem Clean Route Rewrites
+/boxem             /Box_em/index.html         200
+/boxem/showcase    /Box_em/showcase.html      200
+/boxem/marketing   /Box_em/showcase.html      301
+
+/orbitem           /Orbit_em/index.html       200
+/orbitem/showcase  /Orbit_em/showcase.html    200
+
+/pulseem           /Pulse_em/index.html       200
+/pulseem/showcase  /Pulse_em/showcase.html    200
+
+/capem             /Cap_em/index.html         200
+/capem/showcase    /Cap_em/showcase.html      200
+
+/synthem           /Synth_em/index.html       200
+/synthem/showcase  /Synth_em/showcase.html    200
+
+/balancem          /Balanc_em/index.html      200
+/balancem/showcase /Balanc_em/showcase.html   200
+
+/schema            /Box_em/schemas/v1.schema.json 200

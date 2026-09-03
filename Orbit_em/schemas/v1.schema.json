@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blackboxes.engine/schema/orbitem/v1.json",
+  "title": "Orbit'em Cloud Configuration Schema",
+  "type": "object",
+  "required": ["version", "meta", "constraints", "submodules", "visuals"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "meta": {
+      "type": "object",
+      "required": ["brand", "app", "title", "archetype"],
+      "properties": {
+        "brand": { "type": "string", "const": "Blackboxes" },
+        "app": { "type": "string", "const": "Orbit'em" },
+        "title": { "type": "string", "maxLength": 100 },
+        "archetype": { "type": "string" },
+        "preset": { "type": "string", "maxLength": 60 },
+        "author": { "type": "string", "maxLength": 60 }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["monthlyBudget", "availabilitySla", "p99LatencyMs", "opsComplexity", "lockMode"],
+      "properties": {
+        "monthlyBudget": { "type": "number", "minimum": 50, "maximum": 500000 },
+        "availabilitySla": { "type": "number", "minimum": 90.0, "maximum": 99.999 },
+        "p99LatencyMs": { "type": "number", "minimum": 1, "maximum": 2000 },
+        "opsComplexity": { "type": "number", "minimum": 10, "maximum": 250 },
+        "lockMode": { "type": "string", "enum": ["budget", "sla", "latency", "complexity"] }
+      }
+    },
+    "submodules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "category", "costShare"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "costShare": { "type": "number" },
+          "status": { "type": "string" }
+        }
+      }
+    },
+    "visuals": {
+      "type": "object",
+      "required": ["shaderPreset", "theme"],
+      "properties": {
+        "shaderPreset": { "type": "string" },
+        "theme": { "type": "string", "enum": ["dark", "light"] }
+      }
+    }
+  }
+}

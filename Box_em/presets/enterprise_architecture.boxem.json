@@ -1,0 +1,32 @@
+{
+  "$schema": "https://blackboxes.engine/schema/v1.json",
+  "version": "1.0.0",
+  "meta": {
+    "brand": "Blackboxes",
+    "app": "Box'em",
+    "title": "Commercial Architectural BIM Matrix",
+    "occupation": "architecture",
+    "preset": "Agency High Craft",
+    "author": "Blackboxes Spatial Design Lab"
+  },
+  "constraints": {
+    "timeWeeks": 6.0,
+    "costBudget": 18000,
+    "qualityPercent": 92,
+    "scopePercent": 100,
+    "lockMode": "quality",
+    "baseRate": 125
+  },
+  "submodules": [
+    { "id": "mod_1", "name": "Spatial Floorplans & Code Compliance", "reqQuality": 20 },
+    { "id": "mod_2", "name": "Structural Elevation BIM Models", "reqQuality": 45 },
+    { "id": "mod_3", "name": "Photorealistic Ray-Traced 3D Renders", "reqQuality": 75 },
+    { "id": "mod_4", "name": "Custom Millwork & Engineering Stamps", "reqQuality": 90 }
+  ],
+  "visuals": {
+    "shaderPreset": "quartz",
+    "fontScale": 1.3,
+    "theme": "dark",
+    "customNodeModels": {}
+  }
+}

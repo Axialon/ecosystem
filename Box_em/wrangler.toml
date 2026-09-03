@@ -1,0 +1,14 @@
+name = "boxem-edge-worker"
+main = "workers/donationWebhook.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "boxem-db"
+database_id = "boxem-d1-prod"
+
+[observability]
+enabled = true

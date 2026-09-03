@@ -1,0 +1,32 @@
+{
+  "$schema": "https://blackboxes.engine/schema/v1.json",
+  "version": "1.0.0",
+  "meta": {
+    "brand": "Blackboxes",
+    "app": "Box'em",
+    "title": "Hollywood 4K VFX Pipeline",
+    "occupation": "vfx",
+    "preset": "Masterpiece Polish",
+    "author": "Blackboxes Cinema Dynamics"
+  },
+  "constraints": {
+    "timeWeeks": 8.5,
+    "costBudget": 24500,
+    "qualityPercent": 98,
+    "scopePercent": 100,
+    "lockMode": "quality",
+    "baseRate": 150
+  },
+  "submodules": [
+    { "id": "mod_1", "name": "Rough 3D Animatic & Blocking", "reqQuality": 20 },
+    { "id": "mod_2", "name": "Hero Asset Modeling & Texturing", "reqQuality": 45 },
+    { "id": "mod_3", "name": "Dynamic Pyro Simulation & Lighting", "reqQuality": 75 },
+    { "id": "mod_4", "name": "4K Multi-Pass Deep Compositing", "reqQuality": 90 }
+  ],
+  "visuals": {
+    "shaderPreset": "kintsugi",
+    "fontScale": 1.3,
+    "theme": "dark",
+    "customNodeModels": {}
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "balancem",
+  "version": "1.0.0",
+  "description": "Blackboxes Balanc'em - 3D Game Mechanics, RPG Economy & Combat Balancing Engine",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/engine.test.js"
+  },
+  "keywords": [
+    "blackboxes",
+    "balancem",
+    "webgl",
+    "threejs",
+    "gamedev",
+    "combat-balancing",
+    "rpg-economy",
+    "reciprocal-constraint-engine"
+  ],
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.180.0"
+  }
+}

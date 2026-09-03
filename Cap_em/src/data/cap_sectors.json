@@ -1,0 +1,82 @@
+[
+  {
+    "id": "preseed_ai_devtools",
+    "name": "Pre-Seed AI / DevTools",
+    "category": "Artificial Intelligence",
+    "desc": "$750k Post-Money SAFE round at $7.5M Valuation Cap, 18-month runway, 2 co-founders with 10% unallocated option pool.",
+    "defaults": {
+      "capitalRaisedUsd": 750000,
+      "postMoneyValuationUsd": 7500000,
+      "runwayMonths": 18,
+      "founderEquityPercent": 80.0,
+      "esopPoolPercent": 10.0,
+      "investorSharePercent": 10.0,
+      "lockMode": "equity"
+    },
+    "submodules": [
+      { "id": "m1", "name": "Founding Team Equity", "ownership": 80.0, "type": "Common", "status": "active" },
+      { "id": "m2", "name": "Pre-Seed SAFE Investors", "ownership": 10.0, "type": "SAFE Note", "status": "active" },
+      { "id": "m3", "name": "Unallocated ESOP Pool", "ownership": 10.0, "type": "Option Pool", "status": "active" }
+    ]
+  },
+  {
+    "id": "seed_enterprise_saas",
+    "name": "Seed B2B Enterprise SaaS",
+    "category": "Enterprise Software",
+    "desc": "$2.5M Priced Equity Round at $12.5M Post-Money Valuation, Series Seed Preferred Stock, 24 months runway at $90k/mo net burn.",
+    "defaults": {
+      "capitalRaisedUsd": 2500000,
+      "postMoneyValuationUsd": 12500000,
+      "runwayMonths": 24,
+      "founderEquityPercent": 68.0,
+      "esopPoolPercent": 12.0,
+      "investorSharePercent": 20.0,
+      "lockMode": "valuation"
+    },
+    "submodules": [
+      { "id": "m1", "name": "Founders Common Stock", "ownership": 68.0, "type": "Common", "status": "active" },
+      { "id": "m2", "name": "Seed VC Lead (Preferred)", "ownership": 16.0, "type": "Series Seed", "status": "active" },
+      { "id": "m3", "name": "Angel Syndicate SAFEs", "ownership": 4.0, "type": "Converted", "status": "active" },
+      { "id": "m4", "name": "Post-Money ESOP Refresh", "ownership": 12.0, "type": "Option Pool", "status": "active" }
+    ]
+  },
+  {
+    "id": "bootstrapped_cashflow",
+    "name": "Bootstrapped Micro-SaaS",
+    "category": "Bootstrapping & Indie",
+    "desc": "Zero external dilution, $45k/mo profit reinvestment, 36 months infinite runway, 100% founder sovereign retention.",
+    "defaults": {
+      "capitalRaisedUsd": 50000,
+      "postMoneyValuationUsd": 3000000,
+      "runwayMonths": 36,
+      "founderEquityPercent": 100.0,
+      "esopPoolPercent": 0.0,
+      "investorSharePercent": 0.0,
+      "lockMode": "capital"
+    },
+    "submodules": [
+      { "id": "m1", "name": "Solo Founder Common", "ownership": 100.0, "type": "Common", "status": "active" }
+    ]
+  },
+  {
+    "id": "series_a_medtech_scale",
+    "name": "Series A MedTech & Hardware",
+    "category": "Healthcare & Biotech",
+    "desc": "$8.0M Series A round at $32M Post-Money Valuation, 2x Liquidation Preference, 30 months regulatory clinical trial runway.",
+    "defaults": {
+      "capitalRaisedUsd": 8000000,
+      "postMoneyValuationUsd": 32000000,
+      "runwayMonths": 30,
+      "founderEquityPercent": 52.5,
+      "esopPoolPercent": 15.0,
+      "investorSharePercent": 32.5,
+      "lockMode": "runway"
+    },
+    "submodules": [
+      { "id": "m1", "name": "Founders Common", "ownership": 52.5, "type": "Common", "status": "active" },
+      { "id": "m2", "name": "Series A Healthcare VC", "ownership": 25.0, "type": "Series A Preferred", "status": "active" },
+      { "id": "m3", "name": "Seed Syndicate Notes", "ownership": 7.5, "type": "Converted Notes", "status": "active" },
+      { "id": "m4", "name": "ESOP Option Pool", "ownership": 15.0, "type": "Option Pool", "status": "active" }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "name": "blackboxes-ecosystem",
+  "version": "1.0.0",
+  "description": "Blackboxes 3D Spatial Constraint Suite & Application Matrix",
+  "main": "index.html",
+  "scripts": {
+    "test": "node Orbit_em/test/engine.test.js && node Pulse_em/test/engine.test.js && node Cap_em/test/engine.test.js && node Synth_em/test/engine.test.js && node Balanc_em/test/engine.test.js && cd Box_em && npm test",
+    "audit": "node scripts/run_ecosystem_audits.js && cd Box_em && npm run audit",
+    "publish:check": "node scripts/publish_check.js",
+    "publish:prepare": "npm run audit && npm test && node scripts/publish_check.js",
+    "build": "node scripts/publish_check.js",
+    "test:orbitem": "node Orbit_em/test/engine.test.js",
+    "test:pulseem": "node Pulse_em/test/engine.test.js",
+    "test:capem": "node Cap_em/test/engine.test.js",
+    "test:synthem": "node Synth_em/test/engine.test.js",
+    "test:balancem": "node Balanc_em/test/engine.test.js",
+    "start:boxem": "cd Box_em && npm start",
+    "start:orbitem": "node Orbit_em/server.js",
+    "start:pulseem": "node Pulse_em/server.js",
+    "start:capem": "node Cap_em/server.js",
+    "start:synthem": "node Synth_em/server.js",
+    "start:balancem": "node Balanc_em/server.js"
+  },
+  "author": "Blackboxes Antigravity Agent",
+  "license": "MIT"
+}
