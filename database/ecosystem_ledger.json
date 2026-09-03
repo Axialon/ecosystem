@@ -1,0 +1,275 @@
+{
+  "generated_at": "2026-09-03T13:49:40.796876+00:00",
+  "projects": [
+    {
+      "id": "box_em",
+      "name": "Box'em",
+      "subdomain": "boxem.blackboxes.net",
+      "production_url": "https://boxem.blackboxes.net/",
+      "repo": "Axialon/Box_em",
+      "domain_archetype": "Project Management & 3D Reciprocal Constraint Power Tool",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    },
+    {
+      "id": "orbit_em",
+      "name": "Orbit'em",
+      "subdomain": "orbitem.blackboxes.net",
+      "production_url": "https://orbitem.blackboxes.net/",
+      "repo": "Axialon/Orbit_em",
+      "domain_archetype": "FinOps & Cloud Architecture Constraint Engine",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    },
+    {
+      "id": "pulse_em",
+      "name": "Pulse'em",
+      "subdomain": "pulseem.blackboxes.net",
+      "production_url": "https://pulseem.blackboxes.net/",
+      "repo": "Axialon/Pulse_em",
+      "domain_archetype": "Biometric Longevity & Physiological Protocol System",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    },
+    {
+      "id": "cap_em",
+      "name": "Cap'em",
+      "subdomain": "capem.blackboxes.net",
+      "production_url": "https://capem.blackboxes.net/",
+      "repo": "Axialon/Cap_em",
+      "domain_archetype": "Capital Allocation & Treasury Risk Geometry",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    },
+    {
+      "id": "synth_em",
+      "name": "Synth'em",
+      "subdomain": "synthem.blackboxes.net",
+      "production_url": "https://synthem.blackboxes.net/",
+      "repo": "Axialon/Synth_em",
+      "domain_archetype": "Spatial Polyphonic Audio DSP & Acoustic Synthesis",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    },
+    {
+      "id": "balanc_em",
+      "name": "Balanc'em",
+      "subdomain": "balancem.blackboxes.net",
+      "production_url": "https://balancem.blackboxes.net/",
+      "repo": "Axialon/Balanc_em",
+      "domain_archetype": "Energy Grid & Resource Reciprocal Optimization",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    },
+    {
+      "id": "ecosystem_hub",
+      "name": "Ecosystem Hub",
+      "subdomain": "blackboxes.net",
+      "production_url": "https://blackboxes.net/",
+      "repo": "Axialon/ecosystem",
+      "domain_archetype": "Unified Monorepo Showcase Hub & Sovereign Directory",
+      "status": "PRODUCTION_VERIFIED",
+      "quality_score": 100,
+      "created_at": "2026-09-03T13:49:40.796876+00:00",
+      "updated_at": "2026-09-03T13:49:40.796876+00:00"
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "COLLAPSIBLE_LOGO_BADGE",
+      "name": "Centered Collapsible Brand Badge",
+      "category": "UI_COMPONENT",
+      "description": "Mathematical squircle (48x48px) in collapsed mode with zero flex-gap offset, expanding on click with laser scan animation.",
+      "code_snippet": "/* Badge Styling */\n#brand-badge-container.collapsed .glass-panel {\n  padding: 6px !important;\n  gap: 0 !important;\n  width: 48px !important;\n  height: 48px !important;\n  justify-content: center !important;\n  align-items: center !important;\n  border-radius: 1rem !important;\n}\n#brand-badge-container.collapsed #brand-text-content {\n  display: none !important;\n  width: 0 !important;\n  max-width: 0 !important;\n  opacity: 0 !important;\n  pointer-events: none;\n}",
+      "instructions": "Apply to all new engines in the top-left corner. Binds to click to toggle '.collapsed' and trigger 3D laser scan beam."
+    },
+    {
+      "id": "CUSTOM_GLASS_DROPDOWN",
+      "name": "Rounded Glassmorphic Dropdown Engine",
+      "category": "UI_COMPONENT",
+      "description": "Transforms native <select class='glass-select'> into border-radius: 1.25rem backdrop-blur popover menus with smooth SVG chevrons.",
+      "code_snippet": "function initCustomGlassDropdowns() {\n  document.querySelectorAll('select.glass-select').forEach(selectEl => {\n    if (selectEl.dataset.customized) return;\n    selectEl.dataset.customized = 'true';\n    selectEl.style.display = 'none';\n    const wrapper = document.createElement('div');\n    wrapper.className = 'custom-glass-dropdown-wrapper';\n    selectEl.parentNode.insertBefore(wrapper, selectEl);\n    wrapper.appendChild(selectEl);\n  });\n}",
+      "instructions": "Run after DOMContentLoaded to wrap all select elements inside floating windows and modals."
+    },
+    {
+      "id": "WINDOW_PLACEMENT_SPECS",
+      "name": "Unobstructed Floating Draggable Windows",
+      "category": "LAYOUT",
+      "description": "Initial placement at top: 128px - 130px prevents overlap with the top-left brand badge. Features pointerdown dragging and smooth collapse.",
+      "code_snippet": "<div id=\"win-controls\" class=\"floating-window glass-panel rounded-3xl p-4 shadow-2xl\" style=\"top: 130px; left: 20px; width: 380px;\">\n  <div class=\"window-header flex justify-between items-center pb-2.5 border-b mb-2.5\">\n    <h3>Vector Controls</h3>\n    <button class=\"win-collapse-btn font-mono text-sm\" title=\"Minimize Window\">\u2212</button>\n    <button class=\"win-close-btn font-mono text-sm\" title=\"Close Window\">\u2715</button>\n  </div>\n  <div class=\"window-body space-y-3\">...</div>\n</div>",
+      "instructions": "Ensure top coordinate is >= 125px on desktop to provide 10px breathing room below the expanded brand badge."
+    },
+    {
+      "id": "SHADERS_BAZAAR_MODAL",
+      "name": "Crystalline Shaders & Scene Themes Modal",
+      "category": "MODAL_SYSTEM",
+      "description": "Unified modal with 3D node mesh selector, 12 Free + 8 Backer shaders, and 6 real-time Three.js scene themes.",
+      "code_snippet": "const SHADER_PRESETS = {\n  classic: { color: 0x1d4ed8, emissive: 0x38bdf8, roughness: 0.10, transmission: 0.60 },\n  liquid: { color: 0x0284c7, emissive: 0x06b6d4, roughness: 0.06, transmission: 0.70 }\n};\nfunction applyShader(key) {\n  const s = SHADER_PRESETS[key];\n  if (coreHullMesh && s) {\n    coreHullMesh.material.color.setHex(s.color);\n    coreHullMesh.material.roughness = s.roughness;\n  }\n}",
+      "instructions": "Wire to Actions Menu '#btn-open-bazaar' and bottom dock palette triggers."
+    },
+    {
+      "id": "SPONSORS_TICKER_MODAL",
+      "name": "Supporter Ticker & 3D Reactor Modal",
+      "category": "MODAL_SYSTEM",
+      "description": "Interactive 3D WebGL hologram reactor canvas with drag-to-inspect, 5 contribution tiers, Stripe checkout, and D1 live stream.",
+      "code_snippet": "function initDonationHologram() {\n  const canvas = document.getElementById('donation-3d-canvas');\n  // Three.js icosahedron core with orbiting satellites and drag rotation\n}",
+      "instructions": "Wire to Actions Menu '#btn-open-ticker' and bottom-right live donation tracker badge."
+    },
+    {
+      "id": "LIGHT_MODE_CONTRAST_SHIELD",
+      "name": "Light Mode Readability & Contrast Shield",
+      "category": "THEMING",
+      "description": "Guarantees deep slate #0f172a / #020617 typography against light glass panels when dark mode is toggled off.",
+      "code_snippet": "html:not(.dark) body { background-color: #cbd5e1 !important; color: #0f172a !important; }\nhtml:not(.dark) .glass-panel { background: rgba(255, 255, 255, 0.94) !important; color: #0f172a !important; }\nhtml:not(.dark) .window-header h3, html:not(.dark) #brand-text-content span { color: #0f172a !important; }",
+      "instructions": "Include in <style> block of all BlackBoxes projects."
+    }
+  ],
+  "changelog": [
+    {
+      "id": 12,
+      "timestamp": "2026-09-03T13:40:00Z",
+      "project_id": "all",
+      "version": "v1.5.0",
+      "change_type": "LAYOUT_FIX",
+      "what_changed": "Eliminated window overlap where expanded brand badge covered window header and collapse button; removed duplicate keyboard listeners in Synth'em; added Copilot button to Pulse'em.",
+      "rationale": "win-controls was positioned at top: 75px-85px, causing the bottom of the brand badge (y=118px) to block physical mouse clicks on the window header.",
+      "effectiveness": "100% Operational - All buttons clickable on 1st click",
+      "files_modified": "Orbit_em, Pulse_em, Cap_em, Synth_em, Balanc_em"
+    },
+    {
+      "id": 11,
+      "timestamp": "2026-09-03T13:10:00Z",
+      "project_id": "all",
+      "version": "v1.4.0",
+      "change_type": "UI_POLISH",
+      "what_changed": "Centered brand logo in closed/collapsed state using exact 48x48px squircle geometry and zero-gap rule.",
+      "rationale": "Flex gap and asymmetric padding caused logo to sit off-center when text collapsed.",
+      "effectiveness": "100% Subpixel Geometry Centered (6.0px / 6.0px)",
+      "files_modified": "index.html across all engines"
+    },
+    {
+      "id": 10,
+      "timestamp": "2026-09-03T12:30:00Z",
+      "project_id": "all",
+      "version": "v1.3.0",
+      "change_type": "FEATURE_PARITY",
+      "what_changed": "Ported Shaders & Scene Themes (modal-bazaar) and Supporter Ticker & 3D Reactor (modal-ticker) to all 5 sister engines.",
+      "rationale": "Close feature gap between Box'em flagship and sibling engines.",
+      "effectiveness": "100% Feature Parity Achieved",
+      "files_modified": "Orbit_em, Pulse_em, Cap_em, Synth_em, Balanc_em"
+    },
+    {
+      "id": 9,
+      "timestamp": "2026-09-03T11:45:00Z",
+      "project_id": "box_em",
+      "version": "v1.2.0",
+      "change_type": "READABILITY",
+      "what_changed": "Fixed Box'em light mode text contrast regression caused by malformed Tailwind script tag.",
+      "rationale": "Unclosed script tag blocked Tailwind class dark mode initialization, defaulting text to white on light glass panels.",
+      "effectiveness": "100% Resolved - Typography renders in rich #0f172a slate",
+      "files_modified": "Box_em/index.html"
+    },
+    {
+      "id": 8,
+      "timestamp": "2026-09-03T08:30:00Z",
+      "project_id": "orbit_em",
+      "version": "v1.1.0",
+      "change_type": "REGRESSION_FIX",
+      "what_changed": "Fixed infinite 308 redirect loop on /showcase endpoint across sister projects.",
+      "rationale": "Cloudflare Pages automatically strips .html. The rewrite rule /showcase -> /showcase.html created an infinite circular redirect.",
+      "effectiveness": "100% Resolved - HTTP 200 OK across all showcase routes",
+      "files_modified": "_redirects across all projects"
+    },
+    {
+      "id": 7,
+      "timestamp": "2026-09-02T18:00:00Z",
+      "project_id": "ecosystem_hub",
+      "version": "v1.0.0",
+      "change_type": "INFRASTRUCTURE",
+      "what_changed": "Created BlackBoxes monorepo with 6 sibling engines and configured Cloudflare DNS & Pages deployment.",
+      "rationale": "Establish centralized multi-project architecture under blackboxes.net domain.",
+      "effectiveness": "100% Operational",
+      "files_modified": "index.html, package.json, scripts/manage.js"
+    },
+    {
+      "id": 6,
+      "timestamp": "2026-09-03T13:40:00Z",
+      "project_id": "all",
+      "version": "v1.5.0",
+      "change_type": "LAYOUT_FIX",
+      "what_changed": "Eliminated window overlap where expanded brand badge covered window header and collapse button; removed duplicate keyboard listeners in Synth'em; added Copilot button to Pulse'em.",
+      "rationale": "win-controls was positioned at top: 75px-85px, causing the bottom of the brand badge (y=118px) to block physical mouse clicks on the window header.",
+      "effectiveness": "100% Operational - All buttons clickable on 1st click",
+      "files_modified": "Orbit_em, Pulse_em, Cap_em, Synth_em, Balanc_em"
+    },
+    {
+      "id": 5,
+      "timestamp": "2026-09-03T13:10:00Z",
+      "project_id": "all",
+      "version": "v1.4.0",
+      "change_type": "UI_POLISH",
+      "what_changed": "Centered brand logo in closed/collapsed state using exact 48x48px squircle geometry and zero-gap rule.",
+      "rationale": "Flex gap and asymmetric padding caused logo to sit off-center when text collapsed.",
+      "effectiveness": "100% Subpixel Geometry Centered (6.0px / 6.0px)",
+      "files_modified": "index.html across all engines"
+    },
+    {
+      "id": 4,
+      "timestamp": "2026-09-03T12:30:00Z",
+      "project_id": "all",
+      "version": "v1.3.0",
+      "change_type": "FEATURE_PARITY",
+      "what_changed": "Ported Shaders & Scene Themes (modal-bazaar) and Supporter Ticker & 3D Reactor (modal-ticker) to all 5 sister engines.",
+      "rationale": "Close feature gap between Box'em flagship and sibling engines.",
+      "effectiveness": "100% Feature Parity Achieved",
+      "files_modified": "Orbit_em, Pulse_em, Cap_em, Synth_em, Balanc_em"
+    },
+    {
+      "id": 3,
+      "timestamp": "2026-09-03T11:45:00Z",
+      "project_id": "box_em",
+      "version": "v1.2.0",
+      "change_type": "READABILITY",
+      "what_changed": "Fixed Box'em light mode text contrast regression caused by malformed Tailwind script tag.",
+      "rationale": "Unclosed script tag blocked Tailwind class dark mode initialization, defaulting text to white on light glass panels.",
+      "effectiveness": "100% Resolved - Typography renders in rich #0f172a slate",
+      "files_modified": "Box_em/index.html"
+    },
+    {
+      "id": 2,
+      "timestamp": "2026-09-03T08:30:00Z",
+      "project_id": "orbit_em",
+      "version": "v1.1.0",
+      "change_type": "REGRESSION_FIX",
+      "what_changed": "Fixed infinite 308 redirect loop on /showcase endpoint across sister projects.",
+      "rationale": "Cloudflare Pages automatically strips .html. The rewrite rule /showcase -> /showcase.html created an infinite circular redirect.",
+      "effectiveness": "100% Resolved - HTTP 200 OK across all showcase routes",
+      "files_modified": "_redirects across all projects"
+    },
+    {
+      "id": 1,
+      "timestamp": "2026-09-02T18:00:00Z",
+      "project_id": "ecosystem_hub",
+      "version": "v1.0.0",
+      "change_type": "INFRASTRUCTURE",
+      "what_changed": "Created BlackBoxes monorepo with 6 sibling engines and configured Cloudflare DNS & Pages deployment.",
+      "rationale": "Establish centralized multi-project architecture under blackboxes.net domain.",
+      "effectiveness": "100% Operational",
+      "files_modified": "index.html, package.json, scripts/manage.js"
+    }
+  ],
+  "components_count": 114,
+  "operational_components": 114
+}

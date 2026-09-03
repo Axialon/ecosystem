@@ -19,6 +19,8 @@
     "deploy:balancem": "node scripts/manage.js deploy balancem",
     "deploy:all": "node scripts/manage.js deploy all",
     "test": "node Orbit_em/test/engine.test.js && node Pulse_em/test/engine.test.js && node Cap_em/test/engine.test.js && node Synth_em/test/engine.test.js && node Balanc_em/test/engine.test.js && cd Box_em && npm test",
+    "ledger": "python scripts/manage_ledger.py",
+    "ledger:audit": "node scratch/exhaustive_button_test.js && python scripts/manage_ledger.py",
     "audit": "node scripts/run_ecosystem_audits.js && cd Box_em && npm run audit",
     "publish:check": "node scripts/publish_check.js",
     "publish:prepare": "npm run audit && npm test && node scripts/publish_check.js",

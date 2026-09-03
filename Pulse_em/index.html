@@ -602,6 +602,11 @@
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">dna</span>
             <span class="text-[10px] font-black text-white">Protocols</span>
           </button>
+          <button 
+          <button id="btn-open-copilot-menu" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-indigo-400 hover:border-indigo-400 transition-all group" title="Biometric Copilot Advisory">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">psychology</span>
+            <span class="text-[10px] font-black text-white">Copilot</span>
+          </button>
           <button id="btn-open-export" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-sky-400 hover:border-sky-400 transition-all group" title="Export Suite: .pulse.json | .glb | Embed">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">file_download</span>
             <span class="text-[10px] font-black text-white">Export</span>
@@ -630,7 +635,7 @@
   </div>
 
   <!-- FLOATING WINDOW 1: Physiological Vectors Controls (Box'em Standard) -->
-  <div id="win-controls" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 75px; left: 20px; width: 380px; height: 580px;">
+  <div id="win-controls" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 108px; left: 20px; width: 380px; height: 580px;">
     <div class="window-header flex justify-between items-center pb-2.5 border-b border-rose-500/30 mb-2.5">
       <div class="flex items-center gap-2">
         <span class="material-symbols-outlined text-xl text-rose-400 font-bold">tune</span>
@@ -1690,6 +1695,20 @@
       }
     
       initWindowToggles();
+
+      document.getElementById('btn-open-copilot-menu')?.addEventListener('click', () => {
+        const win = document.getElementById('win-copilot');
+        const btn = document.getElementById('toggle-win-copilot');
+        if (win) {
+          win.style.display = 'flex';
+          btn?.classList.add('active');
+          if (typeof globalTopZIndex !== 'undefined') {
+            globalTopZIndex++;
+            win.style.zIndex = globalTopZIndex;
+          }
+        }
+      });
+    
       initTopActionsMenu();
       syncDonationPoolUI();
 
@@ -1896,7 +1915,7 @@
           const winCop = document.getElementById('win-copilot');
           if (winCtrl) {
             winCtrl.style.display = 'flex';
-            winCtrl.style.top = '75px';
+            winCtrl.style.top = '108px';
             winCtrl.style.left = '20px';
             winCtrl.style.right = 'auto';
             winCtrl.style.width = '380px';
