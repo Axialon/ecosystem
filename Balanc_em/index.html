@@ -11,55 +11,7 @@
 
   
     // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
-    function initEcosystemIntegration() {
-      const host = window.location.hostname;
-      
-      const isBlackboxesNet = host.endsWith("blackboxes.net");
-      const isLiveWeb = window.location.protocol.startsWith("http") && !host.includes("localhost") && !host.includes("127.0.0.1");
-
-      if (isLiveWeb) {
-        document.querySelectorAll(".ecosystem-link").forEach(a => {
-          const target = a.dataset.target;
-          if (target) {
-            if (isBlackboxesNet) {
-              a.href = "https://" + (target === "ecosystem" ? "ecosystem" : target) + ".blackboxes.net/";
-            } else {
-              const pagesDevMap = {
-                ecosystem: "https://ecosystem-9de.pages.dev/",
-                boxem: "https://boxem.blackboxes.net/",
-                orbitem: "https://orbitem.pages.dev/",
-                pulseem: "https://pulseem.pages.dev/",
-                capem: "https://capem.pages.dev/",
-                synthem: "https://synthem.pages.dev/",
-                balancem: "https://balancem.pages.dev/"
-              };
-              if (pagesDevMap[target]) a.href = pagesDevMap[target];
-            }
-          }
-        });
-      }
-
-      const poolEl = document.getElementById("ecosystem-pool-display") || document.getElementById("root-pool-badge");
-      if (poolEl) {
-        try {
-          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            if (parsed && typeof parsed.totalUsd === "number") {
-              const count = parsed.backerCount || parsed.backersCount || 19;
-              poolEl.textContent = "Live Cumulative Pool: $" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
-            }
-          }
-        } catch(e) {}
-      }
-    }
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initEcosystemIntegration);
-    } else {
-      initEcosystemIntegration();
-    }
-
-  </script>
+    
   <script>tailwind.config = { darkMode: 'class' };</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -87,8 +39,8 @@
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
       background: radial-gradient(circle at 60% 40%, #2e0d0d 0%, #170505 50%, #080101 100%);
       color: var(--text-main); user-select: none;
-    }
-    #webgl-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+     position: fixed; top: 0; left: 0; touch-action: none; overscroll-behavior: none;}
+    #webgl-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;}
     .glass-panel {
       background: var(--panel-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--panel-border); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -276,29 +228,30 @@
 </head>
 <body class="dark">
   <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Standard) -->
-  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/85 dark:bg-slate-950/90 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto relative z-40 pointer-events-auto">
+    <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Pattern) -->
+  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/90 dark:bg-slate-950/95 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto absolute top-0 left-0 right-0 z-40 pointer-events-auto select-none" style="touch-action: pan-x; -webkit-overflow-scrolling: touch;">
     <div class="max-w-[1920px] mx-auto flex items-center justify-between gap-4 text-xs font-mono">
       <div class="flex items-center gap-2 shrink-0">
         <span class="text-slate-400 font-bold uppercase tracking-wider text-[11px]">BlackBoxes:</span>
-        <a href="../index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
+        <a href="https://ecosystem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
           <span class="material-symbols-outlined text-sm">hub</span> Hub
         </a>
-        <a href="../Box_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1 shrink-0" data-target="boxem">
+        <a href="https://boxem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1 shrink-0" data-target="boxem">
           <span class="material-symbols-outlined text-sm">deployed_code</span> Box'em
         </a>
-        <a href="../Orbit_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
+        <a href="https://orbitem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
           <span class="material-symbols-outlined text-sm">cloud</span> Orbit'em
         </a>
-        <a href="../Pulse_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
+        <a href="https://pulseem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
           <span class="material-symbols-outlined text-sm">monitor_heart</span> Pulse'em
         </a>
-        <a href="../Cap_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
+        <a href="https://capem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
           <span class="material-symbols-outlined text-sm">account_balance</span> Cap'em
         </a>
-        <a href="../Synth_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-1 shrink-0" data-target="synthem">
+        <a href="https://synthem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-1 shrink-0" data-target="synthem">
           <span class="material-symbols-outlined text-sm">graphic_eq</span> Synth'em
         </a>
-        <a href="../Balanc_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg bg-red-600/40 border border-red-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="balancem">
+        <a href="https://balancem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg bg-red-600/40 border border-red-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="balancem">
           <span class="material-symbols-outlined text-sm">swords</span> Balanc'em
         </a>
       </div>
@@ -955,6 +908,16 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
+      controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+      controls.enableZoom = true;
+      controls.zoomSpeed = 1.2;
+      controls.enableRotate = true;
+      controls.rotateSpeed = 1.0;
+      const cEl = document.getElementById('webgl-canvas');
+      if (cEl) {
+        cEl.addEventListener('touchstart', () => { triggerInteractionPause(); }, { passive: true });
+        cEl.addEventListener('touchmove', (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+      }
       controls.addEventListener('start', () => { triggerInteractionPause(); });
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.95));
@@ -2300,7 +2263,41 @@ return CombatMeta
     initScalingSuite();
     animate(0);
   </script>
+  <script>
+    // Smart Local Fallback & Cumulative Pool Sync (Box'em Standard)
+    (function initEcosystemIntegration() {
+      const isLocal = window.location.protocol === 'file:' || window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1');
+      if (isLocal) {
+        const localMap = {
+          ecosystem: "../index.html",
+          boxem: "../Box_em/index.html",
+          orbitem: "../Orbit_em/index.html",
+          pulseem: "../Pulse_em/index.html",
+          capem: "../Cap_em/index.html",
+          synthem: "../Synth_em/index.html",
+          balancem: "../Balanc_em/index.html"
+        };
+        document.querySelectorAll(".ecosystem-link").forEach(a => {
+          const target = a.dataset.target;
+          if (target && localMap[target]) a.href = localMap[target];
+        });
+      }
 
-    <script>
-  </body>
+      const poolEl = document.getElementById("ecosystem-pool-display");
+      if (poolEl) {
+        try {
+          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && typeof parsed.totalUsd === "number") {
+              const count = parsed.backerCount || parsed.backersCount || 19;
+              poolEl.textContent = "$" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
+            }
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
+
+</body>
 </html>

@@ -6,60 +6,8 @@
   <title>Blackboxes - Synth'em 3D Spatial Granular & Audio DSP Studio</title>
   
   <script src="https://cdn.tailwindcss.com">
-    
-    }
-
-  
     // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
-    function initEcosystemIntegration() {
-      const host = window.location.hostname;
-      
-      const isBlackboxesNet = host.endsWith("blackboxes.net");
-      const isLiveWeb = window.location.protocol.startsWith("http") && !host.includes("localhost") && !host.includes("127.0.0.1");
-
-      if (isLiveWeb) {
-        document.querySelectorAll(".ecosystem-link").forEach(a => {
-          const target = a.dataset.target;
-          if (target) {
-            if (isBlackboxesNet) {
-              a.href = "https://" + (target === "ecosystem" ? "ecosystem" : target) + ".blackboxes.net/";
-            } else {
-              const pagesDevMap = {
-                ecosystem: "https://ecosystem-9de.pages.dev/",
-                boxem: "https://boxem.blackboxes.net/",
-                orbitem: "https://orbitem.pages.dev/",
-                pulseem: "https://pulseem.pages.dev/",
-                capem: "https://capem.pages.dev/",
-                synthem: "https://synthem.pages.dev/",
-                balancem: "https://balancem.pages.dev/"
-              };
-              if (pagesDevMap[target]) a.href = pagesDevMap[target];
-            }
-          }
-        });
-      }
-
-      const poolEl = document.getElementById("ecosystem-pool-display") || document.getElementById("root-pool-badge");
-      if (poolEl) {
-        try {
-          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            if (parsed && typeof parsed.totalUsd === "number") {
-              const count = parsed.backerCount || parsed.backersCount || 19;
-              poolEl.textContent = "Live Cumulative Pool: $" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
-            }
-          }
-        } catch(e) {}
-      }
-    }
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initEcosystemIntegration);
-    } else {
-      initEcosystemIntegration();
-    }
-
-  </script>
+    
   <script>tailwind.config = { darkMode: 'class' };</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -87,8 +35,8 @@
       margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
       background: radial-gradient(circle at 60% 40%, #2b0c36 0%, #17061f 50%, #06010a 100%);
       color: var(--text-main); user-select: none;
-    }
-    #webgl-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+     position: fixed; top: 0; left: 0; touch-action: none; overscroll-behavior: none;}
+    #webgl-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;}
     .glass-panel {
       background: var(--panel-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--panel-border); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -267,38 +215,168 @@
       color: #020617;
       transform: scale(1.08);
     }
-    .glass-stepper-btn:active {
-      transform: scale(0.92);
+    /* 3D Laser Scanner Beam - Linear Constant Velocity Traversal */
+    @keyframes laserSweepTop {
+      0% { opacity: 0; transform: translateY(-24px); }
+      5% { opacity: 1; }
+      28% { opacity: 1; transform: translateY(22px); }
+      30%, 100% { opacity: 0; transform: translateY(22px); }
+    }
+    @keyframes laserSweepChevron {
+      0%, 28% { opacity: 0; transform: translateY(0px); }
+      32% { opacity: 1; }
+      85% { opacity: 1; transform: translateY(48px); }
+      92%, 100% { opacity: 0; transform: translateY(52px); }
+    }
+    .scan-beam-top {
+      opacity: 0;
+      pointer-events: none;
+      transform-box: view-box;
+      transform-origin: 0 0;
+    }
+    .scan-beam-chevron {
+      opacity: 0;
+      pointer-events: none;
+      transform-box: view-box;
+      transform-origin: 0 0;
+    }
+    .group:hover .scan-beam-top,
+    .is-scanning .scan-beam-top {
+      animation: laserSweepTop 2.0s linear infinite;
+    }
+    .group:hover .scan-beam-chevron,
+    .is-scanning .scan-beam-chevron {
+      animation: laserSweepChevron 2.0s linear infinite;
     }
 
+    /* Virtual Synthesizer Piano Keyboard Styles (Mobile Ergonomic) */
+    .piano-keyboard-wrapper {
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      display: flex;
+      width: 100%;
+      height: 105px;
+      padding: 6px 8px 10px 8px;
+      background: rgba(10, 5, 20, 0.95);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(217, 70, 239, 0.45);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.9), 0 12px 35px rgba(0,0,0,0.7);
+    }
+    @media (max-width: 768px) {
+      .piano-keyboard-wrapper {
+        height: 85px;
+        padding: 4px 6px 8px 6px;
+      }
+    }
+    .piano-white-key {
+      flex: 1;
+      height: 100%;
+      background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 82%, #e2e8f0 100%);
+      border: 1px solid #94a3b8;
+      border-radius: 0 0 7px 7px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 5px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 -2px 3px rgba(0,0,0,0.18);
+      transition: background 0.06s, transform 0.04s, box-shadow 0.06s;
+      z-index: 10;
+    }
+    .piano-white-key:active, .piano-white-key.is-pressed {
+      background: linear-gradient(to bottom, #f5d0fe 0%, #e879f9 100%) !important;
+      transform: translateY(2px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6), 0 0 16px rgba(217, 70, 239, 0.7);
+    }
+    .piano-white-key .note-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #0f172a;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .piano-white-key .key-shortcut {
+      font-size: 8px;
+      font-weight: 800;
+      color: #64748b;
+      pointer-events: none;
+      margin-top: 2px;
+    }
+    .piano-black-key {
+      position: absolute;
+      top: 6px;
+      width: 8.5%;
+      height: 56%;
+      background: linear-gradient(to bottom, #2d1238 0%, #0d0213 100%);
+      border: 1px solid rgba(217, 70, 239, 0.7);
+      border-radius: 0 0 5px 5px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 4px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255,255,255,0.25);
+      z-index: 20;
+      transition: background 0.06s, transform 0.04s, box-shadow 0.06s;
+    }
+    @media (max-width: 768px) {
+      .piano-black-key {
+        top: 4px;
+        height: 54%;
+      }
+    }
+    .piano-black-key:active, .piano-black-key.is-pressed {
+      background: linear-gradient(to bottom, #d946ef 0%, #a21caf 100%) !important;
+      transform: translateY(2px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.8), 0 0 18px rgba(232, 121, 249, 0.9);
+    }
+    .piano-black-key .note-label {
+      font-size: 9px;
+      font-weight: 900;
+      color: #fdf4ff;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .piano-black-key .key-shortcut {
+      font-size: 7px;
+      font-weight: 800;
+      color: #e879f9;
+      pointer-events: none;
+    }
   </style>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body class="dark">
   <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Standard) -->
-  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/85 dark:bg-slate-950/90 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto relative z-40 pointer-events-auto">
+    <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Pattern) -->
+  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/90 dark:bg-slate-950/95 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto absolute top-0 left-0 right-0 z-40 pointer-events-auto select-none" style="touch-action: pan-x; -webkit-overflow-scrolling: touch;">
     <div class="max-w-[1920px] mx-auto flex items-center justify-between gap-4 text-xs font-mono">
       <div class="flex items-center gap-2 shrink-0">
         <span class="text-slate-400 font-bold uppercase tracking-wider text-[11px]">BlackBoxes:</span>
-        <a href="../index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
+        <a href="https://ecosystem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
           <span class="material-symbols-outlined text-sm">hub</span> Hub
         </a>
-        <a href="../Box_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1 shrink-0" data-target="boxem">
+        <a href="https://boxem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1 shrink-0" data-target="boxem">
           <span class="material-symbols-outlined text-sm">deployed_code</span> Box'em
         </a>
-        <a href="../Orbit_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
+        <a href="https://orbitem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
           <span class="material-symbols-outlined text-sm">cloud</span> Orbit'em
         </a>
-        <a href="../Pulse_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
+        <a href="https://pulseem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
           <span class="material-symbols-outlined text-sm">monitor_heart</span> Pulse'em
         </a>
-        <a href="../Cap_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
+        <a href="https://capem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
           <span class="material-symbols-outlined text-sm">account_balance</span> Cap'em
         </a>
-        <a href="../Synth_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg bg-fuchsia-600/40 border border-fuchsia-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="synthem">
+        <a href="https://synthem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg bg-fuchsia-600/40 border border-fuchsia-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="synthem">
           <span class="material-symbols-outlined text-sm">graphic_eq</span> Synth'em
         </a>
-        <a href="../Balanc_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-red-400 hover:text-red-300 font-bold flex items-center gap-1 shrink-0" data-target="balancem">
+        <a href="https://balancem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-red-400 hover:text-red-300 font-bold flex items-center gap-1 shrink-0" data-target="balancem">
           <span class="material-symbols-outlined text-sm">swords</span> Balanc'em
         </a>
       </div>
@@ -324,18 +402,85 @@
     </div>
   </div>
 
-  <!-- Top Left Brand Island (Box'em Standard) -->
-  <div id="brand-island" class="absolute top-12 left-4 z-40 pointer-events-auto">
-    <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg">
-      <a href="../index.html" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-fuchsia-500/40 font-black text-sm font-mono hover:scale-105 transition-transform" title="Back to Ecosystem">
-        ♫
-      </a>
-      <div>
+  <!-- Top-Left Branding Badge (Matching Box'em Standard) -->
+  <div id="brand-badge-container" class="absolute top-12 left-4 z-50 pointer-events-auto transition-all duration-200">
+    <div class="glass-panel px-3 py-2 rounded-2xl flex items-center gap-2.5 shadow-lg cursor-pointer select-none group border border-fuchsia-500/30">
+      <div class="w-9 h-9 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+        <svg viewBox="0 0 100 100" class="w-full h-full obsidian-logo-svg" shape-rendering="geometricPrecision">
+          <defs>
+            <linearGradient id="pLogoTopG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b485d"/>
+              <stop offset="35%" stop-color="#1e293b"/>
+              <stop offset="75%" stop-color="#0f172a"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+            <linearGradient id="pLogoLeftG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="45%" stop-color="#050914"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </linearGradient>
+            <linearGradient id="pLogoRightG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="50%" stop-color="#0b1120"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+
+            <clipPath id="pLogoClipTop">
+              <polygon points="50,4 90,26 50,48 10,26"/>
+            </clipPath>
+            <clipPath id="pLogoClipSide">
+              <polygon points="10,26 50,48 90,26 90,70 50,92 10,70"/>
+            </clipPath>
+
+            <filter id="pLogoGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- 1. Pure Solid Backing Hexagon -->
+          <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="#000000"/>
+
+          <!-- 2. Obsidian Crystalline Facets -->
+          <polygon points="50,4 90,26 50,48 10,26" fill="url(#pLogoTopG)"/>
+          <polygon points="10,26 50,48 50,92 10,70" fill="url(#pLogoLeftG)"/>
+          <polygon points="50,48 90,26 90,70 50,92" fill="url(#pLogoRightG)"/>
+
+          <!-- 3. Outer Silhouette Border -->
+          <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.4" stroke-linejoin="miter"/>
+
+          <!-- 4. Unified Internal Y Seam -->
+          <path d="M 10,26 L 50,48 L 90,26 M 50,48 L 50,92" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.4" stroke-linejoin="miter" stroke-linecap="butt"/>
+
+          <!-- 5. Subtle Top Specular Glint Line -->
+          <line x1="50" y1="4" x2="90" y2="26" stroke="rgba(255,255,255,0.45)" stroke-width="1.2" stroke-linecap="butt"/>
+
+          <!-- 6. Top Facet Laser Scan -->
+          <g clip-path="url(#pLogoClipTop)">
+            <g class="scan-beam-top">
+              <line x1="0" y1="26" x2="100" y2="26" stroke="#e879f9" stroke-width="7.0" filter="url(#pLogoGlow)" opacity="0.85"/>
+              <line x1="0" y1="26" x2="100" y2="26" stroke="#ffffff" stroke-width="2.2" stroke-linecap="butt"/>
+            </g>
+          </g>
+
+          <!-- 7. Side Facets 3D Warping Chevron -->
+          <g clip-path="url(#pLogoClipSide)">
+            <g class="scan-beam-chevron">
+              <path d="M 6,26 L 50,48 L 94,26" stroke="#e879f9" stroke-width="8.0" fill="none" stroke-linejoin="miter" stroke-linecap="butt" filter="url(#pLogoGlow)" opacity="0.90"/>
+              <path d="M 6,26 L 50,48 L 94,26" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linejoin="miter" stroke-linecap="butt"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div id="brand-text-content" class="hidden sm:block">
         <div class="flex items-center gap-2">
-          <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none text-white font-mono">SYNTH'EM</h1>
-          <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-fuchsia-500/20 text-fuchsia-300 rounded-md border border-fuchsia-400/40">3D AUDIO DSP</span>
+          <span class="text-base font-black tracking-wider text-white uppercase font-mono">BLACKBOXES • SYNTH'EM</span>
+          <span id="header-occupation-tag" class="px-3 py-1 text-xs font-mono uppercase bg-fuchsia-500/20 text-fuchsia-200 rounded-lg font-black border border-fuchsia-500/30">SPATIAL DSP</span>
         </div>
-        <p class="text-[10px] text-slate-300 font-mono">Spatial Granular Synthesis Studio</p>
+        <div class="text-sm text-slate-300 font-mono font-bold leading-tight mt-0.5">3D Spatial Granular & Audio DSP Studio</div>
       </div>
     </div>
   </div>
@@ -344,10 +489,10 @@
   <div id="top-right-bar-container" class="absolute top-12 right-4 z-50 pointer-events-auto flex items-center gap-2">
     <!-- Branded Custom Patch Dropdown -->
     <div class="branded-dropdown" id="dropdown-patch-wrapper">
-      <button id="btn-dropdown-patch" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-2 border border-fuchsia-400/40 shadow-lg">
-        <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
-        <span id="current-patch-name">Cyberpunk Acid Bassline</span>
-        <span class="material-symbols-outlined text-sm text-fuchsia-400">expand_more</span>
+      <button id="btn-dropdown-patch" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-1.5 sm:gap-2 border border-fuchsia-400/40 shadow-lg max-w-[160px] sm:max-w-none">
+        <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse shrink-0"></span>
+        <span id="current-patch-name" class="truncate max-w-[95px] sm:max-w-none">Cyberpunk Acid Bassline</span>
+        <span class="material-symbols-outlined text-sm text-fuchsia-400 shrink-0">expand_more</span>
       </button>
 
       <div id="dropdown-patch-menu" class="branded-dropdown-menu hidden p-2 space-y-1"></div>
@@ -376,9 +521,9 @@
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">equalizer</span>
             <span class="text-[10px] font-black text-white">Patches</span>
           </button>
-          <button id="btn-open-export" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-sky-400 hover:border-sky-400 transition-all group" title="Export Suite: .synth.json | .glb | Faust DSP">
-            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">file_download</span>
-            <span class="text-[10px] font-black text-white">Export</span>
+          <button id="btn-open-track-deck" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-emerald-400 hover:border-emerald-400 transition-all group" title="Open Custom Audio Track Deck & Stems">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">album</span>
+            <span class="text-[10px] font-black text-white">Track Deck</span>
           </button>
           <button id="btn-toggle-keyboard-menu" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-rose-400 hover:border-rose-400 transition-all group" title="Toggle Virtual Synthesizer Keyboard">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">piano</span>
@@ -388,13 +533,17 @@
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">psychology</span>
             <span class="text-[10px] font-black text-white">Copilot</span>
           </button>
-          <button id="btn-open-sponsor" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-pink-400 hover:border-pink-400 transition-all group" title="Supporters & Voluntary Backing Pool">
-            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">volunteer_activism</span>
-            <span class="text-[10px] font-black text-white">Sponsors</span>
+          <button id="btn-open-export" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-sky-400 hover:border-sky-400 transition-all group" title="Export Suite: .synth.json | .glb | Faust DSP">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">file_download</span>
+            <span class="text-[10px] font-black text-white">Export</span>
           </button>
           <button id="btn-cycle-shader" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-purple-400 hover:border-purple-400 transition-all group" title="Cycle Audio Shaders">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">palette</span>
             <span class="text-[10px] font-black text-white">Shaders</span>
+          </button>
+          <button id="btn-open-sponsor" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-pink-400 hover:border-pink-400 transition-all group" title="Supporters & Voluntary Backing Pool">
+            <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">volunteer_activism</span>
+            <span class="text-[10px] font-black text-white">Sponsors</span>
           </button>
           <button id="btn-open-config" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-teal-400 hover:border-teal-400 transition-all group" title="Unified Scaling & Geometry Suite">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">tune</span>
@@ -603,11 +752,168 @@
     </svg>
   </div>
 
-  <!-- Virtual Synthesizer Keyboard (Floating above dock tray) -->
-  <div id="keyboard-container" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 transition-all">
-    <div class="glass-panel px-4 py-2 rounded-2xl flex items-center gap-1.5 shadow-2xl">
-      <span class="text-[10px] font-mono text-slate-400 mr-2 hidden md:inline">Keys [A W S E D F T G Y H U J]</span>
-      <div id="synth-keyboard" class="flex gap-1"></div>
+  <!-- FLOATING WINDOW 3: Track Deck / Custom Audio Stem Player (Upload & Audio-Reactive Deck) -->
+  <div id="win-track-deck" class="floating-window glass-panel rounded-3xl p-4 shadow-2xl" style="top: 75px; left: 420px; width: 380px; height: 580px; display: none;">
+    <div class="window-header flex justify-between items-center pb-2.5 border-b border-fuchsia-500/30 mb-2.5">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl text-emerald-400 font-bold">album</span>
+        <h3 class="text-sm font-black uppercase tracking-wider text-white font-mono">Track Deck & Stems</h3>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button class="win-collapse-btn text-slate-300 hover:text-white p-1 rounded-lg font-mono text-sm" title="Minimize Window">−</button>
+        <button class="win-close-btn text-slate-300 hover:text-white p-1 rounded-lg font-mono text-sm" title="Close Window">✕</button>
+      </div>
+    </div>
+    <div class="window-body space-y-3.5">
+      <!-- Upload Drop Zone -->
+      <div id="track-dropzone" class="border-2 border-dashed border-fuchsia-500/40 hover:border-fuchsia-400 rounded-2xl p-4 text-center cursor-pointer transition-all bg-fuchsia-950/20 hover:bg-fuchsia-950/40 group">
+        <input type="file" id="track-file-input" accept="audio/*" class="hidden">
+        <span class="material-symbols-outlined text-3xl text-fuchsia-400 group-hover:scale-110 transition-transform">cloud_upload</span>
+        <div class="text-xs font-mono font-black text-white mt-1">Drop audio track or click to upload</div>
+        <div class="text-[10px] font-mono text-slate-400 mt-0.5">MP3, WAV, OGG, FLAC, M4A</div>
+      </div>
+
+      <!-- Quick Demo Track Button -->
+      <div class="flex items-center justify-between gap-2">
+        <button id="btn-load-demo-track" class="flex-1 py-2 px-3 rounded-xl text-xs font-mono font-bold glass-button text-sky-300 border-sky-500/40 hover:bg-sky-500/20 flex items-center justify-center gap-1.5 shadow">
+          <span class="material-symbols-outlined text-base">music_note</span> Load Demo Beat
+        </button>
+        <button id="btn-unload-track" class="py-2 px-3 rounded-xl text-xs font-mono font-bold glass-button text-slate-400 hover:text-rose-400 border-slate-700 hidden" title="Clear track">
+          <span class="material-symbols-outlined text-base">delete</span>
+        </button>
+      </div>
+
+      <!-- Track Information Card -->
+      <div id="track-info-card" class="glass-card p-3 rounded-2xl space-y-2 border-fuchsia-500/30">
+        <div class="flex items-center justify-between">
+          <span id="track-title-text" class="text-xs font-mono font-black text-white truncate max-w-[210px]">No Track Loaded</span>
+          <span id="track-format-badge" class="px-2 py-0.5 rounded text-[9px] font-mono bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30 font-bold">READY</span>
+        </div>
+
+        <!-- Real-time Oscilloscope / Waveform Canvas -->
+        <canvas id="track-wave-canvas" width="340" height="60" class="w-full h-[60px] rounded-xl bg-slate-950/80 border border-fuchsia-500/20"></canvas>
+
+        <!-- Seeker Bar & Time Display -->
+        <div class="space-y-1">
+          <input type="range" id="track-seeker" min="0" max="100" value="0" step="0.1" class="w-full accent-fuchsia-500 cursor-pointer h-1.5 rounded-lg bg-slate-800">
+          <div class="flex justify-between text-[10px] font-mono text-slate-400">
+            <span id="track-time-current">0:00</span>
+            <span id="track-time-duration">0:00</span>
+          </div>
+        </div>
+
+        <!-- Track Controls: Play, Pause, Stop, Loop -->
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-1.5">
+            <button id="btn-track-play" class="w-9 h-9 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-fuchsia-500/30 active:scale-95 transition-transform" title="Play Track">
+              <span class="material-symbols-outlined text-xl">play_arrow</span>
+            </button>
+            <button id="btn-track-stop" class="w-8 h-8 rounded-xl glass-button text-slate-300 flex items-center justify-center active:scale-95" title="Stop Track">
+              <span class="material-symbols-outlined text-base">stop</span>
+            </button>
+            <button id="btn-track-loop" class="px-2.5 py-1.5 rounded-lg glass-button text-xs font-mono font-bold text-slate-400 flex items-center gap-1" title="Toggle Loop">
+              <span class="material-symbols-outlined text-sm">repeat</span> Loop
+            </button>
+          </div>
+          <!-- Track Volume Slider -->
+          <div class="flex items-center gap-1.5 text-slate-400">
+            <span class="material-symbols-outlined text-sm">volume_up</span>
+            <input type="range" id="track-volume" min="0" max="1" step="0.05" value="0.75" class="w-16 accent-fuchsia-500 h-1 rounded bg-slate-800">
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Reactive Explanation -->
+      <div class="p-3 rounded-2xl bg-fuchsia-950/30 border border-fuchsia-500/20 text-[11px] font-mono text-slate-300 space-y-1">
+        <div class="text-fuchsia-300 font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">auto_graph</span> Audio-Reactive 3D Resonator
+        </div>
+        <p class="text-[10px] text-slate-400 leading-relaxed">
+          The 3D polytope in the background directly analyzes your uploaded audio in real time. Jam on the virtual keyboard over your track!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Virtual Synthesizer Piano Keyboard (Floating above dock tray) -->
+  <div id="keyboard-container" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1.5 transition-all w-[96vw] max-w-lg md:max-w-xl pointer-events-auto">
+    <div class="glass-panel w-full p-2.5 rounded-2xl shadow-2xl space-y-1.5 border border-fuchsia-500/40 backdrop-blur-2xl">
+      <!-- Keyboard Toolbar -->
+      <div class="flex items-center justify-between px-1 text-[11px] font-mono text-slate-300">
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-fuchsia-400">piano</span>
+          <span class="font-bold text-white">Polyphonic Synth</span>
+          <span class="text-[9px] text-fuchsia-300 bg-fuchsia-500/20 px-1.5 py-0.5 rounded border border-fuchsia-500/30 hidden sm:inline">Keys A-K</span>
+        </div>
+        <!-- Octave Shift & Wave Mode -->
+        <div class="flex items-center gap-1">
+          <button id="btn-octave-down" class="px-2 py-0.5 rounded-lg glass-button text-[10px] font-bold text-slate-300 hover:text-white" title="Octave Down">−</button>
+          <span id="keyboard-octave-badge" class="px-1.5 py-0.5 text-[10px] font-black text-fuchsia-300 bg-slate-900 rounded">OCT 4</span>
+          <button id="btn-octave-up" class="px-2 py-0.5 rounded-lg glass-button text-[10px] font-bold text-slate-300 hover:text-white" title="Octave Up">+</button>
+          <button id="btn-minimize-keyboard" class="ml-1 p-1 text-slate-400 hover:text-white rounded-lg" title="Minimize Keyboard">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Natural 2-Tier Piano Keyboard (8 White Keys + 5 Raised Black Keys) -->
+      <div id="synth-piano" class="piano-keyboard-wrapper">
+        <!-- 8 White Keys -->
+        <div class="piano-white-key" data-note="C" data-key="a">
+          <span class="note-label">C</span>
+          <span class="key-shortcut">A</span>
+        </div>
+        <div class="piano-white-key" data-note="D" data-key="s">
+          <span class="note-label">D</span>
+          <span class="key-shortcut">S</span>
+        </div>
+        <div class="piano-white-key" data-note="E" data-key="d">
+          <span class="note-label">E</span>
+          <span class="key-shortcut">D</span>
+        </div>
+        <div class="piano-white-key" data-note="F" data-key="f">
+          <span class="note-label">F</span>
+          <span class="key-shortcut">F</span>
+        </div>
+        <div class="piano-white-key" data-note="G" data-key="g">
+          <span class="note-label">G</span>
+          <span class="key-shortcut">G</span>
+        </div>
+        <div class="piano-white-key" data-note="A" data-key="h">
+          <span class="note-label">A</span>
+          <span class="key-shortcut">H</span>
+        </div>
+        <div class="piano-white-key" data-note="B" data-key="j">
+          <span class="note-label">B</span>
+          <span class="key-shortcut">J</span>
+        </div>
+        <div class="piano-white-key" data-note="C5" data-key="k">
+          <span class="note-label">C+</span>
+          <span class="key-shortcut">K</span>
+        </div>
+
+        <!-- 5 Raised Black Keys (Exact Percentage Offsets) -->
+        <div class="piano-black-key" style="left: 8.2%;" data-note="C#" data-key="w">
+          <span class="note-label">C#</span>
+          <span class="key-shortcut">W</span>
+        </div>
+        <div class="piano-black-key" style="left: 20.7%;" data-note="D#" data-key="e">
+          <span class="note-label">D#</span>
+          <span class="key-shortcut">E</span>
+        </div>
+        <div class="piano-black-key" style="left: 45.7%;" data-note="F#" data-key="t">
+          <span class="note-label">F#</span>
+          <span class="key-shortcut">T</span>
+        </div>
+        <div class="piano-black-key" style="left: 58.2%;" data-note="G#" data-key="y">
+          <span class="note-label">G#</span>
+          <span class="key-shortcut">Y</span>
+        </div>
+        <div class="piano-black-key" style="left: 70.7%;" data-note="A#" data-key="u">
+          <span class="note-label">A#</span>
+          <span class="key-shortcut">U</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -628,6 +934,9 @@
     </button>
     <button id="toggle-win-copilot" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
       <span class="material-symbols-outlined text-base text-indigo-400 font-bold">psychology</span> Copilot
+    </button>
+    <button id="toggle-win-track-deck" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
+      <span class="material-symbols-outlined text-base text-emerald-400 font-bold">album</span> Deck
     </button>
     <button id="toggle-keyboard-dock" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap flex-shrink-0" title="Toggle Virtual Synthesizer Keyboard">
       <span class="material-symbols-outlined text-base text-rose-400 font-bold">piano</span> Keyboard
@@ -969,6 +1278,16 @@
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
+      controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+      controls.enableZoom = true;
+      controls.zoomSpeed = 1.2;
+      controls.enableRotate = true;
+      controls.rotateSpeed = 1.0;
+      const cEl = document.getElementById('webgl-canvas');
+      if (cEl) {
+        cEl.addEventListener('touchstart', () => { triggerInteractionPause(); }, { passive: true });
+        cEl.addEventListener('touchmove', (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+      }
       controls.addEventListener('start', () => { triggerInteractionPause(); });
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.95));
@@ -1341,84 +1660,503 @@
       window.addEventListener('click', () => { menu.classList.add('hidden'); });
     }
 
-    // Web Audio Synthesizer Engine
+    // =========================================================================
+    // HIGH-FIDELITY WEB AUDIO SYNTHESIZER & STEM TRACK DECK ENGINE
+    // =========================================================================
     let audioCtx = null;
-    const activeOscillators = {};
-    const NOTE_FREQS = {
-      'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
-      'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
-      'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
-    };
-    const KEY_BINDINGS = {
-      'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4',
-      'f': 'F4', 't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4',
-      'u': 'A#4', 'j': 'B4', 'k': 'C5'
-    };
+    let masterGain = null;
+    let masterLimiter = null;
+    let masterAnalyser = null;
+    let currentOctave = 4;
+    const activeVoices = {};
 
-    function startNote(note) {
-      if (!NOTE_FREQS[note]) return;
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        if (activeOscillators[note]) return;
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
-
-        osc.type = currentPatch.synthType === 'fm' ? 'sine' : 'sawtooth';
-        osc.frequency.setValueAtTime(NOTE_FREQS[note] * state.pitchRatio, audioCtx.currentTime);
-
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(state.vcfCutoffHz, audioCtx.currentTime);
-        filter.Q.setValueAtTime(4.0 + (state.harmonicDrivePercent / 20.0), audioCtx.currentTime);
-
-        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        activeOscillators[note] = { osc, gain, filter };
-      } catch (e) {}
+    // Note frequency calculation: semitone offsets from A4 (440Hz)
+    const SEMITONES = { 'C': -9, 'C#': -8, 'D': -7, 'D#': -6, 'E': -5, 'F': -4, 'F#': -3, 'G': -2, 'G#': -1, 'A': 0, 'A#': 1, 'B': 2 };
+    function getNoteFrequency(noteName, octave = currentOctave) {
+      if (noteName === 'C5') return getNoteFrequency('C', octave + 1);
+      const semi = SEMITONES[noteName] !== undefined ? SEMITONES[noteName] : 0;
+      const totalSemis = semi + (octave - 4) * 12;
+      return 440 * Math.pow(2, totalSemis / 12);
     }
 
-    function stopNote(note) {
-      if (activeOscillators[note]) {
-        try {
-          const { osc, gain } = activeOscillators[note];
-          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
-          osc.stop(audioCtx.currentTime + 0.16);
-          delete activeOscillators[note];
-        } catch (e) {}
+    function ensureAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        
+        // Master Limiter / Compressor to avoid digital clipping and produce punchy sound
+        masterLimiter = audioCtx.createDynamicsCompressor();
+        masterLimiter.threshold.setValueAtTime(-12, audioCtx.currentTime);
+        masterLimiter.knee.setValueAtTime(8, audioCtx.currentTime);
+        masterLimiter.ratio.setValueAtTime(12, audioCtx.currentTime);
+        masterLimiter.attack.setValueAtTime(0.003, audioCtx.currentTime);
+        masterLimiter.release.setValueAtTime(0.12, audioCtx.currentTime);
+
+        // Master Gain (audible, punchy)
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0.85, audioCtx.currentTime);
+
+        // Master Analyser (for 3D visual reactivity)
+        masterAnalyser = audioCtx.createAnalyser();
+        masterAnalyser.fftSize = 256;
+        masterAnalyser.smoothingTimeConstant = 0.8;
+
+        masterLimiter.connect(masterGain);
+        masterGain.connect(masterAnalyser);
+        masterAnalyser.connect(audioCtx.destination);
+      }
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Auto-unlock audio on any user interaction across the page
+    ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, () => {
+        try { ensureAudioContext(); } catch(e) {}
+      }, { passive: true });
+    });
+
+    function startSynthNote(noteName) {
+      try {
+        const ctx = ensureAudioContext();
+        if (activeVoices[noteName]) return;
+
+        const baseFreq = getNoteFrequency(noteName, currentOctave) * (state.pitchRatio || 1.0);
+        const now = ctx.currentTime;
+
+        // Dual Oscillator Architecture (Saw + Sub/Square)
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const oscSub = ctx.createOscillator();
+
+        const oscType = currentPatch.synthType === 'fm' ? 'sine' : (currentPatch.synthType === 'wavetable' ? 'triangle' : 'sawtooth');
+        osc1.type = oscType;
+        osc2.type = oscType === 'sawtooth' ? 'square' : 'sawtooth';
+        oscSub.type = 'sine';
+
+        osc1.frequency.setValueAtTime(baseFreq, now);
+        // Rich unison detune (+4 cents and -4 cents)
+        osc2.frequency.setValueAtTime(baseFreq * 1.0025, now);
+        // Sub oscillator 1 octave down
+        oscSub.frequency.setValueAtTime(baseFreq * 0.5, now);
+
+        // Voice Resonant VCF Lowpass Filter
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        const cutoff = Math.max(100, Math.min(12000, state.vcfCutoffHz || 2400));
+        filter.frequency.setValueAtTime(cutoff, now);
+        filter.Q.setValueAtTime(2.0 + ((state.harmonicDrivePercent || 40) / 12.0), now);
+
+        // Voice ADSR Volume Envelope
+        const voiceGain = ctx.createGain();
+        voiceGain.gain.setValueAtTime(0.0001, now);
+        // Fast, punchy attack (8ms)
+        voiceGain.gain.linearRampToValueAtTime(0.45, now + 0.008);
+        // Decay to sustain level
+        voiceGain.gain.exponentialRampToValueAtTime(0.35, now + 0.12);
+
+        // Wire up voice routing
+        osc1.connect(filter);
+        osc2.connect(filter);
+        oscSub.connect(filter);
+        filter.connect(voiceGain);
+        voiceGain.connect(masterLimiter);
+
+        osc1.start(now);
+        osc2.start(now);
+        oscSub.start(now);
+
+        activeVoices[noteName] = { osc1, osc2, oscSub, filter, voiceGain, startTime: now };
+
+        // Visual key highlight
+        const keyEl = document.querySelector(`[data-note="${noteName}"]`);
+        if (keyEl) keyEl.classList.add('is-pressed');
+      } catch (err) {
+        console.warn('Audio note error:', err);
       }
     }
 
+    function stopSynthNote(noteName) {
+      const voice = activeVoices[noteName];
+      if (voice && audioCtx) {
+        try {
+          const now = audioCtx.currentTime;
+          // Smooth release envelope (180ms)
+          voice.voiceGain.gain.cancelScheduledValues(now);
+          voice.voiceGain.gain.setValueAtTime(voice.voiceGain.gain.value, now);
+          voice.voiceGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+          
+          voice.osc1.stop(now + 0.19);
+          voice.osc2.stop(now + 0.19);
+          voice.oscSub.stop(now + 0.19);
+          delete activeVoices[noteName];
+        } catch (e) {}
+      }
+      const keyEl = document.querySelector(`[data-note="${noteName}"]`);
+      if (keyEl) keyEl.classList.remove('is-pressed');
+    }
+
+    // Keyboard bindings for computer keys
+    const KEY_TO_NOTE = {
+      'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E',
+      'f': 'F', 't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A',
+      'u': 'A#', 'j': 'B', 'k': 'C5'
+    };
+
     function initKeyboard() {
-      const kb = document.getElementById('synth-keyboard');
-      if (!kb) return;
-      kb.innerHTML = '';
-      Object.keys(NOTE_FREQS).forEach(note => {
-        const isSharp = note.includes('#');
-        const btn = document.createElement('button');
-        btn.className = `px-2 py-2.5 rounded-lg text-[10px] font-mono font-bold transition-all ${isSharp ? 'bg-fuchsia-950 text-fuchsia-300 border border-fuchsia-700' : 'bg-slate-800 text-white border border-slate-700'}`;
-        btn.textContent = note;
-        btn.addEventListener('pointerdown', (e) => { e.preventDefault(); startNote(note); });
-        btn.addEventListener('pointerup', () => stopNote(note));
-        btn.addEventListener('pointerleave', () => stopNote(note));
-        kb.appendChild(btn);
+      const piano = document.getElementById('synth-piano');
+      if (!piano) return;
+
+      const keys = piano.querySelectorAll('.piano-white-key, .piano-black-key');
+
+      // Mouse & Pointer interaction (with glissando drag support)
+      let isPointerDown = false;
+      window.addEventListener('pointerup', () => {
+        isPointerDown = false;
+        Object.keys(activeVoices).forEach(n => stopSynthNote(n));
       });
 
+      keys.forEach(k => {
+        const note = k.getAttribute('data-note');
+
+        // Multi-touch support for phones and tablets
+        k.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          ensureAudioContext();
+          startSynthNote(note);
+        }, { passive: false });
+
+        k.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          stopSynthNote(note);
+        }, { passive: false });
+
+        k.addEventListener('touchcancel', (e) => {
+          e.preventDefault();
+          stopSynthNote(note);
+        }, { passive: false });
+
+        // Pointer / Mouse events
+        k.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          isPointerDown = true;
+          ensureAudioContext();
+          startSynthNote(note);
+        });
+
+        k.addEventListener('pointerenter', () => {
+          if (isPointerDown) startSynthNote(note);
+        });
+
+        k.addEventListener('pointerleave', () => {
+          stopSynthNote(note);
+        });
+
+        k.addEventListener('pointerup', () => {
+          stopSynthNote(note);
+        });
+      });
+
+      // Octave controls
+      document.getElementById('btn-octave-down')?.addEventListener('click', () => {
+        if (currentOctave > 2) {
+          currentOctave--;
+          document.getElementById('keyboard-octave-badge').textContent = `OCT ${currentOctave}`;
+        }
+      });
+      document.getElementById('btn-octave-up')?.addEventListener('click', () => {
+        if (currentOctave < 6) {
+          currentOctave++;
+          document.getElementById('keyboard-octave-badge').textContent = `OCT ${currentOctave}`;
+        }
+      });
+
+      // Keyboard minimize button
+      document.getElementById('btn-minimize-keyboard')?.addEventListener('click', () => {
+        const kbContainer = document.getElementById('keyboard-container');
+        if (kbContainer) kbContainer.style.display = 'none';
+        document.getElementById('toggle-keyboard-dock')?.classList.remove('active');
+      });
+
+      // Computer keyboard listeners
       window.addEventListener('keydown', (e) => {
-        const note = KEY_BINDINGS[e.key.toLowerCase()];
-        if (note) startNote(note);
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.repeat) return;
+        const note = KEY_TO_NOTE[e.key.toLowerCase()];
+        if (note) {
+          ensureAudioContext();
+          startSynthNote(note);
+        }
       });
 
       window.addEventListener('keyup', (e) => {
-        const note = KEY_BINDINGS[e.key.toLowerCase()];
-        if (note) stopNote(note);
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        const note = KEY_TO_NOTE[e.key.toLowerCase()];
+        if (note) stopSynthNote(note);
       });
+    }
+
+    // =========================================================================
+    // TRACK DECK / CUSTOM AUDIO STEM PLAYER & ANALYZER ENGINE
+    // =========================================================================
+    let trackAudioBuffer = null;
+    let trackSourceNode = null;
+    let trackGainNode = null;
+    let trackStartTime = 0;
+    let trackPauseOffset = 0;
+    let isTrackPlaying = false;
+    let isTrackLooping = true;
+
+    function initTrackDeck() {
+      const dropzone = document.getElementById('track-dropzone');
+      const fileInput = document.getElementById('track-file-input');
+      const btnPlay = document.getElementById('btn-track-play');
+      const btnStop = document.getElementById('btn-track-stop');
+      const btnLoop = document.getElementById('btn-track-loop');
+      const btnLoadDemo = document.getElementById('btn-load-demo-track');
+      const btnUnload = document.getElementById('btn-unload-track');
+      const seeker = document.getElementById('track-seeker');
+      const volumeInput = document.getElementById('track-volume');
+      const waveCanvas = document.getElementById('track-wave-canvas');
+      const waveCtx = waveCanvas ? waveCanvas.getContext('2d') : null;
+
+      // File drag and drop
+      if (dropzone && fileInput) {
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-fuchsia-300'); });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('border-fuchsia-300'));
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('border-fuchsia-300');
+          if (e.dataTransfer.files.length > 0) handleAudioFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files.length > 0) handleAudioFile(e.target.files[0]);
+        });
+      }
+
+      async function handleAudioFile(file) {
+        try {
+          const ctx = ensureAudioContext();
+          document.getElementById('track-title-text').textContent = 'Decoding ' + file.name + '...';
+          const arrayBuffer = await file.arrayBuffer();
+          trackAudioBuffer = await ctx.decodeAudioData(arrayBuffer);
+          setupLoadedTrack(file.name);
+        } catch (err) {
+          alert('Error decoding audio track: ' + err.message);
+          document.getElementById('track-title-text').textContent = 'Decode Failed';
+        }
+      }
+
+      // Procedural Synthwave Demo Beat Generator (Instant 1-click test without uploading files)
+      if (btnLoadDemo) {
+        btnLoadDemo.addEventListener('click', () => {
+          const ctx = ensureAudioContext();
+          const sampleRate = ctx.sampleRate;
+          const duration = 8.0; // 8-second seamless loop
+          const buffer = ctx.createBuffer(2, sampleRate * duration, sampleRate);
+          const chL = buffer.getChannelData(0);
+          const chR = buffer.getChannelData(1);
+
+          // Generate 125 BPM cyber drum & synth arpeggio pattern
+          const bpm = 125;
+          const beatSec = 60 / bpm;
+          for (let i = 0; i < buffer.length; i++) {
+            const t = i / sampleRate;
+            const beat = (t % beatSec) / beatSec;
+            const barBeat = Math.floor(t / beatSec) % 16;
+            
+            // 1. Cyber Kick Drum (on beats 0, 4, 8, 12)
+            let kick = 0;
+            if (barBeat % 4 === 0) {
+              const kEnv = Math.max(0, 1 - beat * 5);
+              const kFreq = 140 * Math.max(0.1, 1 - beat * 4);
+              kick = Math.sin(t * Math.PI * 2 * kFreq) * kEnv * 0.7;
+            }
+
+            // 2. Snare / Clap (on beats 2, 6, 10, 14)
+            let snare = 0;
+            if (barBeat % 4 === 2) {
+              const sEnv = Math.max(0, 1 - beat * 3.5);
+              const noise = (Math.random() * 2 - 1) * 0.4;
+              snare = (Math.sin(t * Math.PI * 2 * 210) * 0.4 + noise) * sEnv;
+            }
+
+            // 3. 16th-note Hi-Hats
+            const sixteenth = (t % (beatSec / 4)) / (beatSec / 4);
+            const hatEnv = Math.max(0, 1 - sixteenth * 14);
+            const hat = (Math.random() * 2 - 1) * hatEnv * 0.15;
+
+            // 4. Synthwave Acid Bassline (Arp on D2 - F2 - G2 - A2)
+            const arpNotes = [73.42, 87.31, 98.00, 110.00];
+            const arpFreq = arpNotes[Math.floor(t / (beatSec / 2)) % arpNotes.length];
+            const arpEnv = Math.max(0, 1 - (t % (beatSec / 2)) * 3);
+            const bass = (Math.sin(t * Math.PI * 2 * arpFreq) * 0.5 + Math.sin(t * Math.PI * 4 * arpFreq) * 0.25) * arpEnv * 0.4;
+
+            const mono = kick + snare + hat + bass;
+            chL[i] = mono * 0.85;
+            chR[i] = (mono + hat * 0.2) * 0.85;
+          }
+
+          trackAudioBuffer = buffer;
+          setupLoadedTrack('Cyberpunk_Demo_Beat_125bpm.wav');
+        });
+      }
+
+      function setupLoadedTrack(title) {
+        document.getElementById('track-title-text').textContent = title;
+        document.getElementById('track-format-badge').textContent = `${Math.round(trackAudioBuffer.sampleRate / 1000)}kHz • ${trackAudioBuffer.numberOfChannels}ch`;
+        document.getElementById('track-time-duration').textContent = formatTime(trackAudioBuffer.duration);
+        document.getElementById('track-time-current').textContent = '0:00';
+        if (btnUnload) btnUnload.classList.remove('hidden');
+        trackPauseOffset = 0;
+        playTrack();
+      }
+
+      function playTrack() {
+        if (!trackAudioBuffer) return;
+        const ctx = ensureAudioContext();
+        if (isTrackPlaying) stopTrack();
+
+        trackSourceNode = ctx.createBufferSource();
+        trackSourceNode.buffer = trackAudioBuffer;
+        trackSourceNode.loop = isTrackLooping;
+
+        trackGainNode = ctx.createGain();
+        trackGainNode.gain.setValueAtTime(parseFloat(volumeInput?.value || 0.75), ctx.currentTime);
+
+        trackSourceNode.connect(trackGainNode);
+        trackGainNode.connect(masterLimiter); // Connects into master analyzer & speaker output
+
+        trackStartTime = ctx.currentTime - trackPauseOffset;
+        trackSourceNode.start(0, trackPauseOffset % trackAudioBuffer.duration);
+        isTrackPlaying = true;
+
+        if (btnPlay) {
+          btnPlay.innerHTML = '<span class="material-symbols-outlined text-xl">pause</span>';
+          btnPlay.title = 'Pause Track';
+        }
+
+        trackSourceNode.onended = () => {
+          if (!isTrackLooping && isTrackPlaying) stopTrack();
+        };
+      }
+
+      function pauseTrack() {
+        if (!isTrackPlaying || !trackSourceNode) return;
+        const ctx = ensureAudioContext();
+        trackPauseOffset = ctx.currentTime - trackStartTime;
+        trackSourceNode.stop();
+        trackSourceNode = null;
+        isTrackPlaying = false;
+        if (btnPlay) {
+          btnPlay.innerHTML = '<span class="material-symbols-outlined text-xl">play_arrow</span>';
+          btnPlay.title = 'Play Track';
+        }
+      }
+
+      function stopTrack() {
+        if (trackSourceNode) {
+          try { trackSourceNode.stop(); } catch(e) {}
+          trackSourceNode = null;
+        }
+        isTrackPlaying = false;
+        trackPauseOffset = 0;
+        if (btnPlay) {
+          btnPlay.innerHTML = '<span class="material-symbols-outlined text-xl">play_arrow</span>';
+          btnPlay.title = 'Play Track';
+        }
+        document.getElementById('track-time-current').textContent = '0:00';
+        if (seeker) seeker.value = 0;
+      }
+
+      btnPlay?.addEventListener('click', () => {
+        if (!trackAudioBuffer) {
+          btnLoadDemo?.click();
+          return;
+        }
+        if (isTrackPlaying) pauseTrack();
+        else playTrack();
+      });
+
+      btnStop?.addEventListener('click', stopTrack);
+
+      btnLoop?.addEventListener('click', () => {
+        isTrackLooping = !isTrackLooping;
+        if (trackSourceNode) trackSourceNode.loop = isTrackLooping;
+        btnLoop.classList.toggle('text-fuchsia-400', isTrackLooping);
+        btnLoop.classList.toggle('text-slate-400', !isTrackLooping);
+      });
+
+      volumeInput?.addEventListener('input', (e) => {
+        if (trackGainNode && audioCtx) {
+          trackGainNode.gain.setValueAtTime(parseFloat(e.target.value), audioCtx.currentTime);
+        }
+      });
+
+      seeker?.addEventListener('input', (e) => {
+        if (!trackAudioBuffer) return;
+        const pct = parseFloat(e.target.value) / 100;
+        trackPauseOffset = pct * trackAudioBuffer.duration;
+        if (isTrackPlaying) playTrack();
+        else document.getElementById('track-time-current').textContent = formatTime(trackPauseOffset);
+      });
+
+      btnUnload?.addEventListener('click', () => {
+        stopTrack();
+        trackAudioBuffer = null;
+        document.getElementById('track-title-text').textContent = 'No Track Loaded';
+        document.getElementById('track-format-badge').textContent = 'READY';
+        document.getElementById('track-time-duration').textContent = '0:00';
+        btnUnload.classList.add('hidden');
+      });
+
+      function formatTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+      }
+
+      // Draw Waveform Canvas loop
+      function drawTrackWaveform() {
+        requestAnimationFrame(drawTrackWaveform);
+        if (!waveCanvas || !waveCtx) return;
+
+        // Update seeker position if playing
+        if (isTrackPlaying && trackAudioBuffer && audioCtx) {
+          const current = (audioCtx.currentTime - trackStartTime) % trackAudioBuffer.duration;
+          document.getElementById('track-time-current').textContent = formatTime(current);
+          if (seeker) seeker.value = (current / trackAudioBuffer.duration) * 100;
+        }
+
+        waveCtx.fillStyle = 'rgba(10, 5, 18, 0.4)';
+        waveCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+
+        if (masterAnalyser) {
+          const bufferLength = masterAnalyser.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+          masterAnalyser.getByteTimeDomainData(dataArray);
+
+          waveCtx.lineWidth = 2;
+          waveCtx.strokeStyle = '#e879f9';
+          waveCtx.beginPath();
+
+          const sliceWidth = waveCanvas.width * 1.0 / bufferLength;
+          let x = 0;
+          for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * waveCanvas.height / 2;
+            if (i === 0) waveCtx.moveTo(x, y);
+            else waveCtx.lineTo(x, y);
+            x += sliceWidth;
+          }
+          waveCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
+          waveCtx.stroke();
+        }
+      }
+      drawTrackWaveform();
     }
 
     function initUI() {
@@ -1515,10 +2253,32 @@
         });
       }
 
+      initTrackDeck();
       setupDraggableWindows();
       initWindowToggles();
       initTopActionsMenu();
       syncDonationPoolUI();
+
+      // Brand badge collapse on click (Box'em standard)
+      const brandBadge = document.getElementById('brand-badge-container');
+      const brandText = document.getElementById('brand-text-content');
+      if (brandBadge && brandText) {
+        brandBadge.addEventListener('click', () => {
+          brandText.classList.toggle('hidden');
+          brandBadge.classList.add('is-scanning');
+          setTimeout(() => brandBadge.classList.remove('is-scanning'), 2000);
+        });
+      }
+
+      // Mobile Responsive Default Collapsed Windows (< 768px)
+      if (window.innerWidth < 768) {
+        const winCtrl = document.getElementById('win-controls');
+        const winCop = document.getElementById('win-copilot');
+        if (winCtrl) winCtrl.classList.add('collapsed');
+        if (winCop) winCop.classList.add('collapsed');
+        document.getElementById('toggle-win-controls')?.classList.remove('active');
+        document.getElementById('toggle-win-copilot')?.classList.remove('active');
+      }
 
       rebuildSubmoduleHarmonics();
       syncUIInputs();
@@ -1691,6 +2451,7 @@
             const winId = win.id;
             if (winId === 'win-controls') document.getElementById('toggle-win-controls')?.classList.remove('active');
             if (winId === 'win-copilot') document.getElementById('toggle-win-copilot')?.classList.remove('active');
+            if (winId === 'win-track-deck') document.getElementById('toggle-win-track-deck')?.classList.remove('active');
           });
         }
       });
@@ -1716,6 +2477,21 @@
 
       toggle('toggle-win-controls', 'win-controls');
       toggle('toggle-win-copilot', 'win-copilot');
+      toggle('toggle-win-track-deck', 'win-track-deck');
+      toggle('toggle-keyboard-dock', 'keyboard-container');
+
+      // Top Actions Menu item for Track Deck
+      document.getElementById('btn-open-track-deck')?.addEventListener('click', () => {
+        const win = document.getElementById('win-track-deck');
+        const btn = document.getElementById('toggle-win-track-deck');
+        if (win) {
+          win.style.display = 'flex';
+          btn?.classList.add('active');
+          globalTopZIndex++;
+          win.style.zIndex = globalTopZIndex;
+        }
+        document.getElementById('top-menu-dropdown')?.classList.add('hidden');
+      });
 
       const btnReset = document.getElementById('btn-reset-windows');
       if (btnReset) {
@@ -2123,9 +2899,21 @@ process = os.sawtooth(440 * pitch) : ef.cubicnl(drive, 0.0) : fi.lowpass(2, cuto
         }
       }
 
+      // Real-time Audio Reactivity to 3D Resonator Polytope
+      let audioLevel = 0;
+      if (masterAnalyser) {
+        const fData = new Uint8Array(masterAnalyser.frequencyBinCount);
+        masterAnalyser.getByteFrequencyData(fData);
+        let sum = 0;
+        for (let i = 0; i < 16; i++) sum += fData[i]; // Low-end bass energy
+        audioLevel = sum / (16 * 255); // 0 to 1
+      }
+
       if (!state.isInteracting) {
-        systemGroup.rotation.y += 0.002;
-        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05;
+        systemGroup.rotation.y += 0.002 + audioLevel * 0.008;
+        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05 + (audioLevel * 0.08);
+        const pulseScale = 1.0 + audioLevel * 0.20;
+        systemGroup.scale.set(pulseScale, pulseScale, pulseScale);
       }
 
       // Spin internal crystals
@@ -2379,7 +3167,41 @@ process = os.sawtooth(440 * pitch) : ef.cubicnl(drive, 0.0) : fi.lowpass(2, cuto
     initScalingSuite();
     animate(0);
   </script>
+  <script>
+    // Smart Local Fallback & Cumulative Pool Sync (Box'em Standard)
+    (function initEcosystemIntegration() {
+      const isLocal = window.location.protocol === 'file:' || window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1');
+      if (isLocal) {
+        const localMap = {
+          ecosystem: "../index.html",
+          boxem: "../Box_em/index.html",
+          orbitem: "../Orbit_em/index.html",
+          pulseem: "../Pulse_em/index.html",
+          capem: "../Cap_em/index.html",
+          synthem: "../Synth_em/index.html",
+          balancem: "../Balanc_em/index.html"
+        };
+        document.querySelectorAll(".ecosystem-link").forEach(a => {
+          const target = a.dataset.target;
+          if (target && localMap[target]) a.href = localMap[target];
+        });
+      }
 
-    <script>
-  </body>
+      const poolEl = document.getElementById("ecosystem-pool-display");
+      if (poolEl) {
+        try {
+          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && typeof parsed.totalUsd === "number") {
+              const count = parsed.backerCount || parsed.backersCount || 19;
+              poolEl.textContent = "$" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
+            }
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
+
+</body>
 </html>

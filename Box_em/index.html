@@ -11,55 +11,7 @@
 
   
     // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
-    function initEcosystemIntegration() {
-      const host = window.location.hostname;
-      
-      const isBlackboxesNet = host.endsWith("blackboxes.net");
-      const isLiveWeb = window.location.protocol.startsWith("http") && !host.includes("localhost") && !host.includes("127.0.0.1");
-
-      if (isLiveWeb) {
-        document.querySelectorAll(".ecosystem-link").forEach(a => {
-          const target = a.dataset.target;
-          if (target) {
-            if (isBlackboxesNet) {
-              a.href = "https://" + (target === "ecosystem" ? "ecosystem" : target) + ".blackboxes.net/";
-            } else {
-              const pagesDevMap = {
-                ecosystem: "https://ecosystem-9de.pages.dev/",
-                boxem: "https://boxem.blackboxes.net/",
-                orbitem: "https://orbitem.pages.dev/",
-                pulseem: "https://pulseem.pages.dev/",
-                capem: "https://capem.pages.dev/",
-                synthem: "https://synthem.pages.dev/",
-                balancem: "https://balancem.pages.dev/"
-              };
-              if (pagesDevMap[target]) a.href = pagesDevMap[target];
-            }
-          }
-        });
-      }
-
-      const poolEl = document.getElementById("ecosystem-pool-display") || document.getElementById("root-pool-badge");
-      if (poolEl) {
-        try {
-          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            if (parsed && typeof parsed.totalUsd === "number") {
-              const count = parsed.backerCount || parsed.backersCount || 19;
-              poolEl.textContent = "Live Cumulative Pool: $" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
-            }
-          }
-        } catch(e) {}
-      }
-    }
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initEcosystemIntegration);
-    } else {
-      initEcosystemIntegration();
-    }
-
-  </script>
+    
   <script>
     tailwind.config = {
       darkMode: 'class'
@@ -135,6 +87,11 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overscroll-behavior: none;
+      touch-action: none;
       font-family: var(--ff-sans);
       background-color: #cbd5e1;
       color: var(--text-main);
@@ -148,12 +105,16 @@
     }
 
     #webgl-canvas {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: 1;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .glass-panel {
@@ -784,31 +745,32 @@
 </head>
 <body class="relative w-full h-full">
   <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Pattern) -->
-  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/85 dark:bg-slate-950/90 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto relative z-40 pointer-events-auto">
+    <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Pattern) -->
+  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/90 dark:bg-slate-950/95 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto absolute top-0 left-0 right-0 z-40 pointer-events-auto select-none" style="touch-action: pan-x; -webkit-overflow-scrolling: touch;">
     <div class="max-w-[1920px] mx-auto flex items-center justify-between gap-4 text-xs font-mono">
       <div class="flex items-center gap-2 shrink-0">
         <span class="text-slate-400 font-bold uppercase tracking-wider text-[11px]">BlackBoxes:</span>
-        <a href="../index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
+        <a href="https://ecosystem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
           <span class="material-symbols-outlined text-sm">hub</span> Hub
         </a>
-          <a href="../Box_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg bg-indigo-600/40 border border-indigo-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="boxem">
-            <span class="material-symbols-outlined text-sm">deployed_code</span> Box'em
-          </a>
-          <a href="../Orbit_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
-            <span class="material-symbols-outlined text-sm">cloud</span> Orbit'em
-          </a>
-          <a href="../Pulse_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
-            <span class="material-symbols-outlined text-sm">monitor_heart</span> Pulse'em
-          </a>
-          <a href="../Cap_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
-            <span class="material-symbols-outlined text-sm">account_balance</span> Cap'em
-          </a>
-          <a href="../Synth_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-1 shrink-0" data-target="synthem">
-            <span class="material-symbols-outlined text-sm">graphic_eq</span> Synth'em
-          </a>
-          <a href="../Balanc_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-red-400 hover:text-red-300 font-bold flex items-center gap-1 shrink-0" data-target="balancem">
-            <span class="material-symbols-outlined text-sm">swords</span> Balanc'em
-          </a>
+        <a href="https://boxem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg bg-indigo-600/40 border border-indigo-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="boxem">
+          <span class="material-symbols-outlined text-sm">deployed_code</span> Box'em
+        </a>
+        <a href="https://orbitem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
+          <span class="material-symbols-outlined text-sm">cloud</span> Orbit'em
+        </a>
+        <a href="https://pulseem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
+          <span class="material-symbols-outlined text-sm">monitor_heart</span> Pulse'em
+        </a>
+        <a href="https://capem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
+          <span class="material-symbols-outlined text-sm">account_balance</span> Cap'em
+        </a>
+        <a href="https://synthem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-1 shrink-0" data-target="synthem">
+          <span class="material-symbols-outlined text-sm">graphic_eq</span> Synth'em
+        </a>
+        <a href="https://balancem.blackboxes.net/" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-red-400 hover:text-red-300 font-bold flex items-center gap-1 shrink-0" data-target="balancem">
+          <span class="material-symbols-outlined text-sm">swords</span> Balanc'em
+        </a>
       </div>
       <div class="hidden md:flex items-center gap-2 shrink-0">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -900,7 +862,7 @@
           </g>
         </svg>
       </div>
-      <div id="brand-text-content">
+      <div id="brand-text-content" class="hidden sm:block">
         <div class="flex items-center gap-2">
           <span class="text-base font-black tracking-wider text-slate-950 dark:text-white uppercase font-mono">BLACKBOXES • BOX'EM</span>
           <span id="header-occupation-tag" class="px-3 py-1 text-xs font-mono uppercase bg-indigo-500/20 text-indigo-950 dark:text-indigo-200 rounded-lg font-black">FULLSTACK</span>
@@ -2758,10 +2720,26 @@
     controls.target.set(0, 0, 0);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.minDistance = 3.5;
-    controls.maxDistance = 18.0;
+    controls.minDistance = 2.0;
+    controls.maxDistance = 24.0;
+    controls.enableZoom = true;
+    controls.zoomSpeed = 1.2;
+    controls.enableRotate = true;
+    controls.rotateSpeed = 1.0;
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN
+    };
 
     controls.addEventListener('start', () => { triggerInteractionPause(); });
+
+    // Touch event pass-through to guarantee mobile pinch & swipe gestures are never blocked by browser scrolling
+    canvas.addEventListener('touchstart', (e) => {
+      triggerInteractionPause();
+    }, { passive: true });
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
 
     /* Calibrated Studio Lighting Rig for Deep Crystalline Refraction */
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 0.40);
@@ -3840,9 +3818,22 @@
 
       const brandBadge = document.getElementById('brand-badge-container');
       const brandText = document.getElementById('brand-text-content');
-      brandBadge.addEventListener('click', () => {
-        brandText.classList.toggle('hidden');
-      });
+      if (brandBadge && brandText) {
+        brandBadge.addEventListener('click', () => {
+          brandText.classList.toggle('hidden');
+          brandBadge.classList.add('is-scanning');
+          setTimeout(() => brandBadge.classList.remove('is-scanning'), 2000);
+        });
+      }
+
+      // Mobile Responsive Default Collapsed Windows (< 768px)
+      if (window.innerWidth < 768) {
+        document.querySelectorAll('.floating-window').forEach(win => {
+          win.classList.add('collapsed');
+        });
+        document.getElementById('toggle-win-dimensions')?.classList.remove('active');
+        document.getElementById('toggle-win-copilot')?.classList.remove('active');
+      }
 
       renderProfessionsLibrary();
       renderSavedModelsGrid();
@@ -5435,6 +5426,43 @@ ${activeItems.map((m, i) => `${i + 1}. **${m.name}** (Req. Polish: ${m.reqQualit
     animate();
   </script>
 
-    <script>
-  </body>
+  
+
+  <script>
+    // Smart Local Fallback & Cumulative Pool Sync (Box'em Standard)
+    (function initEcosystemIntegration() {
+      const isLocal = window.location.protocol === 'file:' || window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1');
+      if (isLocal) {
+        const localMap = {
+          ecosystem: "../index.html",
+          boxem: "../Box_em/index.html",
+          orbitem: "../Orbit_em/index.html",
+          pulseem: "../Pulse_em/index.html",
+          capem: "../Cap_em/index.html",
+          synthem: "../Synth_em/index.html",
+          balancem: "../Balanc_em/index.html"
+        };
+        document.querySelectorAll(".ecosystem-link").forEach(a => {
+          const target = a.dataset.target;
+          if (target && localMap[target]) a.href = localMap[target];
+        });
+      }
+
+      const poolEl = document.getElementById("ecosystem-pool-display");
+      if (poolEl) {
+        try {
+          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && typeof parsed.totalUsd === "number") {
+              const count = parsed.backerCount || parsed.backersCount || 19;
+              poolEl.textContent = "$" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
+            }
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
+
+</body>
 </html>
