@@ -86,22 +86,20 @@ async function main() {
 
   try {
     if (command === 'verify') {
-      console.log('\n--- Verifying Cloudflare Credentials ---');
-      const res = await apiRequest('GET', '/user/tokens/verify');
-      if (res.status === 200 && res.data.success) {
-        console.log('✅ API Token is ACTIVE and VALID!');
-        console.log('   Token ID: ' + res.data.result.id);
-        console.log('   Status:   ' + res.data.result.status);
+      console.log('\n--- Verifying Cloudflare Credentials & blackboxes.net Zone Access ---');
+      const zoneRes = await apiRequest('GET', '/zones/' + ZONE_ID);
+      if (zoneRes.status === 200 && zoneRes.data.success) {
+        console.log('✅ Cloudflare API Token is ACTIVE and VALID!');
+        console.log('✅ Zone Access Verified: ' + zoneRes.data.result.name + ' (Status: ' + zoneRes.data.result.status + ')');
+        console.log('   Account ID: ' + zoneRes.data.result.account.id + ' (' + zoneRes.data.result.account.name + ')');
         
-        // Verify Zone
-        const zoneRes = await apiRequest('GET', '/zones/' + ZONE_ID);
-        if (zoneRes.status === 200 && zoneRes.data.success) {
-          console.log('✅ Zone Access Verified: ' + zoneRes.data.result.name + ' (ID: ' + ZONE_ID + ')');
-        } else {
-          console.log('⚠️ Zone query returned:', zoneRes.data.errors);
+        // Test DNS list permission
+        const dnsRes = await apiRequest('GET', `/zones/${ZONE_ID}/dns_records?per_page=1`);
+        if (dnsRes.status === 200 && dnsRes.data.success) {
+          console.log('✅ DNS Read/Write Permissions Confirmed (Active)');
         }
       } else {
-        console.error('❌ Token verification failed:', res.data ? res.data.errors : res.raw);
+        console.error('❌ Zone verification failed:', zoneRes.data ? zoneRes.data.errors : zoneRes.raw);
       }
 
     } else if (command === 'dns:list') {

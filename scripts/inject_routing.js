@@ -7,23 +7,27 @@ const routingFunction = `
     function initEcosystemIntegration() {
       const host = window.location.hostname;
       
-      const CF_PAGES_MAP = {
-        ecosystem: "https://ecosystem-9de.pages.dev/",
-        boxem: "https://boxem.blackboxes.net/",
-        orbitem: "https://orbitem.pages.dev/",
-        pulseem: "https://pulseem.pages.dev/",
-        capem: "https://capem.pages.dev/",
-        synthem: "https://synthem.pages.dev/",
-        balancem: "https://balancem.pages.dev/"
-      };
-
+      const isBlackboxesNet = host.endsWith("blackboxes.net");
       const isLiveWeb = window.location.protocol.startsWith("http") && !host.includes("localhost") && !host.includes("127.0.0.1");
 
       if (isLiveWeb) {
         document.querySelectorAll(".ecosystem-link").forEach(a => {
           const target = a.dataset.target;
-          if (target && CF_PAGES_MAP[target]) {
-            a.href = CF_PAGES_MAP[target];
+          if (target) {
+            if (isBlackboxesNet) {
+              a.href = "https://" + (target === "ecosystem" ? "ecosystem" : target) + ".blackboxes.net/";
+            } else {
+              const pagesDevMap = {
+                ecosystem: "https://ecosystem-9de.pages.dev/",
+                boxem: "https://boxem.blackboxes.net/",
+                orbitem: "https://orbitem.pages.dev/",
+                pulseem: "https://pulseem.pages.dev/",
+                capem: "https://capem.pages.dev/",
+                synthem: "https://synthem.pages.dev/",
+                balancem: "https://balancem.pages.dev/"
+              };
+              if (pagesDevMap[target]) a.href = pagesDevMap[target];
+            }
           }
         });
       }
