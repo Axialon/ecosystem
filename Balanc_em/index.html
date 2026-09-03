@@ -237,7 +237,7 @@
   </div>
 
   <!-- Top Left Brand Island (Box'em Standard) -->
-  <div id="brand-island" class="absolute top-3.5 left-4 z-40 pointer-events-auto">
+  <div id="brand-island" class="absolute top-12 left-4 z-40 pointer-events-auto">
     <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg">
       <a href="../index.html" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 to-red-700 flex items-center justify-center text-white shadow-lg shadow-rose-500/40 font-black text-sm font-mono hover:scale-105 transition-transform" title="Back to Ecosystem">
         ⚔
@@ -253,7 +253,7 @@
   </div>
 
   <!-- Top Right Actions & Classes Island (Box'em Standard) -->
-  <div id="top-right-bar-container" class="absolute top-3.5 right-4 z-50 pointer-events-auto flex items-center gap-2">
+  <div id="top-right-bar-container" class="absolute top-12 right-4 z-50 pointer-events-auto flex items-center gap-2">
     <!-- Branded Custom Class Dropdown -->
     <div class="branded-dropdown" id="dropdown-class-wrapper">
       <button id="btn-dropdown-class" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-2 border border-rose-400/40 shadow-lg">
@@ -2212,5 +2212,31 @@ return CombatMeta
     initScalingSuite();
     animate(0);
   </script>
+
+    // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
+    (function initEcosystemIntegration() {
+      const isProd = window.location.hostname.endsWith("blackboxes.net");
+      if (isProd) {
+        document.querySelectorAll(".ecosystem-link").forEach(a => {
+          const target = a.dataset.target;
+          if (target === "ecosystem") a.href = "https://ecosystem.blackboxes.net/";
+          else if (target) a.href = "https://" + target + ".blackboxes.net/";
+        });
+      }
+      const poolEl = document.getElementById("ecosystem-pool-display");
+      if (poolEl) {
+        try {
+          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && typeof parsed.totalUsd === "number") {
+              const count = parsed.backerCount || parsed.backersCount || 19;
+              poolEl.textContent = "$" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
+            }
+          }
+        } catch(e) {}
+      }
+    })();
+
 </body>
 </html>

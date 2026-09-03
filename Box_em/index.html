@@ -729,6 +729,40 @@
   </style>
 </head>
 <body class="relative w-full h-full">
+  <!-- Ecosystem Suite Navigator (Neatly Linked Across All Engines - Box'em Pattern) -->
+  <nav aria-label="Ecosystem Engines" class="w-full bg-slate-900/85 dark:bg-slate-950/90 backdrop-blur-md border-b border-indigo-500/20 px-4 py-1.5 overflow-x-auto relative z-40 pointer-events-auto">
+    <div class="max-w-[1920px] mx-auto flex items-center justify-between gap-4 text-xs font-mono">
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-slate-400 font-bold uppercase tracking-wider text-[11px]">BlackBoxes:</span>
+        <a href="../index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-slate-300 hover:text-white flex items-center gap-1 font-bold shrink-0" data-target="ecosystem">
+          <span class="material-symbols-outlined text-sm">hub</span> Hub
+        </a>
+          <a href="../Box_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg bg-indigo-600/40 border border-indigo-400/50 text-white font-black flex items-center gap-1 shrink-0" data-target="boxem">
+            <span class="material-symbols-outlined text-sm">deployed_code</span> Box'em
+          </a>
+          <a href="../Orbit_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 shrink-0" data-target="orbitem">
+            <span class="material-symbols-outlined text-sm">cloud</span> Orbit'em
+          </a>
+          <a href="../Pulse_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 shrink-0" data-target="pulseem">
+            <span class="material-symbols-outlined text-sm">monitor_heart</span> Pulse'em
+          </a>
+          <a href="../Cap_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 shrink-0" data-target="capem">
+            <span class="material-symbols-outlined text-sm">account_balance</span> Cap'em
+          </a>
+          <a href="../Synth_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-1 shrink-0" data-target="synthem">
+            <span class="material-symbols-outlined text-sm">graphic_eq</span> Synth'em
+          </a>
+          <a href="../Balanc_em/index.html" class="ecosystem-link px-2.5 py-1 rounded-lg glass-button text-red-400 hover:text-red-300 font-bold flex items-center gap-1 shrink-0" data-target="balancem">
+            <span class="material-symbols-outlined text-sm">swords</span> Balanc'em
+          </a>
+      </div>
+      <div class="hidden md:flex items-center gap-2 shrink-0">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-slate-300 font-bold">Live Pool:</span>
+        <span id="ecosystem-pool-display" class="text-emerald-400 font-black">$485 USD • 19 Backers</span>
+      </div>
+    </div>
+  </nav>
 
   <!-- 3D WebGL Canvas -->
   <canvas id="webgl-canvas"></canvas>
@@ -740,7 +774,7 @@
   </div>
 
   <!-- Top-Left Branding Badge (Matching Top-Right Pill Bar) -->
-  <div id="brand-badge-container" class="absolute top-3.5 left-4 z-50 pointer-events-auto transition-all duration-200">
+  <div id="brand-badge-container" class="absolute top-12 left-4 z-50 pointer-events-auto transition-all duration-200">
     <div class="glass-panel px-3 py-2 rounded-2xl flex items-center gap-2.5 shadow-lg cursor-pointer select-none group">
       <div class="w-9 h-9 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
         <svg viewBox="0 0 100 100" class="w-full h-full obsidian-logo-svg" shape-rendering="geometricPrecision">
@@ -823,7 +857,7 @@
   </div>
 
   <!-- Top-Right Action Menu (Compact Dropdown with Multiple Rows of Icons) -->
-  <div id="top-right-bar-container" class="absolute top-3.5 right-4 z-50 pointer-events-auto flex flex-col items-end">
+  <div id="top-right-bar-container" class="absolute top-12 right-4 z-50 pointer-events-auto flex flex-col items-end">
     <!-- Compact Menu Trigger Button -->
     <button id="btn-top-menu-trigger" class="glass-panel px-3.5 py-2 rounded-2xl flex items-center gap-2 shadow-lg text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-sky-500/30 transition-all cursor-pointer group active:scale-95" title="Open Quick Actions Menu">
       <span class="material-symbols-outlined text-lg text-sky-400 group-hover:rotate-45 transition-transform duration-300">grid_view</span>
@@ -5346,5 +5380,31 @@ ${activeItems.map((m, i) => `${i + 1}. **${m.name}** (Req. Polish: ${m.reqQualit
     updateCalculations();
     animate();
   </script>
+
+    // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
+    (function initEcosystemIntegration() {
+      const isProd = window.location.hostname.endsWith("blackboxes.net");
+      if (isProd) {
+        document.querySelectorAll(".ecosystem-link").forEach(a => {
+          const target = a.dataset.target;
+          if (target === "ecosystem") a.href = "https://ecosystem.blackboxes.net/";
+          else if (target) a.href = "https://" + target + ".blackboxes.net/";
+        });
+      }
+      const poolEl = document.getElementById("ecosystem-pool-display");
+      if (poolEl) {
+        try {
+          const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && typeof parsed.totalUsd === "number") {
+              const count = parsed.backerCount || parsed.backersCount || 19;
+              poolEl.textContent = "$" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
+            }
+          }
+        } catch(e) {}
+      }
+    })();
+
 </body>
 </html>
