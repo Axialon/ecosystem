@@ -5,18 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Blackboxes - Box'em 3D Reciprocal Constraint Power Tool</title>
   
-  <script src="https://cdn.tailwindcss.com">
-    
-    }
-
-  
-    // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
-    
   <script>
-    tailwind.config = {
-      darkMode: 'class'
+    tailwind = {
+      config: {
+        darkMode: 'class'
+      }
     };
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -751,6 +747,66 @@
       opacity: 1;
     }
     #brand-badge-container.collapsed #brand-text-content {
+      max-width: 0 !important;
+      opacity: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+    }
+
+  
+    /* Complete Light Mode Readability & Contrast Shield */
+    html:not(.dark) body {
+      background-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .glass-panel {
+      background: rgba(255, 255, 255, 0.94) !important;
+      border-color: rgba(15, 23, 42, 0.20) !important;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12) !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .glass-card-sub {
+      background: rgba(241, 245, 249, 0.96) !important;
+      border-color: rgba(15, 23, 42, 0.15) !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .window-header h3,
+    html:not(.dark) #brand-text-content span,
+    html:not(.dark) #brand-text-content div {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-white,
+    html:not(.dark) .dark\:text-white,
+    html:not(.dark) .dark\:text-slate-100,
+    html:not(.dark) .dark\:text-slate-200,
+    html:not(.dark) .dark\:text-slate-300 {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-slate-400,
+    html:not(.dark) .dark\:text-slate-400 {
+      color: #475569 !important;
+    }
+    html:not(.dark) .text-slate-300 {
+      color: #334155 !important;
+    }
+    html:not(.dark) #brand-text-content .text-slate-950 {
+      color: #020617 !important;
+    }
+
+    /* Perfectly Centered Logo Badge in Collapsed State */
+    #brand-badge-container.collapsed .glass-panel {
+      padding: 6px !important;
+      gap: 0 !important;
+      width: 48px !important;
+      height: 48px !important;
+      justify-content: center !important;
+      align-items: center !important;
+      border-radius: 1rem !important;
+    }
+    #brand-badge-container.collapsed #brand-text-content {
+      display: none !important;
+      width: 0 !important;
       max-width: 0 !important;
       opacity: 0 !important;
       margin: 0 !important;
@@ -1654,6 +1710,19 @@
               <span class="shader-lock-badge text-[10px] text-purple-600 dark:text-purple-400 font-mono font-bold">🔒 $25+</span>
             </button>
           </div>
+        </div>
+      </div>
+      
+      <!-- Section 3: Environment & Scene Themes -->
+      <div class="space-y-2.5 pt-2 border-t border-slate-950/10 dark:border-white/10">
+        <div class="text-xs font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Environment & Scene Themes</div>
+        <div class="grid grid-cols-3 gap-2 text-center font-mono text-xs">
+          <button class="theme-btn p-2 rounded-xl glass-button font-black active" data-theme="void">Deep Void</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="obsidian">Obsidian Grid</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="cyberpunk">Cyber Neon</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="minimal">Studio Clean</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="crimson">Cyber Crimson</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="emerald">Matrix Green</button>
         </div>
       </div>
     </div>
@@ -4673,6 +4742,27 @@
       bindModal('btn-open-scenarios', 'modal-scenarios');
       bindModal('btn-open-config', 'modal-config');
       bindModal('btn-open-bazaar', 'modal-bazaar');
+
+    // Theme Handler for Box_em
+    const THEMES = {
+      void: 0x020617,
+      obsidian: 0x090d16,
+      cyberpunk: 0x0d0b1e,
+      minimal: 0xf1f5f9,
+      crimson: 0x1a0509,
+      emerald: 0x03140d
+    };
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".theme-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const t = btn.dataset.theme;
+        if (THEMES[t] !== undefined && typeof scene !== "undefined") {
+          scene.background = new THREE.Color(THEMES[t]);
+        }
+      });
+    });
+  
       bindModal('btn-open-deliverables', 'modal-deliverables');
       bindModal('btn-open-export', 'modal-export');
       bindModal('btn-open-ticker', 'modal-ticker');

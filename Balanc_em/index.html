@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Blackboxes - Balanc'em 3D RPG Combat Meta & Game Economy Engine</title>
   
-  <script src="https://cdn.tailwindcss.com">
-    
-    }
-
-  
-    // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
-    
-  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script>
+    tailwind = {
+      config: {
+        darkMode: 'class'
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
@@ -275,6 +275,165 @@
       pointer-events: none;
     }
 
+  
+    /* Custom Fully-Rounded Glassmorphic Dropdowns (Box'em Standard) */
+    .custom-glass-dropdown-wrapper {
+      position: relative;
+      width: 100%;
+      user-select: none;
+    }
+    .custom-glass-dropdown-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.55rem 1rem;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 1.25rem;
+      font-family: var(--ff-mono);
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #0f172a;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    html.dark .custom-glass-dropdown-trigger {
+      background: rgba(15, 23, 42, 0.70);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #f8fafc;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+    .custom-glass-dropdown-trigger:hover,
+    .custom-glass-dropdown-wrapper.is-open .custom-glass-dropdown-trigger {
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(56, 189, 248, 0.30);
+    }
+    .custom-glass-dropdown-wrapper.is-open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    .custom-glass-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      max-height: 240px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 1.25rem;
+      box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.22);
+      padding: 0.4rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.2rem;
+      animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    html.dark .custom-glass-dropdown-menu {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(56, 189, 248, 0.30);
+      box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.65);
+    }
+    .custom-glass-dropdown-wrapper.is-open .custom-glass-dropdown-menu {
+      display: flex;
+    }
+    @keyframes dropdownFadeIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .custom-glass-dropdown-option {
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.85rem;
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+    }
+    html.dark .custom-glass-dropdown-option {
+      color: #f8fafc;
+    }
+    .custom-glass-dropdown-option:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+    .custom-glass-dropdown-option.is-selected {
+      background: #38bdf8;
+      color: #020617 !important;
+      font-weight: 900;
+    }
+
+    /* Perfectly Centered Logo Badge in Collapsed State */
+    #brand-badge-container.collapsed .glass-panel {
+      padding: 6px !important;
+      gap: 0 !important;
+      width: 48px !important;
+      height: 48px !important;
+      justify-content: center !important;
+      align-items: center !important;
+      border-radius: 1rem !important;
+    }
+    #brand-badge-container.collapsed #brand-text-content {
+      display: none !important;
+      width: 0 !important;
+      max-width: 0 !important;
+      opacity: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+    }
+
+    /* Complete Light Mode Readability & Contrast Shield */
+    html:not(.dark) body {
+      background-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .glass-panel {
+      background: rgba(255, 255, 255, 0.94) !important;
+      border-color: rgba(15, 23, 42, 0.20) !important;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12) !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .glass-card-sub {
+      background: rgba(241, 245, 249, 0.96) !important;
+      border-color: rgba(15, 23, 42, 0.15) !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .window-header h3,
+    html:not(.dark) #brand-text-content span,
+    html:not(.dark) #brand-text-content div {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-white,
+    html:not(.dark) .dark\:text-white,
+    html:not(.dark) .dark\:text-slate-100,
+    html:not(.dark) .dark\:text-slate-200,
+    html:not(.dark) .dark\:text-slate-300 {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-slate-400,
+    html:not(.dark) .dark\:text-slate-400 {
+      color: #475569 !important;
+    }
+    html:not(.dark) .text-slate-300 {
+      color: #334155 !important;
+    }
+    html:not(.dark) #brand-text-content .text-slate-950 {
+      color: #020617 !important;
+    }
+
   </style>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -450,11 +609,11 @@
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">psychology</span>
             <span class="text-[10px] font-black text-white">Copilot</span>
           </button>
-          <button id="btn-open-sponsor" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-pink-400 hover:border-pink-400 transition-all group" title="Supporters & Voluntary Backing Pool">
+          <button id="btn-open-ticker" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-pink-400 hover:border-pink-400 transition-all group" title="Live Sponsor Ticker & Perks">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">volunteer_activism</span>
             <span class="text-[10px] font-black text-white">Sponsors</span>
           </button>
-          <button id="btn-cycle-shader" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-purple-400 hover:border-purple-400 transition-all group" title="Cycle Combat Polytope Shaders">
+          <button id="btn-open-bazaar" class="glass-button p-2.5 rounded-xl flex flex-col items-center justify-center gap-1 text-purple-400 hover:border-purple-400 transition-all group" title="Obsidian Shaders & Scene Themes">
             <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">palette</span>
             <span class="text-[10px] font-black text-white">Shaders</span>
           </button>
@@ -801,7 +960,7 @@
               <span>6. Primary Node Geometry Model</span>
             </span>
           </div>
-          <select id="select-node-geometry" class="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 text-white border border-rose-500/40 cursor-pointer">
+          <select id="select-node-geometry" class="glass-select w-full text-xs">
             <option value="octahedron" selected>Octahedron (Combat Crystal)</option>
             <option value="dodecahedron">Dodecahedron (Balancing Polytope)</option>
             <option value="icosahedron">Icosahedron (Faceted Armor Gem)</option>
@@ -819,7 +978,7 @@
               <span>7. Inside Sub-Node Geometry Model</span>
             </span>
           </div>
-          <select id="select-subnode-geometry" class="w-full px-3 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 text-white border border-amber-500/40 cursor-pointer">
+          <select id="select-subnode-geometry" class="glass-select w-full text-xs">
             <option value="octahedron" selected>Octahedron (Micro Crystal)</option>
             <option value="icosahedron">Icosahedron (Geodesic Gem)</option>
             <option value="sphere">Sphere (Ability Orb)</option>
@@ -2428,5 +2587,594 @@ return CombatMeta
     })();
   </script>
 
+
+  <!-- MODAL: Customization Bazaar & Obsidian Shaders & Scene Themes (Box'em Standard Parity) -->
+  <div id="modal-bazaar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-5 sm:p-6 shadow-2xl max-h-[88vh] overflow-y-auto space-y-4">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <h3 class="text-base font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-500">palette</span> Shaders & Scene Themes
+        </h3>
+        <button class="btn-close-modal text-slate-400 hover:text-white p-1.5 rounded-xl"><span class="material-symbols-outlined text-xl">close</span></button>
+      </div>
+
+      <!-- Section 1: 3D Node Mesh / Geometry Selector -->
+      <div class="space-y-2.5">
+        <div class="text-xs font-mono text-slate-950 dark:text-slate-100 uppercase font-black">3D Node Mesh Geometry</div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-2xl glass-card-sub space-y-1">
+            <div class="text-[11px] font-mono font-black text-sky-400 flex items-center gap-1">
+              <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Primary Core Mesh
+            </div>
+            <select id="select-node-geometry" class="glass-select w-full text-xs">
+              <option value="icosahedron">Icosahedron Crystal</option>
+              <option value="octahedron">Octahedron Gem</option>
+              <option value="tetrahedron">Tetrahedron Prism</option>
+              <option value="dodecahedron">Dodecahedron Core</option>
+              <option value="box">Cube Matrix</option>
+            </select>
+          </div>
+          <div class="p-3 rounded-2xl glass-card-sub space-y-1">
+            <div class="text-[11px] font-mono font-black text-emerald-400 flex items-center gap-1">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Subnode Shards
+            </div>
+            <select id="select-subnode-geometry" class="glass-select w-full text-xs">
+              <option value="octahedron">Floating Octahedra</option>
+              <option value="icosahedron">Floating Icosahedra</option>
+              <option value="sphere">Orbital Spheres</option>
+              <option value="tetrahedron">Floating Shards</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: 12 Free Crystalline Shaders + 8 Backer Shaders -->
+      <div class="space-y-3 pt-2 border-t border-slate-950/10 dark:border-white/10">
+        <div class="flex justify-between items-center">
+          <div class="text-xs font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Crystalline Shader Collection</div>
+          <span class="text-[10px] font-mono text-slate-400 font-bold">12 Free • 8 Backer Exclusive</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left active flex items-center justify-between" data-shader="classic">
+            <span>Classic Sapphire</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="liquid">
+            <span>Liquid Chrome</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="emerald">
+            <span>Emerald Matrix</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="quartz">
+            <span>Smoked Quartz</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="polar">
+            <span>Frosted Polar Ice</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-300"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="magma">
+            <span>Volcanic Magma</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="rose">
+            <span>Rose Quartz Gem</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-pink-400"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="nebula">
+            <span>Celestial Nebula</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="citrine">
+            <span>Amber Citrine</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="aquamarine">
+            <span>Aquamarine Tide</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-teal-400"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="amethyst">
+            <span>Royal Amethyst</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-500"></span>
+          </button>
+          <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="titanium">
+            <span>Titanium Slate</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+          </button>
+        </div>
+
+        <!-- Backer Shaders -->
+        <div class="pt-2 border-t border-slate-950/10 dark:border-white/10 space-y-1.5">
+          <div class="flex justify-between items-center text-[11px] font-mono font-bold text-amber-500 uppercase">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">lock</span> 8 Backer Shaders</span>
+            <span class="text-[10px] text-emerald-400">Free Mode Active ✔</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="kintsugi">
+              <span>Kintsugi Gold</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-300"></span>
+            </button>
+            <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="abyssal">
+              <span>Abyssal Void</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-teal-300"></span>
+            </button>
+            <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="damascus">
+              <span>Damascus Steel</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+            </button>
+            <button class="shader-btn p-2 rounded-xl glass-button text-xs font-black text-left flex items-center justify-between" data-shader="voidsingularity">
+              <span>Quantum Singularity</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Scene Themes -->
+      <div class="space-y-2.5 pt-2 border-t border-slate-950/10 dark:border-white/10">
+        <div class="text-xs font-mono text-slate-950 dark:text-slate-100 uppercase font-black">Environment & Scene Themes</div>
+        <div class="grid grid-cols-3 gap-2 text-center font-mono text-xs">
+          <button class="theme-btn p-2 rounded-xl glass-button font-black active" data-theme="void">Deep Void</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="obsidian">Obsidian Grid</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="cyberpunk">Cyber Neon</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="minimal">Studio Clean</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="crimson">Cyber Crimson</button>
+          <button class="theme-btn p-2 rounded-xl glass-button font-black" data-theme="emerald">Matrix Green</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- MODAL: Live Supporter Ticker & Perks Matrix (Box'em Standard Parity) -->
+  <div id="modal-ticker" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-3 sm:space-y-4">
+      <div class="flex justify-between items-center pb-2 sm:pb-3 border-b border-slate-950/20 dark:border-white/20">
+        <div>
+          <h3 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500">volunteer_activism</span> Supporter Ticker & Perks
+          </h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 font-mono mt-0.5 font-bold">Cloudflare Workers & D1 Edge Supporter Pool</p>
+        </div>
+        <button class="btn-close-modal text-slate-400 hover:text-white p-1.5 rounded-xl"><span class="material-symbols-outlined text-xl">close</span></button>
+      </div>
+
+      <!-- Live Supporter Pool Counter -->
+      <div class="p-3 sm:p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400/40 space-y-2">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span class="font-black text-amber-950 dark:text-amber-200">Total Open Source Backing</span>
+          <span id="ticker-total-usd" class="font-black text-amber-600 dark:text-amber-400 text-sm">$485.00 / $2,500 USD</span>
+        </div>
+        <div class="w-full bg-amber-200 dark:bg-amber-900/60 rounded-full h-2 overflow-hidden">
+          <div id="ticker-progress-bar" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 19%"></div>
+        </div>
+        <div class="text-[10px] sm:text-[11px] text-amber-900 dark:text-amber-300 font-mono leading-relaxed">
+          100% free perpetual open source. Voluntary one-time backing powers serverless edge hosting and continuous mathematical engine expansions.
+        </div>
+      </div>
+
+      <!-- Functional 1-Time Donation Interface -->
+      <div class="space-y-2.5 sm:space-y-3 p-3.5 sm:p-4 rounded-2xl glass-card-sub border border-sky-500/30">
+        <!-- Interactive 3D Model Hologram Preview -->
+        <div class="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden bg-slate-950/90 border border-sky-500/40 flex items-center justify-center shadow-inner group">
+          <canvas id="donation-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+          <div class="absolute top-2.5 left-3 flex items-center gap-2 pointer-events-none bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="donation-3d-label" class="text-[10px] sm:text-xs font-mono font-black text-sky-300 tracking-wider uppercase">Tier 2: Studio Craftsman Core</span>
+          </div>
+          <div class="absolute bottom-2 right-3 text-[9px] sm:text-[10px] font-mono text-slate-400 pointer-events-none flex items-center gap-1 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+            <span class="material-symbols-outlined text-xs sm:text-sm text-sky-400">3d_rotation</span> Drag to Inspect
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-0.5">
+          <div class="text-xs font-mono uppercase font-black text-slate-950 dark:text-slate-100 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-indigo-500">favorite</span> Select Contribution Tier
+          </div>
+          <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300">Zero Subscriptions</span>
+        </div>
+
+        <!-- 5-Tier Selection Pills -->
+        <div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-xs font-mono" id="donation-tier-selector">
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300" data-amount="5" data-tier="1">
+            $5
+            <div class="text-[8px] sm:text-[9px] font-normal text-slate-400">Coffee</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 text-center font-black transition-all" data-amount="25" data-tier="2">
+            $25
+            <div class="text-[8px] sm:text-[9px] font-normal opacity-90">Studio</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300" data-amount="50" data-tier="3">
+            $50
+            <div class="text-[8px] sm:text-[9px] font-normal text-slate-400">Agency</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300" data-amount="100" data-tier="4">
+            $100
+            <div class="text-[8px] sm:text-[9px] font-normal text-slate-400">Patron</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-emerald-700 dark:text-emerald-300" data-amount="250" data-tier="5">
+            $250
+            <div class="text-[8px] sm:text-[9px] font-normal text-emerald-500">Eco</div>
+          </button>
+        </div>
+
+        <!-- Supporter Details Input -->
+        <div class="space-y-1.5">
+          <div class="flex gap-2">
+            <input type="text" id="input-donor-name" placeholder="Your Name or Org (Optional)" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-indigo-500" />
+            <div class="relative w-24 shrink-0">
+              <span class="absolute left-2.5 top-2 text-xs font-mono text-slate-400 font-bold">$</span>
+              <input type="number" id="input-custom-donation-amount" value="25" min="1" max="10000" class="w-full pl-6 pr-2 py-2 text-xs font-mono font-black rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-indigo-500" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Stripe Action Button -->
+        <div class="space-y-2 pt-1">
+          <button id="btn-donate-card-action" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-mono shadow-lg shadow-indigo-600/30 flex items-center justify-between transition-all hover:scale-[1.005] active:scale-[0.99] cursor-pointer">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-xl flex-shrink-0 text-white">credit_card</span>
+              <div class="text-left flex flex-col">
+                <span class="text-xs sm:text-sm font-black tracking-tight leading-snug">Pay $<span id="btn-donate-amount-label">25</span> with Stripe</span>
+                <span class="text-[10px] text-white/80 font-normal leading-none">Instant Card • Apple Pay • Google Pay</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[11px] font-black tracking-wider uppercase flex-shrink-0">
+              <span>Checkout</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="https://github.com/sponsors/Axialon" target="_blank" class="py-2.5 px-3 rounded-xl glass-button text-center font-mono font-bold text-xs flex items-center justify-center gap-1.5 text-slate-800 dark:text-slate-200 hover:border-pink-500/40 transition-all">
+              <span class="material-symbols-outlined text-sm text-rose-500">favorite</span> GitHub Sponsors
+            </a>
+            <button id="btn-simulate-edge-donation" class="py-2.5 px-3 rounded-xl glass-button text-center font-mono font-black text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-1 border border-emerald-500/40 hover:bg-emerald-500/10 transition-all">
+              <span class="material-symbols-outlined text-sm">bolt</span> Instant Edge Demo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Backers Stream -->
+      <div class="space-y-2 pt-1">
+        <div class="flex justify-between items-center">
+          <div class="text-xs font-mono uppercase font-black text-slate-950 dark:text-slate-100">Live Supporters Stream</div>
+          <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloudflare D1 Edge
+          </span>
+        </div>
+        <div class="space-y-1.5 max-h-36 overflow-y-auto pr-1" id="ticker-list-container">
+          <div class="p-3 rounded-xl glass-card-sub flex justify-between items-center text-xs font-mono">
+            <div>
+              <span class="font-black text-slate-950 dark:text-white">Design Systems Lab</span>
+              <div class="text-[10px] text-slate-500">Tier 4 Patron • Unlocked All Shaders</div>
+            </div>
+            <span class="font-black text-emerald-600 dark:text-emerald-400">+$100.00</span>
+          </div>
+          <div class="p-3 rounded-xl glass-card-sub flex justify-between items-center text-xs font-mono">
+            <div>
+              <span class="font-black text-slate-950 dark:text-white">OpenSource Backer</span>
+              <div class="text-[10px] text-slate-500">Tier 3 Agency • Unlocked Kintsugi Gold</div>
+            </div>
+            <span class="font-black text-emerald-600 dark:text-emerald-400">+$50.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+    <script>
+      
+    // --- BOX'EM PARITY SUITE: SHADERS, THEMES, DONATION REACTOR, GLASS DROPDOWNS ---
+    let donation3dScene, donation3dCamera, donation3dRenderer, donation3dCore;
+    function initDonationHologram() {
+      const canvas = document.getElementById('donation-3d-canvas');
+      if (!canvas || !window.THREE) return;
+
+      try {
+        donation3dScene = new THREE.Scene();
+        const width = canvas.clientWidth || 360;
+        const height = canvas.clientHeight || 180;
+        donation3dCamera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+        donation3dCamera.position.set(0, 0, 4.8);
+
+        donation3dRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        donation3dRenderer.setSize(width, height);
+        donation3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const ambLight = new THREE.AmbientLight(0xffffff, 1.5);
+        donation3dScene.add(ambLight);
+        const pLight = new THREE.PointLight(0x38bdf8, 3.5, 12);
+        pLight.position.set(3, 3, 4);
+        donation3dScene.add(pLight);
+
+        const coreGeo = new THREE.IcosahedronGeometry(1.15, 0);
+        const coreMat = new THREE.MeshPhysicalMaterial({
+          color: 0xa855f7,
+          emissive: 0x581c87,
+          roughness: 0.12,
+          metalness: 0.35,
+          flatShading: true
+        });
+        donation3dCore = new THREE.Mesh(coreGeo, coreMat);
+        donation3dScene.add(donation3dCore);
+
+        // Satellites
+        for (let i = 0; i < 4; i++) {
+          const sat = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.18, 0),
+            new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true })
+          );
+          sat.userData = { angle: (i * Math.PI) / 2, dist: 1.8 };
+          donation3dScene.add(sat);
+        }
+
+        let isDragging = false, prevX = 0, prevY = 0;
+        canvas.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mousemove', e => {
+          if (!isDragging || !donation3dCore) return;
+          const dx = e.clientX - prevX;
+          const dy = e.clientY - prevY;
+          donation3dCore.rotation.y += dx * 0.015;
+          donation3dCore.rotation.x += dy * 0.015;
+          prevX = e.clientX;
+          prevY = e.clientY;
+        });
+
+        function animate() {
+          requestAnimationFrame(animate);
+          if (donation3dCore && !isDragging) {
+            donation3dCore.rotation.y += 0.012;
+            donation3dCore.rotation.x += 0.006;
+          }
+          if (donation3dRenderer && donation3dScene && donation3dCamera) {
+            donation3dRenderer.render(donation3dScene, donation3dCamera);
+          }
+        }
+        animate();
+      } catch(e) { console.warn("Donation hologram init fallback:", e); }
+    }
+
+    function updateHologramTier(amount) {
+      const label = document.getElementById('donation-3d-label');
+      if (!donation3dCore) return;
+      if (amount >= 250) {
+        donation3dCore.material.color.setHex(0x10b981);
+        if (label) label.textContent = 'Tier 5: Ecosystem Vision Pro Core';
+      } else if (amount >= 100) {
+        donation3dCore.material.color.setHex(0x6366f1);
+        if (label) label.textContent = 'Tier 4: Enterprise Patron Core';
+      } else if (amount >= 50) {
+        donation3dCore.material.color.setHex(0x38bdf8);
+        if (label) label.textContent = 'Tier 3: Agency Powerhouse Core';
+      } else if (amount >= 25) {
+        donation3dCore.material.color.setHex(0xa855f7);
+        if (label) label.textContent = 'Tier 2: Studio Craftsman Core';
+      } else {
+        donation3dCore.material.color.setHex(0xf59e0b);
+        if (label) label.textContent = 'Tier 1: Coffee & Shaders';
+      }
+    }
+
+    function initCustomGlassDropdowns() {
+      document.querySelectorAll('select.glass-select').forEach(selectEl => {
+        if (selectEl.dataset.customized) return;
+        selectEl.dataset.customized = 'true';
+        selectEl.style.display = 'none';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-glass-dropdown-wrapper';
+        selectEl.parentNode.insertBefore(wrapper, selectEl);
+        wrapper.appendChild(selectEl);
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'custom-glass-dropdown-trigger';
+
+        const selectedOption = selectEl.options[selectEl.selectedIndex] || selectEl.options[0];
+        const selectedLabel = document.createElement('span');
+        selectedLabel.className = 'custom-glass-dropdown-selected truncate';
+        selectedLabel.textContent = selectedOption ? selectedOption.textContent : 'Select...';
+
+        const arrow = document.createElement('span');
+        arrow.className = 'material-symbols-outlined text-sm text-sky-400 transition-transform duration-200 dropdown-arrow';
+        arrow.textContent = 'expand_more';
+
+        trigger.appendChild(selectedLabel);
+        trigger.appendChild(arrow);
+        wrapper.appendChild(trigger);
+
+        const menu = document.createElement('div');
+        menu.className = 'custom-glass-dropdown-menu scrollbar-none';
+
+        Array.from(selectEl.options).forEach((opt, idx) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = `custom-glass-dropdown-option ${idx === selectEl.selectedIndex ? 'is-selected' : ''}`;
+          optDiv.textContent = opt.textContent;
+          optDiv.dataset.value = opt.value;
+
+          optDiv.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectEl.value = opt.value;
+            selectedLabel.textContent = opt.textContent;
+            menu.querySelectorAll('.custom-glass-dropdown-option').forEach(o => o.classList.remove('is-selected'));
+            optDiv.classList.add('is-selected');
+            wrapper.classList.remove('is-open');
+            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+
+          menu.appendChild(optDiv);
+        });
+
+        wrapper.appendChild(menu);
+
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasOpen = wrapper.classList.contains('is-open');
+          document.querySelectorAll('.custom-glass-dropdown-wrapper.is-open').forEach(w => {
+            if (w !== wrapper) w.classList.remove('is-open');
+          });
+          wrapper.classList.toggle('is-open', !wasOpen);
+        });
+      });
+
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.custom-glass-dropdown-wrapper.is-open').forEach(w => w.classList.remove('is-open'));
+      });
+    }
+
+    function initBazaarAndTickerHandlers() {
+      // Wire Shader Bazaar Buttons
+      const SHADER_PRESETS = {
+        classic: { color: 0x1d4ed8, emissive: 0x38bdf8, roughness: 0.10, transmission: 0.60 },
+        liquid: { color: 0x0284c7, emissive: 0x06b6d4, roughness: 0.06, transmission: 0.70 },
+        emerald: { color: 0x047857, emissive: 0x10b981, roughness: 0.10, transmission: 0.55 },
+        quartz: { color: 0x7c3aed, emissive: 0xa855f7, roughness: 0.12, transmission: 0.60 },
+        polar: { color: 0x38bdf8, emissive: 0xbae6fd, roughness: 0.15, transmission: 0.75 },
+        magma: { color: 0xb91c1c, emissive: 0xf97316, roughness: 0.12, transmission: 0.50 },
+        rose: { color: 0xbe185d, emissive: 0xf472b6, roughness: 0.14, transmission: 0.65 },
+        nebula: { color: 0x4338ca, emissive: 0x818cf8, roughness: 0.08, transmission: 0.70 },
+        citrine: { color: 0xb45309, emissive: 0xfbbf24, roughness: 0.10, transmission: 0.58 },
+        aquamarine: { color: 0x0f766e, emissive: 0x2dd4bf, roughness: 0.08, transmission: 0.65 },
+        amethyst: { color: 0x701a75, emissive: 0xd946ef, roughness: 0.10, transmission: 0.60 },
+        titanium: { color: 0x334155, emissive: 0x64748b, roughness: 0.20, transmission: 0.35 },
+        kintsugi: { color: 0xb45309, emissive: 0xfbbf24, roughness: 0.10, transmission: 0.45 },
+        abyssal: { color: 0x020617, emissive: 0x0284c7, roughness: 0.05, transmission: 0.80 },
+        damascus: { color: 0x1e293b, emissive: 0x94a3b8, roughness: 0.18, transmission: 0.30 },
+        voidsingularity: { color: 0x581c87, emissive: 0xc084fc, roughness: 0.04, transmission: 0.85 }
+      };
+
+      document.querySelectorAll('.shader-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.shader-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const sk = btn.dataset.shader;
+          const s = SHADER_PRESETS[sk];
+          if (s) {
+            const applyToMesh = (m) => {
+              if (m && m.material) {
+                m.material.color.setHex(s.color);
+                if (m.material.emissive) m.material.emissive.setHex(s.emissive);
+                m.material.roughness = s.roughness;
+                m.material.transmission = s.transmission;
+              }
+            };
+            if (typeof coreHullMesh !== 'undefined') applyToMesh(coreHullMesh);
+            if (typeof submoduleMeshes !== 'undefined') submoduleMeshes.forEach(applyToMesh);
+            if (typeof nodeGroups !== 'undefined') {
+              Object.values(nodeGroups).forEach(g => {
+                g.traverse(child => { if (child.isMesh) applyToMesh(child); });
+              });
+            }
+          }
+        });
+      });
+
+      // Wire Scene Themes
+      const THEMES = {
+        void: 0x020617,
+        obsidian: 0x090d16,
+        cyberpunk: 0x0d0b1e,
+        minimal: 0xf1f5f9,
+        crimson: 0x1a0509,
+        emerald: 0x03140d
+      };
+
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const t = btn.dataset.theme;
+          if (THEMES[t] !== undefined && typeof scene !== 'undefined') {
+            scene.background = new THREE.Color(THEMES[t]);
+          }
+        });
+      });
+
+      // Wire Donation Tier Pills
+      let selectedDonationAmount = 25;
+      const donationTierBtns = document.querySelectorAll('.donation-tier-btn');
+      const amountInput = document.getElementById('input-custom-donation-amount');
+      const amountLabel = document.getElementById('btn-donate-amount-label');
+
+      donationTierBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          donationTierBtns.forEach(b => {
+            b.className = "donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300";
+          });
+          btn.className = "donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 text-center font-black transition-all";
+          selectedDonationAmount = parseInt(btn.dataset.amount) || 25;
+          if (amountInput) amountInput.value = selectedDonationAmount;
+          if (amountLabel) amountLabel.textContent = selectedDonationAmount;
+          updateHologramTier(selectedDonationAmount);
+        });
+      });
+
+      if (amountInput) {
+        amountInput.addEventListener('input', () => {
+          selectedDonationAmount = parseInt(amountInput.value) || 25;
+          if (amountLabel) amountLabel.textContent = selectedDonationAmount;
+          updateHologramTier(selectedDonationAmount);
+        });
+      }
+
+      // Wire Stripe button
+      document.getElementById('btn-donate-card-action')?.addEventListener('click', () => {
+        const donorName = (document.getElementById('input-donor-name')?.value || 'Supporter').trim();
+        window.open('https://github.com/sponsors/Axialon', '_blank');
+      });
+
+      // Wire Modal Opening Triggers
+      const openModal = (id) => {
+        document.getElementById(id)?.classList.remove('hidden');
+        if (id === 'modal-ticker') setTimeout(initDonationHologram, 150);
+      };
+
+      document.getElementById('btn-open-bazaar')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal('modal-bazaar');
+      });
+      document.getElementById('btn-open-ticker')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal('modal-ticker');
+      });
+      document.getElementById('live-donation-tracker')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal('modal-ticker');
+      });
+
+      document.querySelectorAll('.btn-close-modal').forEach(b => {
+        b.addEventListener('click', () => {
+          document.getElementById('modal-bazaar')?.classList.add('hidden');
+          document.getElementById('modal-ticker')?.classList.add('hidden');
+          document.getElementById('modal-sponsor')?.classList.add('hidden');
+          document.getElementById('modal-config')?.classList.add('hidden');
+        });
+      });
+
+      // Escape key to dismiss modals
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.getElementById('modal-bazaar')?.classList.add('hidden');
+          document.getElementById('modal-ticker')?.classList.add('hidden');
+          document.getElementById('modal-sponsor')?.classList.add('hidden');
+          document.getElementById('modal-config')?.classList.add('hidden');
+        }
+      });
+    }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          initCustomGlassDropdowns();
+          initBazaarAndTickerHandlers();
+        }, 300);
+      });
+    </script>
+    
 </body>
 </html>
