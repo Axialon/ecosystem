@@ -152,11 +152,11 @@
     /* Custom Branded Dropdown Menu */
     .branded-dropdown { position: relative; display: inline-block; }
     .branded-dropdown-menu {
-      position: absolute; top: calc(100% + 8px); left: 0; width: 280px;
-      max-height: 320px; overflow-y: auto; z-index: 60;
+      position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%);
+      width: min(340px, 90vw); max-height: 50vh; overflow-y: auto; z-index: 70;
       background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(24px);
-      border: 1px solid rgba(217, 70, 239, 0.40); border-radius: 1rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.40); border-radius: 1.25rem;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.85);
     }
   
     /* Tactile Glassmorphic Up/Down Number Stepper Ticker - Box'em Design */
@@ -348,6 +348,23 @@
       color: #e879f9;
       pointer-events: none;
     }
+  
+    /* Collapsible Brand Badge Title Card (Box'em Standard) */
+    #brand-text-content {
+      transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 380px;
+      opacity: 1;
+    }
+    #brand-badge-container.collapsed #brand-text-content {
+      max-width: 0 !important;
+      opacity: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+    }
+
   </style>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -475,7 +492,7 @@
           </g>
         </svg>
       </div>
-      <div id="brand-text-content" class="hidden sm:block">
+      <div id="brand-text-content">
         <div class="flex items-center gap-2">
           <span class="text-base font-black tracking-wider text-white uppercase font-mono">BLACKBOXES • SYNTH'EM</span>
           <span id="header-occupation-tag" class="px-3 py-1 text-xs font-mono uppercase bg-fuchsia-500/20 text-fuchsia-200 rounded-lg font-black border border-fuchsia-500/30">SPATIAL DSP</span>
@@ -486,17 +503,9 @@
   </div>
 
   <!-- Top Right Actions & Patches Island (Box'em Standard) -->
-  <div id="top-right-bar-container" class="absolute top-12 right-4 z-50 pointer-events-auto flex items-center gap-2">
+  <div id="top-right-bar-container" class="absolute top-12 right-4 z-50 pointer-events-auto flex flex-col items-end">
     <!-- Branded Custom Patch Dropdown -->
-    <div class="branded-dropdown" id="dropdown-patch-wrapper">
-      <button id="btn-dropdown-patch" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-1.5 sm:gap-2 border border-fuchsia-400/40 shadow-lg max-w-[160px] sm:max-w-none">
-        <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse shrink-0"></span>
-        <span id="current-patch-name" class="truncate max-w-[95px] sm:max-w-none">Cyberpunk Acid Bassline</span>
-        <span class="material-symbols-outlined text-sm text-fuchsia-400 shrink-0">expand_more</span>
-      </button>
-
-      <div id="dropdown-patch-menu" class="branded-dropdown-menu hidden p-2 space-y-1"></div>
-    </div>
+    
 
     <!-- Top Right Actions Menu Button -->
     <div class="relative">
@@ -553,11 +562,7 @@
       </div>
     </div>
 
-    <!-- Back Project Button -->
-    <button id="btn-sponsor-dialog" class="px-3.5 py-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-mono text-xs font-bold shadow-lg shadow-amber-500/30 flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all">
-      <span class="material-symbols-outlined text-sm text-pink-200">favorite</span>
-      <span class="hidden sm:inline">Back Project</span>
-    </button>
+    
   </div>
 
   <!-- FLOATING WINDOW 1: Acoustic Dimensions Controls (Box'em Standard) -->
@@ -941,6 +946,7 @@
     <button id="toggle-keyboard-dock" class="glass-button px-3 py-2 rounded-xl text-xs font-mono font-black active flex items-center gap-1.5 whitespace-nowrap flex-shrink-0" title="Toggle Virtual Synthesizer Keyboard">
       <span class="material-symbols-outlined text-base text-rose-400 font-bold">piano</span> Keyboard
     </button>
+  <div id="dropdown-patch-menu" class="branded-dropdown-menu hidden p-2 space-y-1"></div>
   </footer>
 
   <!-- Bottom-Right Live Cumulative Supporter & Donation Tracker (Across All 6 Engines) -->
@@ -1637,7 +1643,7 @@
         `;
         item.addEventListener('click', () => {
           currentPatch = p;
-          document.getElementById('current-patch-name').textContent = p.name;
+          const _lbl = document.getElementById('current-patch-name'); if (_lbl) _lbl.textContent = p.name;
           state.harmonicDrivePercent = p.defaults.harmonicDrivePercent;
           state.dynamicCrestDb = p.defaults.dynamicCrestDb;
           state.pitchRatio = p.defaults.pitchRatio;
@@ -1652,7 +1658,7 @@
         menu.appendChild(item);
       });
 
-      document.getElementById('btn-dropdown-patch').addEventListener('click', (e) => {
+      document.getElementById('btn-dropdown-patch')?.addEventListener('click', (e) => {
         e.stopPropagation();
         menu.classList.toggle('hidden');
       });
@@ -2261,10 +2267,9 @@
 
       // Brand badge collapse on click (Box'em standard)
       const brandBadge = document.getElementById('brand-badge-container');
-      const brandText = document.getElementById('brand-text-content');
-      if (brandBadge && brandText) {
+      if (brandBadge) {
         brandBadge.addEventListener('click', () => {
-          brandText.classList.toggle('hidden');
+          brandBadge.classList.toggle('collapsed');
           brandBadge.classList.add('is-scanning');
           setTimeout(() => brandBadge.classList.remove('is-scanning'), 2000);
         });
@@ -2272,6 +2277,7 @@
 
       // Mobile Responsive Default Collapsed Windows (< 768px)
       if (window.innerWidth < 768) {
+        document.getElementById('brand-badge-container')?.classList.add('collapsed');
         const winCtrl = document.getElementById('win-controls');
         const winCop = document.getElementById('win-copilot');
         if (winCtrl) winCtrl.classList.add('collapsed');

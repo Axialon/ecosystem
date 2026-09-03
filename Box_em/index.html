@@ -741,6 +741,23 @@
       color: #a5b4fc;
     }
 
+  
+    /* Collapsible Brand Badge Title Card (Box'em Standard) */
+    #brand-text-content {
+      transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 380px;
+      opacity: 1;
+    }
+    #brand-badge-container.collapsed #brand-text-content {
+      max-width: 0 !important;
+      opacity: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+    }
+
   </style>
 </head>
 <body class="relative w-full h-full">
@@ -862,7 +879,7 @@
           </g>
         </svg>
       </div>
-      <div id="brand-text-content" class="hidden sm:block">
+      <div id="brand-text-content">
         <div class="flex items-center gap-2">
           <span class="text-base font-black tracking-wider text-slate-950 dark:text-white uppercase font-mono">BLACKBOXES • BOX'EM</span>
           <span id="header-occupation-tag" class="px-3 py-1 text-xs font-mono uppercase bg-indigo-500/20 text-indigo-950 dark:text-indigo-200 rounded-lg font-black">FULLSTACK</span>
@@ -3817,10 +3834,9 @@
       hydrateFromUrlParams();
 
       const brandBadge = document.getElementById('brand-badge-container');
-      const brandText = document.getElementById('brand-text-content');
-      if (brandBadge && brandText) {
+      if (brandBadge) {
         brandBadge.addEventListener('click', () => {
-          brandText.classList.toggle('hidden');
+          brandBadge.classList.toggle('collapsed');
           brandBadge.classList.add('is-scanning');
           setTimeout(() => brandBadge.classList.remove('is-scanning'), 2000);
         });
@@ -3828,6 +3844,7 @@
 
       // Mobile Responsive Default Collapsed Windows (< 768px)
       if (window.innerWidth < 768) {
+        document.getElementById('brand-badge-container')?.classList.add('collapsed');
         document.querySelectorAll('.floating-window').forEach(win => {
           win.classList.add('collapsed');
         });
