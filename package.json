@@ -22,7 +22,8 @@
     "audit": "node scripts/run_ecosystem_audits.js && cd Box_em && npm run audit",
     "publish:check": "node scripts/publish_check.js",
     "publish:prepare": "npm run audit && npm test && node scripts/publish_check.js",
-    "build": "node scripts/publish_check.js"
+    "build": "node scripts/publish_check.js",
+    "check:dns": "node scripts/verify_subdomains.js"
   },
   "author": "Blackboxes Antigravity Agent",
   "license": "MIT"
