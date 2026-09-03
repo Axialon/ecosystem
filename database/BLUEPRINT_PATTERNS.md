@@ -119,12 +119,27 @@ Wire to Actions Menu '#btn-open-ticker' and bottom-right live donation tracker b
 
 ### Implementation Code:
 ```html
-html:not(.dark) body { background-color: #cbd5e1 !important; color: #0f172a !important; }
-html:not(.dark) .glass-panel { background: rgba(255, 255, 255, 0.94) !important; color: #0f172a !important; }
+html:not(.dark) body { background-color: #f1f5f9 !important; color: #0f172a !important; }
+html:not(.dark) .glass-panel { background: rgba(255, 255, 255, 0.95) !important; color: #0f172a !important; }
 html:not(.dark) .window-header h3, html:not(.dark) #brand-text-content span { color: #0f172a !important; }
 ```
 
 ### Usage Instructions:
 Include in <style> block of all BlackBoxes projects.
+
+---
+## Frameless 3D Showcase & Embed Architecture (`UNBOUNDED_SHOWCASE_ENGINE`)
+**Category:** `SHOWCASE_ENGINE`  
+**Description:** Full-viewport fixed Three.js canvas with interaction surface, zen showcase mode, live constraint sliders, solved equilibrium HUD, and theme-aware contrast shield.
+
+### Implementation Code:
+```html
+<canvas id="ambient-bg-canvas"></canvas>
+<canvas id="hero-embed-canvas" class="fixed inset-0 w-screen h-screen z-10 pointer-events-none"></canvas>
+<div id="hero-interaction-surface" class="absolute inset-0 z-20 cursor-grab active:cursor-grabbing pointer-events-auto"></div>
+```
+
+### Usage Instructions:
+Deploy in showcase.html across all current and future ecosystem engines.
 
 ---

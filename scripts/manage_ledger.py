@@ -189,10 +189,20 @@ function applyShader(key) {
         "Light Mode Readability & Contrast Shield",
         "THEMING",
         "Guarantees deep slate #0f172a / #020617 typography against light glass panels when dark mode is toggled off.",
-        """html:not(.dark) body { background-color: #cbd5e1 !important; color: #0f172a !important; }
-html:not(.dark) .glass-panel { background: rgba(255, 255, 255, 0.94) !important; color: #0f172a !important; }
+        """html:not(.dark) body { background-color: #f1f5f9 !important; color: #0f172a !important; }
+html:not(.dark) .glass-panel { background: rgba(255, 255, 255, 0.95) !important; color: #0f172a !important; }
 html:not(.dark) .window-header h3, html:not(.dark) #brand-text-content span { color: #0f172a !important; }""",
         "Include in <style> block of all BlackBoxes projects."
+    ),
+    (
+        "UNBOUNDED_SHOWCASE_ENGINE",
+        "Frameless 3D Showcase & Embed Architecture",
+        "SHOWCASE_ENGINE",
+        "Full-viewport fixed Three.js canvas with interaction surface, zen showcase mode, live constraint sliders, solved equilibrium HUD, and theme-aware contrast shield.",
+        """<canvas id="ambient-bg-canvas"></canvas>
+<canvas id="hero-embed-canvas" class="fixed inset-0 w-screen h-screen z-10 pointer-events-none"></canvas>
+<div id="hero-interaction-surface" class="absolute inset-0 z-20 cursor-grab active:cursor-grabbing pointer-events-auto"></div>""",
+        "Deploy in showcase.html across all current and future ecosystem engines."
     )
 ]
 
@@ -262,6 +272,16 @@ changelog_data = [
         "win-controls was positioned at top: 75px-85px, causing the bottom of the brand badge (y=118px) to block physical mouse clicks on the window header.",
         "100% Operational - All buttons clickable on 1st click",
         "Orbit_em, Pulse_em, Cap_em, Synth_em, Balanc_em"
+    ),
+    (
+        "2026-09-04T08:40:00Z",
+        "all",
+        "v1.6.0",
+        "SHOWCASE_REDESIGN",
+        "Redesigned showcase pages across all 5 sister engines to achieve 100% UX parity with Box'em. Eliminated bounded 480px box containers, replacing them with frameless full-viewport 3D canvases, zen showcase mode, camera controls, live constraint sliders, solved equilibrium HUDs, theme toggles, and bulletproof light-mode contrast shields.",
+        "User reported models were bounded and tag readability was low in showcases compared to Box'em. Required unbounded spatial canvas and theme awareness.",
+        "100% Resolved - Unbounded 3D WebGL scenes with AAA contrast in both light and dark modes confirmed via visual captures",
+        "Orbit_em/showcase.html, Pulse_em/showcase.html, Cap_em/showcase.html, Synth_em/showcase.html, Balanc_em/showcase.html, index.html across all engines"
     )
 ]
 
