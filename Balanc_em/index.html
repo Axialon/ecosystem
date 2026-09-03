@@ -223,6 +223,41 @@
       transform: scale(0.92);
     }
 
+  
+    /* 3D Laser Scanner Beam - Linear Constant Velocity Traversal */
+    @keyframes laserSweepTop {
+      0% { opacity: 0; transform: translateY(-24px); }
+      5% { opacity: 1; }
+      28% { opacity: 1; transform: translateY(22px); }
+      30%, 100% { opacity: 0; transform: translateY(22px); }
+    }
+    @keyframes laserSweepChevron {
+      0%, 28% { opacity: 0; transform: translateY(0px); }
+      32% { opacity: 1; }
+      85% { opacity: 1; transform: translateY(48px); }
+      92%, 100% { opacity: 0; transform: translateY(52px); }
+    }
+    .scan-beam-top {
+      opacity: 0;
+      pointer-events: none;
+      transform-box: view-box;
+      transform-origin: 0 0;
+    }
+    .scan-beam-chevron {
+      opacity: 0;
+      pointer-events: none;
+      transform-box: view-box;
+      transform-origin: 0 0;
+    }
+    .group:hover .scan-beam-top,
+    .is-scanning .scan-beam-top {
+      animation: laserSweepTop 2.0s linear infinite;
+    }
+    .group:hover .scan-beam-chevron,
+    .is-scanning .scan-beam-chevron {
+      animation: laserSweepChevron 2.0s linear infinite;
+    }
+
   </style>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -278,28 +313,97 @@
   </div>
 
   <!-- Top Left Brand Island (Box'em Standard) -->
-  <div id="brand-island" class="absolute top-12 left-4 z-40 pointer-events-auto">
-    <div class="glass-panel px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg">
-      <a href="../index.html" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 to-red-700 flex items-center justify-center text-white shadow-lg shadow-rose-500/40 font-black text-sm font-mono hover:scale-105 transition-transform" title="Back to Ecosystem">
-        ⚔
-      </a>
-      <div>
+    <!-- Top-Left Branding Badge (Matching Box'em Standard) -->
+  <div id="brand-badge-container" class="absolute top-12 left-4 z-50 pointer-events-auto transition-all duration-200">
+    <div class="glass-panel px-3 py-2 rounded-2xl flex items-center gap-2.5 shadow-lg cursor-pointer select-none group border border-rose-500/30">
+      <div class="w-9 h-9 flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+        <svg viewBox="0 0 100 100" class="w-full h-full obsidian-logo-svg" shape-rendering="geometricPrecision">
+          <defs>
+            <linearGradient id="pLogoTopG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b485d"/>
+              <stop offset="35%" stop-color="#1e293b"/>
+              <stop offset="75%" stop-color="#0f172a"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+            <linearGradient id="pLogoLeftG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="45%" stop-color="#050914"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </linearGradient>
+            <linearGradient id="pLogoRightG" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="50%" stop-color="#0b1120"/>
+              <stop offset="100%" stop-color="#020617"/>
+            </linearGradient>
+
+            <clipPath id="pLogoClipTop">
+              <polygon points="50,4 90,26 50,48 10,26"/>
+            </clipPath>
+            <clipPath id="pLogoClipSide">
+              <polygon points="10,26 50,48 90,26 90,70 50,92 10,70"/>
+            </clipPath>
+
+            <filter id="pLogoGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- 1. Pure Solid Backing Hexagon -->
+          <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="#000000"/>
+
+          <!-- 2. Obsidian Crystalline Facets -->
+          <polygon points="50,4 90,26 50,48 10,26" fill="url(#pLogoTopG)"/>
+          <polygon points="10,26 50,48 50,92 10,70" fill="url(#pLogoLeftG)"/>
+          <polygon points="50,48 90,26 90,70 50,92 10,70" fill="url(#pLogoRightG)"/>
+
+          <!-- 3. Outer Silhouette Border -->
+          <polygon points="50,4 90,26 90,70 50,92 10,70 10,26" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.4" stroke-linejoin="miter"/>
+
+          <!-- 4. Unified Internal Y Seam -->
+          <path d="M 10,26 L 50,48 L 90,26 M 50,48 L 50,92" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.4" stroke-linejoin="miter" stroke-linecap="butt"/>
+
+          <!-- 5. Subtle Top Specular Glint Line -->
+          <line x1="50" y1="4" x2="90" y2="26" stroke="rgba(255,255,255,0.45)" stroke-width="1.2" stroke-linecap="butt"/>
+
+          <!-- 6. Top Facet Laser Scan -->
+          <g clip-path="url(#pLogoClipTop)">
+            <g class="scan-beam-top">
+              <line x1="0" y1="26" x2="100" y2="26" stroke="#f43f5e" stroke-width="7.0" filter="url(#pLogoGlow)" opacity="0.85"/>
+              <line x1="0" y1="26" x2="100" y2="26" stroke="#ffffff" stroke-width="2.2" stroke-linecap="butt"/>
+            </g>
+          </g>
+
+          <!-- 7. Side Facets 3D Warping Chevron -->
+          <g clip-path="url(#pLogoClipSide)">
+            <g class="scan-beam-chevron">
+              <path d="M 6,26 L 50,48 L 94,26" stroke="#f43f5e" stroke-width="8.0" fill="none" stroke-linejoin="miter" stroke-linecap="butt" filter="url(#pLogoGlow)" opacity="0.90"/>
+              <path d="M 6,26 L 50,48 L 94,26" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linejoin="miter" stroke-linecap="butt"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div id="brand-text-content" class="hidden sm:block">
         <div class="flex items-center gap-2">
-          <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none text-white font-mono">BALANC'EM</h1>
-          <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 rounded-md border border-rose-400/40">3D COMBAT META</span>
+          <span class="text-base font-black tracking-wider text-white uppercase font-mono">BLACKBOXES • BALANC'EM</span>
+          <span id="header-occupation-tag" class="px-3 py-1 text-xs font-mono uppercase bg-rose-500/20 text-rose-200 rounded-lg font-black border border-rose-500/30">COMBAT META</span>
         </div>
-        <p class="text-[10px] text-slate-300 font-mono">RPG Economy & Combat Balancing Engine</p>
+        <div class="text-sm text-slate-300 font-mono font-bold leading-tight mt-0.5">3D RPG Economy & Combat Balancing Engine</div>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- Top Right Actions & Classes Island (Box'em Standard) -->
   <div id="top-right-bar-container" class="absolute top-12 right-4 z-50 pointer-events-auto flex items-center gap-2">
     <!-- Branded Custom Class Dropdown -->
     <div class="branded-dropdown" id="dropdown-class-wrapper">
-      <button id="btn-dropdown-class" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-2 border border-rose-400/40 shadow-lg">
+      <button id="btn-dropdown-class" class="px-3 py-1.5 rounded-xl glass-button text-xs font-mono font-bold text-slate-100 flex items-center gap-2 border border-rose-400/40 shadow-lg max-w-[160px] sm:max-w-none">
         <span class="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
-        <span id="current-class-name">Soulslike Boss / Heavy Knight</span>
+        <span id="current-class-name" class="truncate max-w-[95px] sm:max-w-none">Soulslike Boss / Heavy Knight</span>
         <span class="material-symbols-outlined text-sm text-rose-400">expand_more</span>
       </button>
 
@@ -1390,6 +1494,25 @@
       }
 
       setupDraggableWindows();
+
+      // Brand badge collapse on click (Box'em standard)
+      const brandBadge = document.getElementById('brand-badge-container');
+      const brandText = document.getElementById('brand-text-content');
+      if (brandBadge && brandText) {
+        brandBadge.addEventListener('click', () => {
+          brandText.classList.toggle('hidden');
+          brandBadge.classList.add('is-scanning');
+          setTimeout(() => brandBadge.classList.remove('is-scanning'), 2000);
+        });
+      }
+
+      // Mobile Responsive Default Collapsed Windows (< 768px)
+      if (window.innerWidth < 768) {
+        document.querySelectorAll('.floating-window').forEach(win => {
+          win.classList.add('collapsed');
+        });
+      }
+    
       initWindowToggles();
       initTopActionsMenu();
       syncDonationPoolUI();
