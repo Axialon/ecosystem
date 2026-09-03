@@ -1,11 +1,35 @@
+# Dependencies
 node_modules/
 */node_modules/
+package-lock.json.bak
+
+# OS Metadata & System Files
 .DS_Store
 Thumbs.db
-*.log
+desktop.ini
+
+# Environment Variables & Secrets (CRITICAL SECURITY)
 .env
+.env.*
+!.env.example
+*.token
+*.key
+*secret*
+secrets/
+.cloudflare/
 .wrangler/
+*/.wrangler/
+
+# Logs & Audit Artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.audits/
+*/.audits/
+
+# Backups & Temp
+*.tmp
+*.bak
 .git_standalone_backup
-Box_em/.git_standalone_backup
-Box_em/node_modules/
-*/node_modules/
+*/.git_standalone_backup

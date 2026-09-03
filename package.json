@@ -23,7 +23,11 @@
     "publish:check": "node scripts/publish_check.js",
     "publish:prepare": "npm run audit && npm test && node scripts/publish_check.js",
     "build": "node scripts/publish_check.js",
-    "check:dns": "node scripts/verify_subdomains.js"
+    "check:dns": "node scripts/verify_subdomains.js",
+    "cf:verify": "node scripts/cloudflare_admin.js verify",
+    "cf:dns:sync": "node scripts/cloudflare_admin.js dns:sync",
+    "cf:dns:list": "node scripts/cloudflare_admin.js dns:list",
+    "cf:pages:status": "node scripts/cloudflare_admin.js pages:status"
   },
   "author": "Blackboxes Antigravity Agent",
   "license": "MIT"
