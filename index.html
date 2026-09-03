@@ -85,7 +85,7 @@
           </p>
         </div>
         <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <a href="Box_em/index.html" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-sky-500/20">
+          <a href="Box_em/index.html" class="ecosystem-link" data-target="boxem" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-sky-500/20">
             <span>Launch Engine</span>
             <span class="material-symbols-outlined text-sm">open_in_new</span>
           </a>
@@ -106,7 +106,7 @@
           </p>
         </div>
         <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <a href="Orbit_em/index.html" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
+          <a href="Orbit_em/index.html" class="ecosystem-link" data-target="orbitem" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
             <span>Launch Engine</span>
             <span class="material-symbols-outlined text-sm">open_in_new</span>
           </a>
@@ -127,7 +127,7 @@
           </p>
         </div>
         <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <a href="Pulse_em/index.html" class="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-rose-500/20">
+          <a href="Pulse_em/index.html" class="ecosystem-link" data-target="pulseem" class="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-rose-500/20">
             <span>Launch Engine</span>
             <span class="material-symbols-outlined text-sm">open_in_new</span>
           </a>
@@ -148,7 +148,7 @@
           </p>
         </div>
         <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <a href="Cap_em/index.html" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+          <a href="Cap_em/index.html" class="ecosystem-link" data-target="capem" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
             <span>Launch Engine</span>
             <span class="material-symbols-outlined text-sm">open_in_new</span>
           </a>
@@ -169,7 +169,7 @@
           </p>
         </div>
         <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <a href="Synth_em/index.html" class="px-4 py-2 rounded-xl bg-pink-500 hover:bg-pink-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-pink-500/20">
+          <a href="Synth_em/index.html" class="ecosystem-link" data-target="synthem" class="px-4 py-2 rounded-xl bg-pink-500 hover:bg-pink-400 text-slate-950 font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-pink-500/20">
             <span>Launch Engine</span>
             <span class="material-symbols-outlined text-sm">open_in_new</span>
           </a>
@@ -190,7 +190,7 @@
           </p>
         </div>
         <div class="pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <a href="Balanc_em/index.html" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-rose-600/20">
+          <a href="Balanc_em/index.html" class="ecosystem-link" data-target="balancem" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-black flex items-center gap-1.5 shadow-lg shadow-rose-600/20">
             <span>Launch Engine</span>
             <span class="material-symbols-outlined text-sm">open_in_new</span>
           </a>
@@ -313,5 +313,56 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
   </script>
+<script>
+    
+    }
+</script>
+<script>
+  // Smart Ecosystem Routing & Cumulative Pool Sync (Box'em Standard)
+  function initEcosystemIntegration() {
+    const host = window.location.hostname;
+    
+    const CF_PAGES_MAP = {
+      ecosystem: "https://ecosystem-9de.pages.dev/",
+      boxem: "https://boxem.blackboxes.net/",
+      orbitem: "https://orbitem.pages.dev/",
+      pulseem: "https://pulseem.pages.dev/",
+      capem: "https://capem.pages.dev/",
+      synthem: "https://synthem.pages.dev/",
+      balancem: "https://balancem.pages.dev/"
+    };
+
+    const isLiveWeb = window.location.protocol.startsWith("http") && !host.includes("localhost") && !host.includes("127.0.0.1");
+
+    if (isLiveWeb) {
+      document.querySelectorAll(".ecosystem-link").forEach(a => {
+        const target = a.dataset.target;
+        if (target && CF_PAGES_MAP[target]) {
+          a.href = CF_PAGES_MAP[target];
+        }
+      });
+    }
+
+    const poolEl = document.getElementById("ecosystem-pool-display") || document.getElementById("root-pool-badge");
+    if (poolEl) {
+      try {
+        const stored = localStorage.getItem("blackboxes_cumulative_donation_pool");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed.totalUsd === "number") {
+            const count = parsed.backerCount || parsed.backersCount || 19;
+            poolEl.textContent = "Live Cumulative Pool: $" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
+          }
+        }
+      } catch(e) {}
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initEcosystemIntegration);
+  } else {
+    initEcosystemIntegration();
+  }
+</script>
 </body>
 </html>

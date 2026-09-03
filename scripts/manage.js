@@ -83,7 +83,7 @@ if (action === "dev" || action === "start") {
       run("npx wrangler pages deploy " + eng.id + " --project-name=" + eng.project + " --branch=main");
     });
     console.log("\nDeploying Ecosystem Hub -> ecosystem.blackboxes.net ...");
-    run("npx wrangler pages deploy . --project-name=blackboxes-ecosystem --branch=main");
+    run("npx wrangler pages deploy . --project-name=ecosystem --branch=main");
   } else {
     const matched = ENGINES.find(e => e.subdomain === proj || e.id.toLowerCase() === proj.toLowerCase());
     if (matched) {
@@ -91,7 +91,7 @@ if (action === "dev" || action === "start") {
       run("npx wrangler pages deploy " + matched.id + " --project-name=" + matched.project + " --branch=main");
     } else if (proj === "ecosystem" || proj === "hub") {
       console.log("Deploying Ecosystem Hub to Cloudflare Pages...");
-      run("npx wrangler pages deploy . --project-name=blackboxes-ecosystem --branch=main");
+      run("npx wrangler pages deploy . --project-name=ecosystem --branch=main");
     } else {
       console.error("Unknown project: " + proj + ". Valid options: ecosystem, boxem, orbitem, pulseem, capem, synthem, balancem, all");
     }
