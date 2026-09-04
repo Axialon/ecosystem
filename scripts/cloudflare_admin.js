@@ -33,13 +33,19 @@ function loadEnv() {
 loadEnv();
 
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
-const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || 'c429f84c6da745e7855a0897f82d979b';
-const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID || '01b53b8477f20bfa7cb1e59261892ae6';
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID;
 
 function apiRequest(method, endpoint, body = null) {
   return new Promise((resolve, reject) => {
     if (!API_TOKEN) {
       return reject(new Error('CLOUDFLARE_API_TOKEN is not set in .env. Please add your token to .env'));
+    }
+    if (!ACCOUNT_ID && endpoint.includes('/accounts/')) {
+      return reject(new Error('CLOUDFLARE_ACCOUNT_ID is not set in .env. Please add your account ID to .env'));
+    }
+    if (!ZONE_ID && endpoint.includes('/zones/')) {
+      return reject(new Error('CLOUDFLARE_ZONE_ID is not set in .env. Please add your zone ID to .env'));
     }
 
     const payload = body ? JSON.stringify(body) : null;

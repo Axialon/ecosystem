@@ -3,7 +3,8 @@ import json
 import os
 import datetime
 
-DB_DIR = r"C:\Users\rayze\BlackBoxes\database"
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_DIR = os.path.join(ROOT_DIR, "database")
 DB_PATH = os.path.join(DB_DIR, "ecosystem_ledger.sqlite")
 JSON_PATH = os.path.join(DB_DIR, "ecosystem_ledger.json")
 REPORT_PATH = os.path.join(DB_DIR, "ECOSYSTEM_STATUS_REPORT.md")
@@ -292,6 +293,16 @@ changelog_data = [
         "User requested mathematical audit focusing on equations and relations on how the model updates with relevant changes to ensure logic and accuracy.",
         "100% Resolved - 24/24 Mathematical & 3D Deformation Tests Passed across all 6 engines",
         "showcase.html and index.html across all 6 engines, scratch/audit_mathematical_models.js"
+    ),
+    (
+        "2026-09-04T09:40:00Z",
+        "all",
+        "v1.8.0",
+        "SECURITY_SANITIZATION",
+        "Exhaustive origin audit and sanitization across all 7 repositories: scrubbed personal email from .env.example, removed hardcoded fallback Cloudflare IDs, converted absolute local file:/// paths in all sister READMEs to relative links, dynamically localized DB_DIR in manage_ledger.py, deployed enterprise .gitignore to all 5 sister repos, and untracked binary SQLite database from git.",
+        "User requested scan of files in origin for leaked or local info that should not be on GitHub to immediately resolve.",
+        "100% Resolved - 474 tracked files scanned with 0 leaks/personal info detected",
+        ".env.example, scripts/cloudflare_admin.js, scripts/manage_ledger.py, .gitignore across 6 repos, sister README.md files"
     )
 ]
 

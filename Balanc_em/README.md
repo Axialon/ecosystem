@@ -22,8 +22,8 @@ Where:
 
 ## 🚀 Quickstart
 
-1. Open [`Balanc_em/index.html`](file:///C:/Users/rayze/BlackBoxes/Balanc_em/index.html) to launch the 3D Combat Balancing Solver.
-2. Open [`Balanc_em/showcase.html`](file:///C:/Users/rayze/BlackBoxes/Balanc_em/showcase.html) to explore RPG combat archetypes.
+1. Open [`index.html`](index.html) in your browser to launch the 3D Combat Balancing Solver.
+2. Open [`showcase.html`](showcase.html) to explore RPG combat archetypes.
 3. Export Unreal Engine / Unity CSV DataTables and 3D `.glb` combat polytopes.
 
 ---

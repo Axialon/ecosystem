@@ -22,8 +22,8 @@ Where:
 
 ## 🚀 Quickstart
 
-1. Open [`Cap_em/index.html`](file:///C:/Users/rayze/BlackBoxes/Cap_em/index.html) to launch the 3D Cap Table Solver.
-2. Open [`Cap_em/showcase.html`](file:///C:/Users/rayze/BlackBoxes/Cap_em/showcase.html) for venture scenario modeling.
+1. Open [`index.html`](index.html) in your browser to launch the 3D Cap Table Solver.
+2. Open [`showcase.html`](showcase.html) for venture scenario modeling.
 3. Export Carta-compatible CSVs, `.capbox.json` schemas, and pitch deck embeds.
 
 ---

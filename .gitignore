@@ -33,3 +33,10 @@ yarn-error.log*
 *.bak
 .git_standalone_backup
 */.git_standalone_backup
+
+# Binary Databases (Keep JSON and Markdown mirrors version controlled)
+*.sqlite
+*.sqlite3
+*.db
+database/*.sqlite
+

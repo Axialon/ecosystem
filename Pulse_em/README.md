@@ -24,8 +24,8 @@ When an athlete raises **Training Strain** ($N_S$), the cellular core elongates 
 
 ## 🚀 Quickstart
 
-1. Double-click [`Pulse_em/index.html`](file:///C:/Users/rayze/BlackBoxes/Pulse_em/index.html) to launch the Power Tool.
-2. Open [`Pulse_em/showcase.html`](file:///C:/Users/rayze/BlackBoxes/Pulse_em/showcase.html) for clinical scenario simulations.
+1. Open [`index.html`](index.html) in your browser to launch the Power Tool.
+2. Open [`showcase.html`](showcase.html) for clinical scenario simulations.
 3. Export validated `.pulse.json` state, 3D `.glb` organic cellular models, and Apple Health / Whoop CSVs.
 
 ---

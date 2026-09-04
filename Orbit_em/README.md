@@ -28,8 +28,8 @@ When an engineer pulls the **SLA Target** higher, the central crystalline reacto
 
 Orbit'em is completely standalone and requires **zero dependencies or build steps**.
 
-1. Double-click [`Orbit_em/index.html`](file:///C:/Users/rayze/BlackBoxes/Orbit_em/index.html) to launch the Power Tool.
-2. Open [`Orbit_em/showcase.html`](file:///C:/Users/rayze/BlackBoxes/Orbit_em/showcase.html) to view the interactive marketing presentation.
+1. Open [`index.html`](index.html) in your browser to launch the Power Tool.
+2. Open [`showcase.html`](showcase.html) to view the interactive marketing presentation.
 3. Export validated `.orbit.json` configs, standalone 3D binary `.glb` models, and Terraform `.tf` blueprints with 1 click.
 
 ---

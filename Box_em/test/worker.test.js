@@ -5,7 +5,7 @@ const { verifyHmacSha256 } = require('../workers/donationWebhook');
 console.log('=== Running Box\'em Cloudflare HMAC & Worker Tests (Task T3.1) ===\n');
 
 async function runWorkerTests() {
-  const secret = 'super_secret_boxem_key_123';
+  const secret = 'mock_test_hmac_secret_key_testing_only';
   const payload = JSON.stringify({
     donorName: 'Test Patron',
     amount: 50.0,

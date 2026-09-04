@@ -1,0 +1,109 @@
+# ==============================================================================
+# Blackboxes • Box'em Enterprise .gitignore
+# ==============================================================================
+
+# 1. Dependency Directories & Package Managers
+node_modules/
+jspm_packages/
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 2. Local Environment Variables & Secrets (CRITICAL)
+.env
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.pkcs12
+
+# 3. Production Builds & Bundler Caches
+dist/
+build/
+out/
+.cache/
+.parcel-cache/
+.turbo/
+
+# 4. Cloudflare Worker & Serverless State
+.wrangler/
+.mf/
+.cloudflare/
+
+# 5. Local AI Agents, Brain Transcripts & System Generated Artifacts
+.agent/
+.antigravity/
+.gemini/
+.audits/
+.audit/
+scratch/
+brain/
+*.system_generated/
+.tempmediaStorage/
+
+# 6. Test Outputs, Coverage & Performance Profiles
+coverage/
+.nyc_output/
+*.lcov
+.clinic/
+*.cpuprofile
+*.heapprofile
+
+# 7. Operating System Artifacts (macOS, Windows, Linux)
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# 8. IDEs, Code Editors & Tooling
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*.kate-swp
+
+# 9. Temporary & Log Files
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+

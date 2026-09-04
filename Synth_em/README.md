@@ -22,9 +22,9 @@ Where:
 
 ## 🚀 Quickstart
 
-1. Open [`Synth_em/index.html`](file:///C:/Users/rayze/BlackBoxes/Synth_em/index.html) to launch the Polyphonic 3D Synthesizer.
+1. Open [`index.html`](index.html) in your browser to launch the Polyphonic 3D Synthesizer.
 2. Play notes using your computer keyboard (`A`, `W`, `S`, `E`, `D`, `F`, `T`, `G`, `Y`, `H`, `U`, `J`, `K`) or mouse clicks.
-3. Open [`Synth_em/showcase.html`](file:///C:/Users/rayze/BlackBoxes/Synth_em/showcase.html) to browse sound design preset patches.
+3. Open [`showcase.html`](showcase.html) to browse sound design preset patches.
 4. Export `.synthem.json` patches and 3D binary `.glb` audio resonators.
 
 ---
