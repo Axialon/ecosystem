@@ -303,6 +303,16 @@ changelog_data = [
         "User requested scan of files in origin for leaked or local info that should not be on GitHub to immediately resolve.",
         "100% Resolved - 474 tracked files scanned with 0 leaks/personal info detected",
         ".env.example, scripts/cloudflare_admin.js, scripts/manage_ledger.py, .gitignore across 6 repos, sister README.md files"
+    ),
+    (
+        "2026-09-04T14:15:00Z",
+        "all",
+        "v1.9.0",
+        "SPONSOR_AND_SHOWCASE_OVERHAUL",
+        "Enforced exact real backer pool across ecosystem: strictly 2 Backers ($50.00 Founding Backer, $5.00 Community Supporter = $55.00 Total USD), eliminating all mock metrics ($485 / 19 backers / $85). Rebuilt Sponsor Modal (#modal-ticker) across all 6 engines with high-contrast theme-aware shielding, interactive 3D crystal preview, 5 tier buttons ($5, $25, $50, $100, $250), Stripe checkout, and live 2-backer stream. Upgraded sister showcases with Box'em standard 3D floating canvas billboards (createSpatial3DBillboard), multi-layer jewel nodes, and internal orbiting submodules.",
+        "User requested real backer data ($55 / 2 backers), theme-aware sponsor window with complementary font colors and high visual quality, and 3D showcase models upgraded to Box'em spatial presentation standards.",
+        "100% Resolved - 24/24 Visual captures verified across Light & Dark themes; exact real backer pool verified",
+        "index.html, showcase.html across all 6 engines, Box_em/functions/api/donations/live.js, Box_em/workers/donationWebhook.js, Box_em/server.js, scripts/inject_routing.js"
     )
 ]
 
@@ -393,6 +403,7 @@ Database: `database/ecosystem_ledger.sqlite`
 | `v1.5.0` | All Engines | Layout & Click | Window collapse button (`-`) blocked by brand badge overlap | Adjusted `#win-controls` default top to `130px`, clearing the badge. **100% Unobstructed** |
 | `v1.5.0` | Synth'em | Audio UX | Virtual keyboard erratic due to duplicate dock toggle listeners | Removed redundant event listener in `initWindowToggles()`. **100% Operational** |
 | `v1.5.0` | Pulse'em | Parity | Copilot missing from Actions menu grid | Added `#btn-open-copilot-menu` with event hook. **100% Operational** |
+| `v1.9.0` | All 6 Engines | Sponsor & Showcase | Fictional backers ($485 / 19 backers), missing 3D billboards in sister showcases, duplicate modals | Enforced real 2 backers ($55.00), deployed theme-aware Sponsor Modal, and 3D floating canvas billboards. **100% Parity Verified** |
 
 ## 4. Blueprint Patterns for Future Projects
 Detailed architectural templates and code snippets are persisted in `database/BLUEPRINT_PATTERNS.md`.

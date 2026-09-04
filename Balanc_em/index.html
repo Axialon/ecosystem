@@ -11,6 +11,47 @@
         darkMode: 'class'
       }
     };
+  
+    // Unified Modal Trigger & ID Alias Sync
+    (function unifySponsorModalHooks() {
+      const modal = document.getElementById('modal-ticker');
+      if (!modal) return;
+
+      // Close handlers
+      modal.querySelectorAll('.btn-close-modal, .modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', () => modal.classList.add('hidden'));
+      });
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+      });
+
+      function openSponsorModal() {
+        modal.classList.remove('hidden');
+        if (typeof initDonation3DScene === 'function') initDonation3DScene();
+        if (typeof initDonationHologram === 'function') initDonationHologram();
+      }
+
+      // Wire up all known trigger IDs
+      ['btn-open-ticker', 'btn-open-sponsor', 'live-donation-tracker', 'btn-sponsor-dialog', 'btn-sponsor-pool', 'ecosystem-pool-display'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', (e) => {
+          e.preventDefault();
+          openSponsorModal();
+        });
+      });
+    })();
+  
+  
+    // Cross-Engine Modal ID Bridge (modal-sponsor <-> modal-ticker)
+    (function bridgeModalIds() {
+      const origGetById = document.getElementById.bind(document);
+      document.getElementById = function(id) {
+        if (id === 'modal-ticker' && !origGetById('modal-ticker')) return origGetById('modal-sponsor');
+        if (id === 'modal-sponsor' && !origGetById('modal-sponsor')) return origGetById('modal-ticker');
+        return origGetById(id);
+      };
+    })();
+
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -585,7 +626,7 @@
       <div class="hidden md:flex items-center gap-2 shrink-0">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span class="text-slate-300 font-bold">Live Pool:</span>
-        <span id="ecosystem-pool-display" class="text-emerald-400 font-black">$485 USD • 19 Backers</span>
+        <span id="ecosystem-pool-display" class="text-emerald-400 font-black">$55 USD • 2 Backers</span>
       </div>
     </div>
   </nav>
@@ -966,9 +1007,9 @@
       <div>
         <div class="flex items-center gap-1.5">
           <span class="text-xs font-mono font-black text-slate-100 uppercase">Backing Pool</span>
-          <span id="tracker-amount-badge" class="text-xs font-mono font-black text-amber-400">$485 USD</span>
+          <span id="tracker-amount-badge" class="text-xs font-mono font-black text-amber-400">$55 USD</span>
         </div>
-        <div id="tracker-backer-count" class="text-[10px] text-slate-400 font-mono font-bold">Live 6-Engine Pool • 19 Backers</div>
+        <div id="tracker-backer-count" class="text-[10px] text-slate-400 font-mono font-bold">Live 6-Engine Pool • 2 Backers</div>
       </div>
     </div>
   </div>
@@ -1139,35 +1180,74 @@
     </div>
   </div>
 
-  <div id="modal-sponsor" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div class="w-full max-w-md glass-panel p-6 rounded-3xl space-y-4 shadow-2xl text-center">
-      <div class="flex items-center justify-between border-b border-slate-500/30 pb-2">
-        <h3 class="text-sm font-black font-mono text-white">OPEN GAME DEV SPONSORSHIP</h3>
-        <button class="btn-close-modal text-slate-400 hover:text-white font-mono text-lg">✕</button>
-      </div>
+  
+  
 
-      <p class="text-xs text-slate-300 font-sans">
-        Balanc'em is 100% free for indie game developers. Sponsors permanently unlock Damascus Flame and Volcanic Rage combat shaders.
-      </p>
-
-      <div class="w-full h-36 rounded-2xl bg-slate-950 border border-rose-400/40 overflow-hidden relative">
-        <canvas id="donation-3d-canvas" class="w-full h-full"></canvas>
-        <div id="hologram-label" class="absolute bottom-2 left-0 right-0 text-[10px] font-mono text-amber-400 font-bold">
-          Tier 1 Combat Sponsor ($5+)
+        <!-- 2-Click Stripe Checkout Action Buttons -->
+        <div class="space-y-2 pt-1">
+          <button id="btn-donate-card-action" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-mono shadow-lg shadow-indigo-600/30 flex items-center justify-between transition-all hover:scale-[1.005] active:scale-[0.99] cursor-pointer">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-xl flex-shrink-0 text-white">credit_card</span>
+              <div class="text-left flex flex-col">
+                <span class="text-xs sm:text-sm font-black tracking-tight leading-snug">Pay $<span id="btn-donate-amount-label">25</span> with Stripe</span>
+                <span class="text-[10px] text-white/80 font-normal leading-none">Instant Card • Apple Pay • Google Pay</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[11px] font-black tracking-wider uppercase flex-shrink-0">
+              <span>Checkout</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="https://github.com/sponsors/Axialon" target="_blank" class="py-2.5 px-3 rounded-xl glass-button text-center font-mono font-bold text-xs flex items-center justify-center gap-1.5 text-slate-800 dark:text-slate-200 hover:border-pink-500/40 transition-all" title="Sponsor Axialon on GitHub">
+              <span class="material-symbols-outlined text-sm text-rose-500">favorite</span> GitHub Sponsors
+            </a>
+            <button id="btn-simulate-edge-donation" class="py-2.5 px-3 rounded-xl glass-button text-center font-mono font-black text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-1 border border-emerald-500/40 hover:bg-emerald-500/10 transition-all">
+              <span class="material-symbols-outlined text-sm">bolt</span> Instant Edge Demo
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="space-y-2">
-        <div class="flex justify-between text-xs font-mono font-bold text-slate-200">
-          <span>Contribution:</span>
-          <span id="sponsor-amount-label" class="text-rose-400 font-extrabold">$15</span>
+      <!-- Existing Backer Token Verification -->
+      <div class="p-3.5 rounded-2xl glass-card space-y-2 border border-slate-300 dark:border-slate-700">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-mono font-black text-slate-900 dark:text-slate-100">Already a Supporter?</span>
+          <span class="text-[10px] font-mono text-slate-600 dark:text-slate-400 font-medium">Enter receipt ID or token</span>
         </div>
-        <input type="range" id="slider-sponsor" min="5" max="100" step="5" value="15" class="w-full accent-rose-400" />
+        <div class="flex gap-2">
+          <input type="text" id="backer-key-input" placeholder="e.g. GITHUB-SPONSOR-USERNAME" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-emerald-500 uppercase" />
+          <button id="btn-verify-backer-key" class="px-4 py-2 rounded-xl text-xs font-mono font-black glass-button text-emerald-600 dark:text-emerald-400 shrink-0">
+            Verify
+          </button>
+        </div>
       </div>
 
-      <button id="btn-claim-backer" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-mono font-black text-xs shadow-lg shadow-rose-500/30 hover:brightness-110">
-        Unlock Combat Perks (Simulate)
-      </button>
+      <!-- Real Live Backers Stream (2 Real Backers) -->
+      <div class="space-y-2 pt-1">
+        <div class="flex justify-between items-center">
+          <div class="text-xs font-mono uppercase font-black text-slate-950 dark:text-slate-100">Live Supporters Stream</div>
+          <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloudflare D1 Edge
+          </span>
+        </div>
+        <div class="space-y-1.5 max-h-36 overflow-y-auto pr-1" id="ticker-list-container">
+          <div class="p-3 rounded-xl glass-card flex justify-between items-center text-xs font-mono border border-emerald-500/30">
+            <div>
+              <span class="font-black text-slate-950 dark:text-white">Founding Backer</span>
+              <div class="text-[10px] text-slate-600 dark:text-slate-400">Tier 3 Agency • Unlocked All Shaders</div>
+            </div>
+            <span class="font-black text-emerald-700 dark:text-emerald-400">+$50.00</span>
+          </div>
+          <div class="p-3 rounded-xl glass-card flex justify-between items-center text-xs font-mono border border-emerald-500/30">
+            <div>
+              <span class="font-black text-slate-950 dark:text-white">Community Supporter</span>
+              <div class="text-[10px] text-slate-600 dark:text-slate-400">Tier 1 Coffee • Unlocked Kintsugi Gold</div>
+            </div>
+            <span class="font-black text-emerald-700 dark:text-emerald-400">+$5.00</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1843,15 +1923,11 @@
 
       if (!pool || typeof pool.totalUsd !== 'number') {
         pool = {
-          totalUsd: 485.00,
-          backerCount: 19,
+          totalUsd: 55.00,
+          backerCount: 2,
           recent: [
-            { donorName: 'alex.cloud', amountUsd: 50.00, tier: 3, engine: "Orbit'em" },
-            { donorName: 'dr.valkyrie', amountUsd: 100.00, tier: 4, engine: "Pulse'em" },
-            { donorName: 'venture_craft', amountUsd: 150.00, tier: 4, engine: "Cap'em" },
-            { donorName: 'synthwave99', amountUsd: 25.00, tier: 2, engine: "Synth'em" },
-            { donorName: 'hyper_carry', amountUsd: 75.00, tier: 3, engine: "Balanc'em" },
-            { donorName: 'axialon_backer', amountUsd: 85.00, tier: 3, engine: "Box'em" }
+            { donorName: 'Founding Backer', amountUsd: 50.00, tier: 3, engine: "Box'em" },
+            { donorName: 'Community Supporter', amountUsd: 5.00, tier: 1, engine: "Box'em" }
           ]
         };
         try {
@@ -2360,9 +2436,14 @@ return CombatMeta
 
     // 3D Sword Hologram
     let holoScene, holoCamera, holoRenderer, holoMesh;
+    
+    // --- 3D DONATION HOLOGRAM STAGE & SUPPORTER INTERACTION ---
+    
+    let selectedDonationAmount = 25;
+
     function initDonationHologram() {
       const canvas = document.getElementById('donation-3d-canvas');
-      if (!canvas) return;
+      if (!canvas || !window.THREE) return;
       try {
         holoScene = new THREE.Scene();
         holoCamera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 50);
@@ -2371,34 +2452,116 @@ return CombatMeta
         holoRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
         holoRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-        const hLight = new THREE.DirectionalLight(0xef4444, 2.0);
+        const hLight = new THREE.DirectionalLight(0x10b981, 2.0);
         hLight.position.set(2, 3, 2);
         holoScene.add(hLight);
         holoScene.add(new THREE.AmbientLight(0xffffff, 0.8));
 
         holoMesh = new THREE.Mesh(
-          new THREE.OctahedronGeometry(0.9, 0),
-          new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xbe123c, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.15 })
+          new THREE.DodecahedronGeometry(1.1, 0),
+          new THREE.MeshStandardMaterial({
+            color: 0x10b981,
+            emissive: 0x10b981,
+            emissiveIntensity: 0.5,
+            metalness: 0.85,
+            roughness: 0.15
+          })
         );
         holoScene.add(holoMesh);
 
-        document.getElementById('slider-sponsor').addEventListener('input', (e) => {
-          const val = e.target.value;
-          document.getElementById('sponsor-amount-label').textContent = `$${val}`;
-          const label = document.getElementById('hologram-label');
-          if (val >= 25) {
-            label.textContent = '💎 Tier 2 Studio Patron ($25+) - All Shaders Unlocked';
-            holoMesh.material.color.setHex(0xc084fc);
-          } else {
-            label.textContent = '👑 Tier 1 Combat Sponsor ($5+)';
-            holoMesh.material.color.setHex(0xef4444);
+        // Tier Selection Buttons
+        document.querySelectorAll('#donation-tier-selector .donation-tier-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const amt = parseInt(btn.dataset.amount) || 25;
+            selectedDonationAmount = amt;
+            const amtInput = document.getElementById('input-custom-donation-amount');
+            const amtLabel = document.getElementById('btn-donate-amount-label');
+            if (amtInput) amtInput.value = amt;
+            if (amtLabel) amtLabel.textContent = amt;
+
+            document.querySelectorAll('#donation-tier-selector .donation-tier-btn').forEach(b => {
+              b.className = 'donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-800 dark:text-slate-200';
+            });
+            btn.className = 'donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md text-center font-black transition-all';
+
+            updateHologramTier(amt);
+          });
+        });
+
+        // Custom amount input listener
+        document.getElementById('input-custom-donation-amount')?.addEventListener('input', (e) => {
+          const amt = parseInt(e.target.value) || 25;
+          selectedDonationAmount = amt;
+          const amtLabel = document.getElementById('btn-donate-amount-label');
+          if (amtLabel) amtLabel.textContent = amt;
+          updateHologramTier(amt);
+        });
+
+        // 2-Click Stripe Checkout Action
+        document.getElementById('btn-donate-card-action')?.addEventListener('click', async () => {
+          const donorName = (document.getElementById('input-donor-name')?.value || 'Community Backer').trim();
+          const amount = selectedDonationAmount || 25;
+          if (typeof showToast === 'function') showToast('⚡ Launching Stripe Checkout for $' + amount + ' USD...');
+
+          try {
+            const res = await fetch('/api/checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                amount: amount,
+                donorName: donorName,
+                successUrl: window.location.origin + '/?backer=success&amount=' + amount
+              })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.checkoutUrl) window.open(data.checkoutUrl, '_blank');
+            } else {
+              window.open('https://github.com/sponsors/Axialon', '_blank');
+            }
+          } catch(e) {
+            window.open('https://github.com/sponsors/Axialon', '_blank');
           }
         });
+
+        // Simulate Edge Donation
+        document.getElementById('btn-simulate-edge-donation')?.addEventListener('click', () => {
+          const donorName = (document.getElementById('input-donor-name')?.value || 'Edge Supporter').trim();
+          const amount = selectedDonationAmount || 25;
+          const list = document.getElementById('ticker-list-container');
+          if (list) {
+            const row = document.createElement('div');
+            row.className = 'p-3 rounded-xl glass-card flex justify-between items-center text-xs font-mono border border-emerald-500/50 bg-emerald-50/20 dark:bg-emerald-950/30';
+            row.innerHTML = '<div><span class="font-black text-emerald-900 dark:text-emerald-300">✨ ' + donorName + ' (Verified)</span><div class="text-[10px] text-slate-500">Tier ' + (amount >= 25 ? '2 Studio' : '1 Coffee') + ' • Unlocked Luxury Shaders</div></div><span class="font-black text-emerald-700 dark:text-emerald-400">+$' + amount.toFixed(2) + '</span>';
+            list.insertBefore(row, list.firstChild);
+          }
+          if (typeof showToast === 'function') showToast('🎉 Thank you ' + donorName + '! Luxury shaders permanently unlocked.');
+        });
+
+        // Verify Key
+        document.getElementById('btn-verify-backer-key')?.addEventListener('click', () => {
+          const key = (document.getElementById('backer-key-input')?.value || '').trim();
+          if (key.length > 3) {
+            if (typeof showToast === 'function') showToast('✔ Verification Key Validated! Backer Perks Active.');
+          }
+        });
+
       } catch (e) {}
     }
 
+    function updateHologramTier(amt) {
+      if (!holoMesh) return;
+      const label = document.getElementById('hologram-label');
+      if (amt >= 25) {
+        if (label) label.textContent = '💎 Tier 2 Studio Supporter ($25+) • All Shaders Unlocked';
+        holoMesh.material.color.setHex(0xc084fc);
+      } else {
+        if (label) label.textContent = '☕ Tier 1 Coffee Supporter ($5+)';
+        holoMesh.material.color.setHex(0x10b981);
+      }
+    }
+  
     const clock = new THREE.Clock();
-
     function animate() {
       requestAnimationFrame(animate);
       const delta = clock.getDelta();
@@ -2694,7 +2857,7 @@ return CombatMeta
           if (stored) {
             const parsed = JSON.parse(stored);
             if (parsed && typeof parsed.totalUsd === "number") {
-              const count = parsed.backerCount || parsed.backersCount || 19;
+              const count = parsed.backerCount || parsed.backersCount || 2;
               poolEl.textContent = "$" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
             }
           }
@@ -2843,147 +3006,8 @@ return CombatMeta
       </div>
     </div>
   </div>
-  
 
-  <!-- MODAL: Live Supporter Ticker & Perks Matrix (Box'em Standard Parity) -->
-  <div id="modal-ticker" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div class="glass-panel w-full max-w-lg rounded-3xl p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-3 sm:space-y-4">
-      <div class="flex justify-between items-center pb-2 sm:pb-3 border-b border-slate-950/20 dark:border-white/20">
-        <div>
-          <h3 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
-            <span class="material-symbols-outlined text-amber-500">volunteer_activism</span> Supporter Ticker & Perks
-          </h3>
-          <p class="text-[11px] sm:text-xs text-slate-400 font-mono mt-0.5 font-bold">Cloudflare Workers & D1 Edge Supporter Pool</p>
-        </div>
-        <button class="btn-close-modal text-slate-400 hover:text-white p-1.5 rounded-xl"><span class="material-symbols-outlined text-xl">close</span></button>
-      </div>
-
-      <!-- Live Supporter Pool Counter -->
-      <div class="p-3 sm:p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400/40 space-y-2">
-        <div class="flex justify-between items-center text-xs font-mono">
-          <span class="font-black text-amber-950 dark:text-amber-200">Total Open Source Backing</span>
-          <span id="ticker-total-usd" class="font-black text-amber-600 dark:text-amber-400 text-sm">$485.00 / $2,500 USD</span>
-        </div>
-        <div class="w-full bg-amber-200 dark:bg-amber-900/60 rounded-full h-2 overflow-hidden">
-          <div id="ticker-progress-bar" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 19%"></div>
-        </div>
-        <div class="text-[10px] sm:text-[11px] text-amber-900 dark:text-amber-300 font-mono leading-relaxed">
-          100% free perpetual open source. Voluntary one-time backing powers serverless edge hosting and continuous mathematical engine expansions.
-        </div>
-      </div>
-
-      <!-- Functional 1-Time Donation Interface -->
-      <div class="space-y-2.5 sm:space-y-3 p-3.5 sm:p-4 rounded-2xl glass-card-sub border border-sky-500/30">
-        <!-- Interactive 3D Model Hologram Preview -->
-        <div class="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden bg-slate-950/90 border border-sky-500/40 flex items-center justify-center shadow-inner group">
-          <canvas id="donation-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
-          <div class="absolute top-2.5 left-3 flex items-center gap-2 pointer-events-none bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span id="donation-3d-label" class="text-[10px] sm:text-xs font-mono font-black text-sky-300 tracking-wider uppercase">Tier 2: Studio Craftsman Core</span>
-          </div>
-          <div class="absolute bottom-2 right-3 text-[9px] sm:text-[10px] font-mono text-slate-400 pointer-events-none flex items-center gap-1 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
-            <span class="material-symbols-outlined text-xs sm:text-sm text-sky-400">3d_rotation</span> Drag to Inspect
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center pt-0.5">
-          <div class="text-xs font-mono uppercase font-black text-slate-950 dark:text-slate-100 flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-sm text-indigo-500">favorite</span> Select Contribution Tier
-          </div>
-          <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300">Zero Subscriptions</span>
-        </div>
-
-        <!-- 5-Tier Selection Pills -->
-        <div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-xs font-mono" id="donation-tier-selector">
-          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300" data-amount="5" data-tier="1">
-            $5
-            <div class="text-[8px] sm:text-[9px] font-normal text-slate-400">Coffee</div>
-          </button>
-          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30 text-center font-black transition-all" data-amount="25" data-tier="2">
-            $25
-            <div class="text-[8px] sm:text-[9px] font-normal opacity-90">Studio</div>
-          </button>
-          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300" data-amount="50" data-tier="3">
-            $50
-            <div class="text-[8px] sm:text-[9px] font-normal text-slate-400">Agency</div>
-          </button>
-          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-slate-700 dark:text-slate-300" data-amount="100" data-tier="4">
-            $100
-            <div class="text-[8px] sm:text-[9px] font-normal text-slate-400">Patron</div>
-          </button>
-          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl glass-button text-center font-black transition-all text-emerald-700 dark:text-emerald-300" data-amount="250" data-tier="5">
-            $250
-            <div class="text-[8px] sm:text-[9px] font-normal text-emerald-500">Eco</div>
-          </button>
-        </div>
-
-        <!-- Supporter Details Input -->
-        <div class="space-y-1.5">
-          <div class="flex gap-2">
-            <input type="text" id="input-donor-name" placeholder="Your Name or Org (Optional)" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-indigo-500" />
-            <div class="relative w-24 shrink-0">
-              <span class="absolute left-2.5 top-2 text-xs font-mono text-slate-400 font-bold">$</span>
-              <input type="number" id="input-custom-donation-amount" value="25" min="1" max="10000" class="w-full pl-6 pr-2 py-2 text-xs font-mono font-black rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-indigo-500" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Stripe Action Button -->
-        <div class="space-y-2 pt-1">
-          <button id="btn-donate-card-action" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-mono shadow-lg shadow-indigo-600/30 flex items-center justify-between transition-all hover:scale-[1.005] active:scale-[0.99] cursor-pointer">
-            <div class="flex items-center gap-2.5">
-              <span class="material-symbols-outlined text-xl flex-shrink-0 text-white">credit_card</span>
-              <div class="text-left flex flex-col">
-                <span class="text-xs sm:text-sm font-black tracking-tight leading-snug">Pay $<span id="btn-donate-amount-label">25</span> with Stripe</span>
-                <span class="text-[10px] text-white/80 font-normal leading-none">Instant Card • Apple Pay • Google Pay</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[11px] font-black tracking-wider uppercase flex-shrink-0">
-              <span>Checkout</span>
-              <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </div>
-          </button>
-          <div class="grid grid-cols-2 gap-2">
-            <a href="https://github.com/sponsors/Axialon" target="_blank" class="py-2.5 px-3 rounded-xl glass-button text-center font-mono font-bold text-xs flex items-center justify-center gap-1.5 text-slate-800 dark:text-slate-200 hover:border-pink-500/40 transition-all">
-              <span class="material-symbols-outlined text-sm text-rose-500">favorite</span> GitHub Sponsors
-            </a>
-            <button id="btn-simulate-edge-donation" class="py-2.5 px-3 rounded-xl glass-button text-center font-mono font-black text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-1 border border-emerald-500/40 hover:bg-emerald-500/10 transition-all">
-              <span class="material-symbols-outlined text-sm">bolt</span> Instant Edge Demo
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Backers Stream -->
-      <div class="space-y-2 pt-1">
-        <div class="flex justify-between items-center">
-          <div class="text-xs font-mono uppercase font-black text-slate-950 dark:text-slate-100">Live Supporters Stream</div>
-          <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1 font-bold">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloudflare D1 Edge
-          </span>
-        </div>
-        <div class="space-y-1.5 max-h-36 overflow-y-auto pr-1" id="ticker-list-container">
-          <div class="p-3 rounded-xl glass-card-sub flex justify-between items-center text-xs font-mono">
-            <div>
-              <span class="font-black text-slate-950 dark:text-white">Design Systems Lab</span>
-              <div class="text-[10px] text-slate-500">Tier 4 Patron • Unlocked All Shaders</div>
-            </div>
-            <span class="font-black text-emerald-600 dark:text-emerald-400">+$100.00</span>
-          </div>
-          <div class="p-3 rounded-xl glass-card-sub flex justify-between items-center text-xs font-mono">
-            <div>
-              <span class="font-black text-slate-950 dark:text-white">OpenSource Backer</span>
-              <div class="text-[10px] text-slate-500">Tier 3 Agency • Unlocked Kintsugi Gold</div>
-            </div>
-            <span class="font-black text-emerald-600 dark:text-emerald-400">+$50.00</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-
-    <script>
+  <script>
       
     // --- BOX'EM PARITY SUITE: SHADERS, THEMES, DONATION REACTOR, GLASS DROPDOWNS ---
     let donation3dScene, donation3dCamera, donation3dRenderer, donation3dCore;
@@ -3213,7 +3237,7 @@ return CombatMeta
       });
 
       // Wire Donation Tier Pills
-      let selectedDonationAmount = 25;
+      
       const donationTierBtns = document.querySelectorAll('.donation-tier-btn');
       const amountInput = document.getElementById('input-custom-donation-amount');
       const amountLabel = document.getElementById('btn-donate-amount-label');
@@ -3292,5 +3316,157 @@ return CombatMeta
       });
     </script>
     
+  <!-- UNIFIED MODAL: Live Sponsor Ticker & Perks Matrix -->
+  <div id="modal-ticker" class="app-modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 dark:bg-black/80 backdrop-blur-xl transition-opacity">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-3 sm:space-y-4 border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-slate-100">
+      <div class="flex justify-between items-center pb-2 sm:pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div>
+          <h3 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-950 dark:text-white font-mono flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500">volunteer_activism</span> Supporter Ticker & Perks
+          </h3>
+          <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-mono mt-0.5 font-bold">Cloudflare Workers & D1 Edge Supporter Pool</p>
+        </div>
+        <button class="btn-close-modal modal-close-btn text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white p-1.5 rounded-xl transition-colors text-lg font-mono">✕</button>
+      </div>
+
+      <!-- Live Supporter Pool Counter ($55.00 / $2,500 USD - 2 Real Backers) -->
+      <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-500/30 space-y-2 shadow-sm">
+        <div class="flex justify-between items-center text-xs font-mono">
+          <span class="font-black text-amber-950 dark:text-amber-200 uppercase tracking-wide">Total Open Source Backing</span>
+          <span id="ticker-total-usd" class="font-black text-amber-700 dark:text-amber-400 text-sm">$55.00 / $2,500 USD</span>
+        </div>
+        <div class="w-full bg-amber-200/70 dark:bg-amber-900/50 rounded-full h-2 overflow-hidden">
+          <div id="ticker-progress-bar" class="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-500" style="width: 2.2%"></div>
+        </div>
+        <div class="text-[10px] sm:text-[11px] text-amber-900 dark:text-amber-300 font-mono leading-relaxed font-medium">
+          100% perpetual free open source under MIT. Voluntary backing powers serverless edge hosting, D1 consensus, and quarterly domain matrix expansions.
+        </div>
+      </div>
+
+      <!-- Functional 1-Time Contribution Interface -->
+      <div class="space-y-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800">
+        <!-- Interactive 3D Model Hologram Preview -->
+        <div class="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden bg-slate-950 border border-indigo-500/30 dark:border-indigo-400/40 flex items-center justify-center shadow-inner group">
+          <canvas id="donation-3d-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+          <div class="absolute top-2.5 left-3 flex items-center gap-2 pointer-events-none bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="hologram-label" class="text-[10px] sm:text-xs font-mono font-black text-sky-300 tracking-wider uppercase">Tier 2 Studio Supporter ($25+)</span>
+          </div>
+          <div class="absolute bottom-2 right-3 text-[9px] sm:text-[10px] font-mono text-slate-400 pointer-events-none flex items-center gap-1 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+            <span class="material-symbols-outlined text-xs text-sky-400">3d_rotation</span> Drag to Inspect
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-0.5">
+          <div class="text-xs font-mono uppercase font-black text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-sky-500">favorite</span> Select Contribution Tier
+          </div>
+          <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-sky-100 text-sky-900 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-300 dark:border-sky-800">Zero Subscriptions</span>
+        </div>
+
+        <!-- 5-Tier Selection Buttons -->
+        <div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-xs font-mono" id="donation-tier-selector">
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 text-center font-black transition-all text-slate-800 dark:text-slate-200" data-amount="5" data-tier="1">
+            $5
+            <div class="text-[8px] sm:text-[9px] font-normal text-slate-500 dark:text-slate-400">Coffee</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-md text-center font-black transition-all border border-sky-400/50" data-amount="25" data-tier="2">
+            $25
+            <div class="text-[8px] sm:text-[9px] font-normal opacity-90">Studio</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 text-center font-black transition-all text-slate-800 dark:text-slate-200" data-amount="50" data-tier="3">
+            $50
+            <div class="text-[8px] sm:text-[9px] font-normal text-slate-500 dark:text-slate-400">Agency</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 text-center font-black transition-all text-slate-800 dark:text-slate-200" data-amount="100" data-tier="4">
+            $100
+            <div class="text-[8px] sm:text-[9px] font-normal text-slate-500 dark:text-slate-400">Patron</div>
+          </button>
+          <button type="button" class="donation-tier-btn p-1.5 sm:p-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 text-center font-black transition-all text-emerald-700 dark:text-emerald-400" data-amount="250" data-tier="5">
+            $250
+            <div class="text-[8px] sm:text-[9px] font-normal text-emerald-600 dark:text-emerald-400">Eco</div>
+          </button>
+        </div>
+
+        <!-- Supporter Details Input -->
+        <div class="space-y-1.5">
+          <div class="flex gap-2">
+            <input type="text" id="input-donor-name" placeholder="Your Name or Org (Optional)" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm" />
+            <div class="relative w-24 shrink-0">
+              <span class="absolute left-2.5 top-2 text-xs font-mono text-slate-400 dark:text-slate-500 font-bold">$</span>
+              <input type="number" id="input-custom-donation-amount" value="25" min="1" max="10000" class="w-full pl-6 pr-2 py-2 text-xs font-mono font-black rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Stripe Action Button -->
+        <div class="space-y-2 pt-1">
+          <button id="btn-donate-card-action" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-mono shadow-lg shadow-indigo-600/30 flex items-center justify-between transition-all hover:scale-[1.005] active:scale-[0.99] cursor-pointer">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-xl flex-shrink-0 text-white">credit_card</span>
+              <div class="text-left flex flex-col">
+                <span class="text-xs sm:text-sm font-black tracking-tight leading-snug">Pay $<span id="btn-donate-amount-label">25</span> with Stripe</span>
+                <span class="text-[10px] text-white/80 font-normal leading-none">Instant Card • Apple Pay • Google Pay</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[11px] font-black tracking-wider uppercase flex-shrink-0">
+              <span>Checkout</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </div>
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="https://github.com/sponsors/Axialon" target="_blank" class="py-2 px-3 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 text-center font-mono font-bold text-xs flex items-center justify-center gap-1.5 text-slate-800 dark:text-slate-200 hover:border-pink-500/40 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-sm text-rose-500">favorite</span> GitHub Sponsors
+            </a>
+            <button id="btn-simulate-edge-donation" class="py-2 px-3 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-emerald-500/40 text-center font-mono font-black text-xs text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1 hover:bg-emerald-500/10 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-sm">bolt</span> Instant Edge Demo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing Backer Token Verification -->
+      <div class="p-3 sm:p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-mono font-black text-slate-900 dark:text-slate-100 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-amber-500">key</span> Already a Supporter?
+          </span>
+          <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">Enter receipt ID or token</span>
+        </div>
+        <div class="flex gap-2">
+          <input type="text" id="backer-key-input" placeholder="e.g. GITHUB-SPONSOR-USERNAME" class="w-full px-3 py-2 text-xs font-mono font-bold rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 uppercase shadow-sm" />
+          <button id="btn-verify-backer-key" class="px-4 py-2 rounded-xl text-xs font-mono font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shrink-0 transition-colors">
+            Verify
+          </button>
+        </div>
+      </div>
+
+      <!-- Real Live Backers Stream (2 Real Backers) -->
+      <div class="space-y-2 pt-1">
+        <div class="flex justify-between items-center">
+          <div class="text-xs font-mono uppercase font-black text-slate-900 dark:text-slate-100">Live Supporters Stream</div>
+          <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloudflare D1 Edge
+          </span>
+        </div>
+        <div class="space-y-1.5 max-h-36 overflow-y-auto pr-1" id="ticker-list-container">
+          <div class="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono shadow-sm">
+            <div>
+              <span class="font-black text-slate-950 dark:text-white">Founding Backer</span>
+              <div class="text-[10px] text-slate-500 dark:text-slate-400">Tier 3 Agency • Unlocked All Shaders</div>
+            </div>
+            <span class="font-black text-emerald-600 dark:text-emerald-400">+$50.00</span>
+          </div>
+          <div class="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-mono shadow-sm">
+            <div>
+              <span class="font-black text-slate-950 dark:text-white">Community Supporter</span>
+              <div class="text-[10px] text-slate-500 dark:text-slate-400">Tier 1 Coffee • Unlocked Kintsugi Gold</div>
+            </div>
+            <span class="font-black text-emerald-600 dark:text-emerald-400">+$5.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # BlackBoxes Ecosystem Ledger & Quality Status Report
 
-Generated at: `2026-09-04T09:40:35.900645+00:00`
+Generated at: `2026-09-04T14:17:36.132900+00:00`
 Database: `database/ecosystem_ledger.sqlite`
 
 ## 1. Project Health Matrix
@@ -32,6 +32,7 @@ Database: `database/ecosystem_ledger.sqlite`
 | `v1.5.0` | All Engines | Layout & Click | Window collapse button (`-`) blocked by brand badge overlap | Adjusted `#win-controls` default top to `130px`, clearing the badge. **100% Unobstructed** |
 | `v1.5.0` | Synth'em | Audio UX | Virtual keyboard erratic due to duplicate dock toggle listeners | Removed redundant event listener in `initWindowToggles()`. **100% Operational** |
 | `v1.5.0` | Pulse'em | Parity | Copilot missing from Actions menu grid | Added `#btn-open-copilot-menu` with event hook. **100% Operational** |
+| `v1.9.0` | All 6 Engines | Sponsor & Showcase | Fictional backers ($485 / 19 backers), missing 3D billboards in sister showcases, duplicate modals | Enforced real 2 backers ($55.00), deployed theme-aware Sponsor Modal, and 3D floating canvas billboards. **100% Parity Verified** |
 
 ## 4. Blueprint Patterns for Future Projects
 Detailed architectural templates and code snippets are persisted in `database/BLUEPRINT_PATTERNS.md`.

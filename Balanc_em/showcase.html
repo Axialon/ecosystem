@@ -65,7 +65,7 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* Ambient Background Canvas (Floating Dust & Double Tetrahedrons) */
+    /* Ambient Background Canvas */
     #ambient-bg-canvas {
       position: fixed;
       top: 0;
@@ -163,7 +163,6 @@
       color: #0f172a !important;
     }
 
-    /* Primary Accent */
     .text-emerald-500 {
       color: #10b981 !important;
     }
@@ -244,12 +243,12 @@
         <div class="hidden md:flex items-center gap-2 shrink-0">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span class="text-slate-300 font-bold">Live 6-Engine Pool:</span>
-          <span class="text-emerald-400 font-black">$485 USD • 19 Backers</span>
+          <span class="text-emerald-400 font-black">$55 USD • 2 Backers</span>
         </div>
       </div>
     </nav>
 
-    <!-- GRAND UNIFIED HERO & 3D SPATIAL SHOWCASE (Truly Frameless Outflow) -->
+    <!-- GRAND UNIFIED HERO & 3D SPATIAL SHOWCASE -->
     <section id="live-embed" class="relative w-full overflow-visible min-h-[920px] pt-3 pb-8 px-3 sm:px-6 lg:px-8 flex flex-col justify-between">
 
       <!-- Interactive 3D Spatial Surface -->
@@ -592,7 +591,7 @@
 
   </div>
 
-  <!-- Three.js 3D Interactive Spatial Engine & Mathematical Resolver Script -->
+  <!-- Three.js 3D Spatial Polytope Engine Script -->
   <script>
     // 1. Dark/Light Mode Switcher
     const btnToggleDark = document.getElementById('btn-toggle-dark');
@@ -643,7 +642,7 @@
       });
     })();
 
-    // 3. Master Frameless 3D Spatial Polytope Engine with Continuous Mathematical Deformation
+    // 3. Master Frameless 3D Spatial Polytope Engine with Box'em Standard 3D Billboards & Multi-Layer Jewels
     (function initMasterHeroEngine() {
       const canvas = document.getElementById('hero-embed-canvas');
       const interactionSurface = document.getElementById('hero-interaction-surface');
@@ -666,7 +665,7 @@
       controls.target.set(0, 0, 0);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.enableZoom = false; // Zero scroll-trap: Natural page scrolling preserved!
+      controls.enableZoom = false; // Zero scroll-trap
 
       // Modifier-wheel zoom (Ctrl+Wheel or Cmd+Wheel)
       interactionSurface.addEventListener('wheel', (e) => {
@@ -706,7 +705,7 @@
 
       // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
       const corePolyGeo = new THREE.BufferGeometry();
-      const corePositions = new Float32Array(24 * 3); // 8 triangles * 3 vertices * 3 coords
+      const corePositions = new Float32Array(24 * 3);
       corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
 
       const corePolyMat = new THREE.MeshPhysicalMaterial({
@@ -722,7 +721,14 @@
         side: THREE.DoubleSide
       });
       const coreMesh = new THREE.Mesh(corePolyGeo, corePolyMat);
+      coreMesh.renderOrder = 10;
       systemGroup.add(coreMesh);
+
+      // Core Wireframe Facet Outlines
+      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0x6ee7b7, wireframe: true, transparent: true, opacity: 0.35 });
+      const coreWireMesh = new THREE.Mesh(corePolyGeo, coreWireMat);
+      coreWireMesh.renderOrder = 11;
+      systemGroup.add(coreWireMesh);
 
       // 6 Unit Node Direction Vectors (Octahedral Basis)
       const NODE_DIRS = {
@@ -734,31 +740,171 @@
         back: new THREE.Vector3(0, 0, -2.0)
       };
 
-      const nodeColors = [0x38bdf8, 0x10b981, 0xa855f7, 0xf59e0b, 0xf43f5e, 0x6366f1];
-      const nodeKeys = ['top', 'bottom', 'right', 'left', 'front', 'back'];
+      // 6 Node Definitions with Specific Colors & Titles
+      const NODE_METADATA = [{"key":"top","label":"FREQ","fullTitle":"GRID FREQUENCY","color":1096065,"hexStr":"#10b981","offset":[0,0.45,0.2]},{"key":"bottom","label":"BESS","fullTitle":"BESS BATTERY STORAGE","color":1357990,"hexStr":"#14b8a6","offset":[0,-0.45,-0.2]},{"key":"right","label":"GEN","fullTitle":"BASE GENERATION","color":16096779,"hexStr":"#f59e0b","offset":[0.5,0,0.2]},{"key":"left","label":"RENEWABLE","fullTitle":"RENEWABLE PENETRATION","color":959977,"hexStr":"#0ea5e9","offset":[-0.5,0,0.2]},{"key":"front","label":"LOSS","fullTitle":"TRANSMISSION LOSS","color":9133302,"hexStr":"#8b5cf6","offset":[0,-0.3,0.5]},{"key":"back","label":"CARBON","fullTitle":"CARBON INTENSITY","color":16007006,"hexStr":"#f43f5e","offset":[0,0.3,-0.5]}];
       const nodeMeshes = {};
 
-      nodeKeys.forEach((k, i) => {
+      // Multi-Layered Crystalline Jewel Node Builder (Box'em Standard)
+      const nodeCrystalGeo = new THREE.OctahedronGeometry(0.18, 0);
+      const innerJewelGeo = new THREE.OctahedronGeometry(0.08, 0);
+
+      NODE_METADATA.forEach(nodeDef => {
+        const k = nodeDef.key;
+        const colorHex = nodeDef.color;
         const nGroup = new THREE.Group();
-        const gemGeo = new THREE.OctahedronGeometry(0.28, 0);
+        nGroup.name = 'node-' + k;
+        nGroup.renderOrder = 15;
+
+        // 1. Faceted Outer Jewel
         const gemMat = new THREE.MeshPhysicalMaterial({
-          color: nodeColors[i % nodeColors.length],
-          emissive: nodeColors[i % nodeColors.length],
-          emissiveIntensity: 0.55,
+          color: colorHex,
+          emissive: colorHex,
+          emissiveIntensity: 0.40,
           roughness: 0.10,
-          flatShading: true
+          metalness: 0.15,
+          transmission: 0.85,
+          flatShading: true,
+          transparent: true,
+          opacity: 0.95
         });
-        const gem = new THREE.Mesh(gemGeo, gemMat);
+        const gem = new THREE.Mesh(nodeCrystalGeo, gemMat);
         nGroup.add(gem);
 
-        const ringGeo = new THREE.TorusGeometry(0.45, 0.015, 8, 32);
-        const ringMat = new THREE.MeshBasicMaterial({ color: nodeColors[i % nodeColors.length], transparent: true, opacity: 0.70 });
+        // 1b. Crisp Wireframe Edge Lines
+        const edgeGeo = new THREE.EdgesGeometry(nodeCrystalGeo);
+        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45 });
+        const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat);
+        gem.add(edgeLines);
+
+        // 2. Sparkling Inner Jewel Core
+        const innerMat = new THREE.MeshPhysicalMaterial({
+          color: 0xffffff,
+          emissive: colorHex,
+          emissiveIntensity: 0.95,
+          roughness: 0.05,
+          flatShading: true
+        });
+        const innerJewel = new THREE.Mesh(innerJewelGeo, innerMat);
+        nGroup.add(innerJewel);
+
+        // 3. Rotating Orbital Halo
+        const ringGeo = new THREE.TorusGeometry(0.32, 0.008, 8, 36);
+        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70 });
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 3;
         nGroup.add(ring);
 
         systemGroup.add(nGroup);
-        nodeMeshes[k] = { group: nGroup, gem, ring, baseDir: NODE_DIRS[k] };
+        nodeMeshes[k] = { group: nGroup, gem, innerJewel, ring, baseDir: NODE_DIRS[k], meta: nodeDef };
+      });
+
+      // 3D Spatial Canvas Billboard Sprites (Box'em Standard)
+      function createSpatial3DBillboard(fullTitle, colorHexStr) {
+        const c = document.createElement('canvas');
+        c.width = 1024;
+        c.height = 240;
+        const ctx = c.getContext('2d');
+        const tex = new THREE.CanvasTexture(c);
+        tex.minFilter = THREE.LinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.generateMipmaps = false;
+
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+        const sprite = new THREE.Sprite(mat);
+        sprite.scale.set(1.45, 0.34, 1.0);
+        sprite.renderOrder = 9999;
+
+        const redraw = (valText) => {
+          ctx.clearRect(0, 0, c.width, c.height);
+          const pad = 8, w = c.width - pad * 2, h = c.height - pad * 2, r = 58;
+
+          ctx.save();
+          // Matte Glass Capsule Background
+          ctx.fillStyle = 'rgba(9, 14, 26, 0.95)';
+          ctx.strokeStyle = colorHexStr;
+          ctx.lineWidth = 10;
+          ctx.beginPath();
+          ctx.moveTo(pad + r, pad);
+          ctx.lineTo(pad + w - r, pad);
+          ctx.quadraticCurveTo(pad + w, pad, pad + w, pad + r);
+          ctx.lineTo(pad + w, pad + h - r);
+          ctx.quadraticCurveTo(pad + w, pad + h, pad + w - r, pad + h);
+          ctx.lineTo(pad + r, pad + h);
+          ctx.quadraticCurveTo(pad, pad + h, pad, pad + h - r);
+          ctx.lineTo(pad, pad + r);
+          ctx.quadraticCurveTo(pad, pad, pad + r, pad);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Glowing Colored Bullet Dot
+          ctx.fillStyle = colorHexStr;
+          ctx.shadowColor = colorHexStr;
+          ctx.shadowBlur = 16;
+          ctx.beginPath();
+          ctx.arc(58, c.height / 2, 22, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Full Title (Small Upper)
+          ctx.fillStyle = colorHexStr;
+          ctx.font = 'bold 36px "JetBrains Mono", monospace';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(fullTitle, 105, 68);
+
+          // Live Metric (Large Bold)
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '900 64px "JetBrains Mono", monospace';
+          ctx.fillText(valText, 105, 148);
+
+          ctx.restore();
+          tex.needsUpdate = true;
+        };
+
+        sprite.userData = { redraw, canvas: c };
+        redraw(fullTitle);
+        return sprite;
+      }
+
+      const nodeBillboards = {};
+      NODE_METADATA.forEach(nodeDef => {
+        const sprite = createSpatial3DBillboard(nodeDef.fullTitle, nodeDef.hexStr);
+        systemGroup.add(sprite);
+        nodeBillboards[nodeDef.key] = sprite;
+      });
+
+      // Internal Submodules Group (Orbiting internal jewels inside the crystal volume)
+      const submoduleGroup = new THREE.Group();
+      submoduleGroup.renderOrder = 8;
+      systemGroup.add(submoduleGroup);
+
+      const SUBMODULE_DEFS = [{"name":"Synchronous Condenser","color":1096065},{"name":"4-Hour Lithium BESS","color":1357990},{"name":"Pumped Hydro Storage","color":959977},{"name":"Offshore Wind Farm","color":16096779},{"name":"Rooftop Solar Micro-Inverter","color":16007006},{"name":"Demand Response Aggregator","color":9133302}];
+      const submoduleMeshes = [];
+      const subGeo = new THREE.OctahedronGeometry(0.10, 0);
+
+      SUBMODULE_DEFS.forEach((sub, idx) => {
+        const angle = (idx / SUBMODULE_DEFS.length) * Math.PI * 2;
+        const rad = 0.85;
+        const x = Math.cos(angle) * rad;
+        const z = Math.sin(angle) * rad;
+        const y = (idx % 2 === 0 ? 0.35 : -0.35);
+
+        const subMat = new THREE.MeshPhysicalMaterial({
+          color: sub.color,
+          emissive: sub.color,
+          emissiveIntensity: 0.85,
+          roughness: 0.10,
+          metalness: 0.50,
+          flatShading: true,
+          transparent: true,
+          opacity: 0.90
+        });
+        const subMesh = new THREE.Mesh(subGeo, subMat);
+        subMesh.position.set(x, y, z);
+        subMesh.userData = { name: sub.name, angle, rad, yBase: y };
+        submoduleGroup.add(subMesh);
+        submoduleMeshes.push(subMesh);
       });
 
       // 12 Struts Connecting the 6 Apexes into a Complete Polytope Envelope
@@ -772,6 +918,7 @@
       strutPairs.forEach(() => {
         const sGeo = new THREE.CylinderGeometry(0.008, 0.008, 1, 8);
         const sMesh = new THREE.Mesh(sGeo, strutMat);
+        sMesh.renderOrder = 2;
         systemGroup.add(sMesh);
         struts.push(sMesh);
       });
@@ -788,21 +935,16 @@
       
       function solveEquilibrium(changedPillar) {
         if (changedPillar === 'renew') {
-          // Higher renewables require higher BESS storage to stabilize frequency
           const rN = state.renew / 100.0;
           if (rN > 0.5) {
             state.bess = Math.round(400 + Math.pow(rN, 1.4) * 2200);
           }
         } else if (changedPillar === 'bess') {
-          // Higher BESS allows higher renewable penetration
           const bN = state.bess / 3000.0;
           state.renew = Math.min(100, Math.round(20 + bN * 80));
         }
 
-        // Calculate Carbon Intensity (g/kWh)
         const carbonIntensity = Math.max(0, Math.round(440 * (1.0 - state.renew / 100.0) * (1.0 - 0.15 * (state.bess / 3000.0))));
-
-        // Calculate Frequency Deviation from 50.00 Hz
         const unbalance = Math.abs(state.gen - 3500) / 4500.0;
         const bessDamp = 1.0 / (1.0 + state.bess / 800.0);
         const freqDev = Number((unbalance * 0.15 * bessDamp).toFixed(2));
@@ -836,12 +978,13 @@
         const gN = Math.max(0.0, Math.min(1.0, (state.gen - 1000) / (8000 - 1000)));
         const bN = Math.max(0.0, Math.min(1.0, state.bess / 3000.0));
         const rN = Math.max(0.0, Math.min(1.0, (state.renew - 10) / (100 - 10)));
+        const carbonIntensity = Math.max(0, Math.round(440 * (1.0 - state.renew / 100.0) * (1.0 - 0.15 * (state.bess / 3000.0))));
 
         const rads = {
-          top: 0.85 + fN * 1.6,       // Grid frequency stability pulls upward
-          bottom: 0.85 + bN * 1.6,    // BESS battery storage expands downward
-          right: 0.85 + gN * 1.5,     // Base generation expands right
-          left: 0.85 + rN * 1.5,      // Renewable penetration expands left
+          top: 0.85 + fN * 1.6,
+          bottom: 0.85 + bN * 1.6,
+          right: 0.85 + gN * 1.5,
+          left: 0.85 + rN * 1.5,
           front: 0.85 + (fN * 0.5 + gN * 0.5) * 1.5,
           back: 0.85 + (bN * 0.5 + rN * 0.5) * 1.5
         };
@@ -851,6 +994,32 @@
           v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
           nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.22));
         });
+
+        // Update 3D Floating Canvas Billboards
+        if (nodeBillboards.top) {
+          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0, 0.45, 0.2));
+          nodeBillboards.top.userData.redraw(state.freq + ' Hz Stable');
+        }
+        if (nodeBillboards.bottom) {
+          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0, -0.45, -0.2));
+          nodeBillboards.bottom.userData.redraw(state.bess + ' MW BESS');
+        }
+        if (nodeBillboards.right) {
+          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.55, 0, 0.2));
+          nodeBillboards.right.userData.redraw(state.gen + ' MW Gen');
+        }
+        if (nodeBillboards.left) {
+          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.55, 0, 0.2));
+          nodeBillboards.left.userData.redraw(state.renew + '% Green Share');
+        }
+        if (nodeBillboards.front) {
+          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0, -0.35, 0.5));
+          nodeBillboards.front.userData.redraw('2.8% Transmission');
+        }
+        if (nodeBillboards.back) {
+          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0, 0.35, -0.5));
+          nodeBillboards.back.userData.redraw(carbonIntensity + ' g/kWh CO2');
+        }
 
         const p = corePolyGeo.attributes.position.array;
         const setTri = (offset, p1, p2, p3) => {
@@ -988,11 +1157,17 @@
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
-        const hits = raycaster.intersectObjects(Object.values(nodeMeshes).map(n => n.gem));
+        const hitGems = Object.values(nodeMeshes).map(n => n.gem).concat(submoduleMeshes);
+        const hits = raycaster.intersectObjects(hitGems);
         if (hits.length > 0) {
+          const hitObj = hits[0].object;
           if (detailCard) {
             detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
             detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
+            if (hitObj.userData && hitObj.userData.name) {
+              document.getElementById('detail-card-title').textContent = hitObj.userData.name;
+              document.getElementById('detail-card-metric').textContent = 'Internal Modular Subsystem';
+            }
             detailCard.classList.remove('hidden');
           }
         }
@@ -1003,13 +1178,30 @@
       });
 
       // Animation Loop
+      const clock = new THREE.Clock();
       function animate() {
         requestAnimationFrame(animate);
-        systemGroup.rotation.y += 0.0025;
+        const elapsed = clock.getElapsedTime();
+
+        systemGroup.rotation.y += 0.0020;
+        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05;
+
         Object.values(nodeMeshes).forEach(n => {
-          n.gem.rotation.y -= 0.010;
+          n.gem.rotation.y += 0.010;
+          n.innerJewel.rotation.y -= 0.015;
           n.ring.rotation.z += 0.015;
         });
+
+        // Orbit internal submodules
+        submoduleMeshes.forEach(sm => {
+          sm.rotation.y += 0.02;
+          sm.rotation.x += 0.015;
+          const currentAngle = sm.userData.angle + elapsed * 0.4;
+          sm.position.x = Math.cos(currentAngle) * sm.userData.rad;
+          sm.position.z = Math.sin(currentAngle) * sm.userData.rad;
+          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 2.0 + sm.userData.angle) * 0.08;
+        });
+
         controls.update();
         renderer.render(scene, camera);
       }

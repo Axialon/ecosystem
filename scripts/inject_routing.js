@@ -39,7 +39,7 @@ const routingFunction = `
           if (stored) {
             const parsed = JSON.parse(stored);
             if (parsed && typeof parsed.totalUsd === "number") {
-              const count = parsed.backerCount || parsed.backersCount || 19;
+              const count = parsed.backerCount || parsed.backersCount || 2;
               poolEl.textContent = "Live Cumulative Pool: $" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
             }
           }

@@ -58,7 +58,7 @@
         </div>
         <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-black shadow-lg shadow-emerald-500/10">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="root-pool-badge">Live Cumulative Pool: $485 USD • 19 Backers</span>
+          <span id="root-pool-badge">Live Cumulative Pool: $55 USD • 2 Backers</span>
         </div>
       </div>
       <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
@@ -215,16 +215,12 @@
     (function initPoolSync() {
       const STORAGE_KEY = 'blackboxes_cumulative_donation_pool';
       const DEFAULT_POOL = {
-        totalUsd: 485,
-        backerCount: 19,
+        totalUsd: 55,
+        backerCount: 2,
         recent: [
-          { donorName: 'alex.cloud', amountUsd: 50.00, engine: "Orbit'em" },
-          { donorName: 'dr.valkyrie', amountUsd: 100.00, engine: "Pulse'em" },
-          { donorName: 'venture_craft', amountUsd: 150.00, engine: "Cap'em" },
-          { donorName: 'synthwave99', amountUsd: 25.00, engine: "Synth'em" },
-          { donorName: 'hyper_carry', amountUsd: 75.00, engine: "Balanc'em" },
-          { donorName: 'axialon_backer', amountUsd: 85.00, engine: "Box'em" }
-        ]
+            { donorName: 'Founding Backer', amountUsd: 50.00, tier: 3, engine: "Box'em" },
+            { donorName: 'Community Supporter', amountUsd: 5.00, tier: 1, engine: "Box'em" }
+          ]
       };
       let pool = DEFAULT_POOL;
       try {
@@ -238,8 +234,8 @@
       } catch (e) {}
 
       const badge = document.getElementById('root-pool-badge');
-      const count = pool.backerCount || pool.backersCount || 19;
-      if (badge) badge.textContent = `Live Cumulative Pool: $${Math.round(pool.totalUsd || 485).toLocaleString()} USD • ${count} Backers`;
+      const count = pool.backerCount || pool.backersCount || 2;
+      if (badge) badge.textContent = `Live Cumulative Pool: $${Math.round(pool.totalUsd || 55).toLocaleString()} USD • ${count} Backers`;
 
       if (pool.recent && pool.recent.length > 0) {
         const feedText = document.getElementById('ticker-feed-text');
@@ -343,7 +339,7 @@
         if (stored) {
           const parsed = JSON.parse(stored);
           if (parsed && typeof parsed.totalUsd === "number") {
-            const count = parsed.backerCount || parsed.backersCount || 19;
+            const count = parsed.backerCount || parsed.backersCount || 2;
             poolEl.textContent = "Live Cumulative Pool: $" + Math.round(parsed.totalUsd).toLocaleString() + " USD • " + count + " Backers";
           }
         }

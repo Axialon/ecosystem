@@ -622,7 +622,7 @@
         <div class="hidden md:flex items-center gap-2 shrink-0">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span class="text-slate-300 font-bold">Live Pool:</span>
-          <span id="ecosystem-pool-display" class="text-emerald-400 font-black">$485 USD • 19 Backers</span>
+          <span id="ecosystem-pool-display" class="text-emerald-400 font-black">$55 USD • 2 Backers</span>
         </div>
       </div>
     </nav>
@@ -1682,7 +1682,7 @@
     // Live Ecosystem Cumulative Donation Pool Sync
     (function syncEcosystemPool() {
       const STORAGE_KEY = 'blackboxes_cumulative_donation_pool';
-      const DEFAULT_POOL = { totalUsd: 485, backersCount: 19 };
+      const DEFAULT_POOL = { totalUsd: 55, backersCount: 2 };
       let pool = DEFAULT_POOL;
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -1694,8 +1694,8 @@
         }
       } catch (e) {}
       const el = document.getElementById('ecosystem-pool-display');
-      const count = pool.backerCount || pool.backersCount || 19;
-      if (el) el.textContent = `$${Math.round(pool.totalUsd || 485).toLocaleString()} USD • ${count} Backers`;
+      const count = pool.backerCount || pool.backersCount || 2;
+      if (el) el.textContent = `$${Math.round(pool.totalUsd || 55).toLocaleString()} USD • ${count} Backers`;
     })();
 
     /* 2. Full-Fidelity Master Engine 3D Viewport in Embed (With 30s Idle Auto-Spin & Node Dragging) */
