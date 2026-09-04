@@ -304,7 +304,7 @@
             <span class="material-symbols-outlined text-xs text-sky-400">tune</span> Scenarios:
           </span>
           
-            <button class="scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-rose-400 to-pink-500 text-slate-950 shadow-md shrink-0" data-scenario-idx="0">
+            <button class="scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-rose-400 to-pink-500 text-slate-950 shadow-md active shrink-0" data-scenario-idx="0">
               <span class="material-symbols-outlined text-sm">directions_run</span>
               <span>Zone 2</span>
             </button>
@@ -409,7 +409,7 @@
                 <span class="material-symbols-outlined text-sm text-emerald-500">insights</span>
                 <span>Solved Equilibrium HUD</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-400">STABLE</span>
+              <span id="hud-equilibrium-status" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-400">STABLE</span>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-center font-mono">
@@ -592,7 +592,7 @@
 
   </div>
 
-  <!-- Three.js 3D Interactive Spatial Engine Script -->
+  <!-- Three.js 3D Interactive Spatial Engine & Mathematical Resolver Script -->
   <script>
     // 1. Dark/Light Mode Switcher
     const btnToggleDark = document.getElementById('btn-toggle-dark');
@@ -643,7 +643,7 @@
       });
     })();
 
-    // 3. Master Frameless 3D Spatial Polytope Engine
+    // 3. Master Frameless 3D Spatial Polytope Engine with Continuous Mathematical Deformation
     (function initMasterHeroEngine() {
       const canvas = document.getElementById('hero-embed-canvas');
       const interactionSurface = document.getElementById('hero-interaction-surface');
@@ -666,7 +666,7 @@
       controls.target.set(0, 0, 0);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.enableZoom = false; // Zero scroll-trap: Allow seamless page scroll!
+      controls.enableZoom = false; // Zero scroll-trap: Natural page scrolling preserved!
 
       // Modifier-wheel zoom (Ctrl+Wheel or Cmd+Wheel)
       interactionSurface.addEventListener('wheel', (e) => {
@@ -693,20 +693,23 @@
         document.getElementById('showcase-right-flank')?.classList.toggle('opacity-0', isZenMode);
       });
 
-      // Lighting Rig
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x0f172a, 0.60);
+      // Studio Lighting Rig
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x0f172a, 0.65);
       scene.add(hemiLight);
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.80);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
       dirLight.position.set(6, 8, 6);
       scene.add(dirLight);
 
-      // Central Polytope Model
+      // Central System Group
       const systemGroup = new THREE.Group();
       scene.add(systemGroup);
 
-      // Core Crystalline Mesh
-      const coreGeo = new THREE.IcosahedronGeometry(1.6, 0);
-      const coreMat = new THREE.MeshPhysicalMaterial({
+      // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
+      const corePolyGeo = new THREE.BufferGeometry();
+      const corePositions = new Float32Array(24 * 3); // 8 triangles * 3 vertices * 3 coords
+      corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
+
+      const corePolyMat = new THREE.MeshPhysicalMaterial({
         color: 0xe11d48,
         emissive: 0xe11d48,
         emissiveIntensity: 0.35,
@@ -715,115 +718,231 @@
         transmission: 0.85,
         transparent: true,
         opacity: 0.92,
-        flatShading: true
+        flatShading: true,
+        side: THREE.DoubleSide
       });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      const coreMesh = new THREE.Mesh(corePolyGeo, corePolyMat);
       systemGroup.add(coreMesh);
 
-      // 6 Outer Nodes with Orbital Halos
-      const nodeDirs = [
-        new THREE.Vector3(0, 2.4, 0),
-        new THREE.Vector3(0, -2.4, 0),
-        new THREE.Vector3(2.4, 0.5, 0.5),
-        new THREE.Vector3(-2.4, 0.5, 0.5),
-        new THREE.Vector3(0.6, -0.6, 2.4),
-        new THREE.Vector3(-0.6, 0.6, -2.4)
-      ];
+      // 6 Unit Node Direction Vectors (Octahedral Basis)
+      const NODE_DIRS = {
+        top: new THREE.Vector3(0, 1.8, 0),
+        bottom: new THREE.Vector3(0, -1.8, 0),
+        right: new THREE.Vector3(2.0, 0, 0),
+        left: new THREE.Vector3(-2.0, 0, 0),
+        front: new THREE.Vector3(0, 0, 2.0),
+        back: new THREE.Vector3(0, 0, -2.0)
+      };
 
       const nodeColors = [0x38bdf8, 0x10b981, 0xa855f7, 0xf59e0b, 0xf43f5e, 0x6366f1];
-      const nodeMeshes = [];
+      const nodeKeys = ['top', 'bottom', 'right', 'left', 'front', 'back'];
+      const nodeMeshes = {};
 
-      nodeDirs.forEach((dir, i) => {
+      nodeKeys.forEach((k, i) => {
         const nGroup = new THREE.Group();
-        nGroup.position.copy(dir);
-
-        const gemGeo = new THREE.OctahedronGeometry(0.35, 0);
+        const gemGeo = new THREE.OctahedronGeometry(0.28, 0);
         const gemMat = new THREE.MeshPhysicalMaterial({
           color: nodeColors[i % nodeColors.length],
           emissive: nodeColors[i % nodeColors.length],
-          emissiveIntensity: 0.50,
+          emissiveIntensity: 0.55,
           roughness: 0.10,
           flatShading: true
         });
         const gem = new THREE.Mesh(gemGeo, gemMat);
         nGroup.add(gem);
 
-        // Orbital Ring
-        const ringGeo = new THREE.TorusGeometry(0.55, 0.015, 8, 32);
-        const ringMat = new THREE.MeshBasicMaterial({ color: nodeColors[i % nodeColors.length], transparent: true, opacity: 0.65 });
+        const ringGeo = new THREE.TorusGeometry(0.45, 0.015, 8, 32);
+        const ringMat = new THREE.MeshBasicMaterial({ color: nodeColors[i % nodeColors.length], transparent: true, opacity: 0.70 });
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 3;
         nGroup.add(ring);
 
         systemGroup.add(nGroup);
-        nodeMeshes.push({ group: nGroup, gem, ring });
+        nodeMeshes[k] = { group: nGroup, gem, ring, baseDir: NODE_DIRS[k] };
       });
 
-      // Struts
-      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
-      nodeDirs.forEach(dir => {
-        const sGeo = new THREE.CylinderGeometry(0.01, 0.01, dir.length(), 8);
+      // 12 Struts Connecting the 6 Apexes into a Complete Polytope Envelope
+      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.40 });
+      const strutPairs = [
+        ['top', 'right'], ['top', 'front'], ['top', 'left'], ['top', 'back'],
+        ['bottom', 'right'], ['bottom', 'front'], ['bottom', 'left'], ['bottom', 'back'],
+        ['right', 'front'], ['front', 'left'], ['left', 'back'], ['back', 'right']
+      ];
+      const struts = [];
+      strutPairs.forEach(() => {
+        const sGeo = new THREE.CylinderGeometry(0.008, 0.008, 1, 8);
         const sMesh = new THREE.Mesh(sGeo, strutMat);
-        sMesh.position.copy(dir).multiplyScalar(0.5);
-        sMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
         systemGroup.add(sMesh);
+        struts.push(sMesh);
       });
 
-      // Raycaster for Spatial Detail Card
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-      const detailCard = document.getElementById('submodule-detail-card');
+      // Internal State
+      const state = {
+        bioage: -3.8,
+        hrv: 78,
+        vo2: 54,
+        sleep: 2.2
+      };
 
-      interactionSurface.addEventListener('pointermove', (e) => {
-        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouse, camera);
-        const hits = raycaster.intersectObjects(nodeMeshes.map(n => n.gem));
-        if (hits.length > 0) {
-          if (detailCard) {
-            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
-            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
-            detailCard.classList.remove('hidden');
-          }
+      // Mathematical Solver & Geometry Morphing Engine
+      
+      function solveEquilibrium(changedPillar) {
+        if (changedPillar === 'vo2' || changedPillar === 'hrv' || changedPillar === 'sleep') {
+          // Calculate Bio-Age Delta dynamically from physiological biomarkers
+          const bioDelta = -1.2 * Math.pow(state.vo2 / 40.0, 1.25) - 1.6 * Math.pow(state.hrv / 60.0, 0.8) - 1.4 * Math.pow(state.sleep / 1.8, 0.9) + 3.2;
+          state.bioage = Number(Math.max(-15.0, Math.min(5.0, bioDelta)).toFixed(1));
+        } else if (changedPillar === 'bioage') {
+          // Target Bio-Age drives required training & recovery
+          const norm = Math.max(0.0, Math.min(1.0, (-state.bioage + 5.0) / 20.0));
+          state.vo2 = Math.round(28 + norm * 52);
+          state.hrv = Math.round(30 + norm * 140);
+          state.sleep = Number((1.0 + norm * 3.0).toFixed(1));
         }
-      });
 
-      interactionSurface.addEventListener('pointerleave', () => {
-        if (detailCard) detailCard.classList.add('hidden');
-      });
-
-      // Animation Loop
-      function animate() {
-        requestAnimationFrame(animate);
-        systemGroup.rotation.y += 0.003;
-        coreMesh.rotation.x += 0.002;
-        nodeMeshes.forEach(n => {
-          n.gem.rotation.y -= 0.010;
-          n.ring.rotation.z += 0.015;
+        // Update Slider inputs & labels
+        ['bioage', 'hrv', 'vo2', 'sleep'].forEach(k => {
+          const sl = document.getElementById('slider-' + k);
+          const vl = document.getElementById('val-' + k);
+          if (sl) sl.value = state[k];
+          if (vl) {
+            const unitMap = { bioage: ' Yrs', hrv: ' ms', vo2: ' mL/kg', sleep: ' hrs' };
+            vl.textContent = state[k] + unitMap[k];
+          }
         });
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
 
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
+        // Update HUD
+        const hudBio = document.getElementById('hud-stat-1');
+        const hudReserve = document.getElementById('hud-stat-2');
+        const hudCopilot = document.getElementById('hud-copilot-text');
+        if (hudBio) hudBio.textContent = (state.bioage > 0 ? '+' : '') + state.bioage + ' Years';
+        if (hudReserve) {
+          const pct = Math.min(100, Math.round((state.vo2 / 75.0) * 100));
+          hudReserve.textContent = 'Top ' + Math.max(1, 100 - pct) + '% Elite';
+        }
+        if (hudCopilot) {
+          hudCopilot.textContent = 'Physiological profile optimized: VO2 max of ' + state.vo2 + ' mL/kg paired with ' + state.sleep + 'h deep sleep yields a biological age reduction of ' + Math.abs(state.bioage) + ' years.';
+        }
+
+        update3DGeometry();
+      }
+
+      function update3DGeometry() {
+        const vN = Math.max(0.0, Math.min(1.0, (state.vo2 - 25) / (85 - 25)));
+        const hN = Math.max(0.0, Math.min(1.0, (state.hrv - 20) / (180 - 20)));
+        const sN = Math.max(0.0, Math.min(1.0, (state.sleep - 0.5) / (4.5 - 0.5)));
+        const bN = Math.max(0.0, Math.min(1.0, (-state.bioage + 5.0) / 20.0));
+
+        const rads = {
+          top: 0.85 + bN * 1.6,       // Longevity delta pulls upward
+          bottom: 0.85 + vN * 1.6,    // Cardiovascular reserve expands downward
+          right: 0.85 + hN * 1.5,     // Autonomic HRV expands right
+          left: 0.85 + sN * 1.5,      // Deep sleep expands left
+          front: 0.85 + (vN * 0.5 + bN * 0.5) * 1.5,
+          back: 0.85 + (hN * 0.5 + sN * 0.5) * 1.5
+        };
+
+        const v = {};
+        Object.keys(rads).forEach(k => {
+          v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
+          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.22));
+        });
+
+        const p = corePolyGeo.attributes.position.array;
+        const setTri = (offset, p1, p2, p3) => {
+          p[offset]   = p1.x; p[offset+1] = p1.y; p[offset+2] = p1.z;
+          p[offset+3] = p2.x; p[offset+4] = p2.y; p[offset+5] = p2.z;
+          p[offset+6] = p3.x; p[offset+7] = p3.y; p[offset+8] = p3.z;
+        };
+
+        setTri(0,  v.top, v.right, v.front);
+        setTri(9,  v.top, v.front, v.left);
+        setTri(18, v.top, v.left, v.back);
+        setTri(27, v.top, v.back, v.right);
+        setTri(36, v.bottom, v.right, v.back);
+        setTri(45, v.bottom, v.back, v.left);
+        setTri(54, v.bottom, v.left, v.front);
+        setTri(63, v.bottom, v.front, v.right);
+
+        corePolyGeo.attributes.position.needsUpdate = true;
+        corePolyGeo.computeVertexNormals();
+
+        strutPairs.forEach(([k1, k2], i) => {
+          const p1 = nodeMeshes[k1].group.position;
+          const p2 = nodeMeshes[k2].group.position;
+          const dist = p1.distanceTo(p2);
+          const strut = struts[i];
+          strut.scale.set(1, dist, 1);
+          strut.position.copy(p1).add(p2).multiplyScalar(0.5);
+          strut.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
+        });
+      }
+    
+
+      // Initial Reciprocal Calculation & Geometry Update
+      solveEquilibrium();
+
+      // Sliders 2-Way Binding with Real-Time Reciprocal Solving
+      
+        document.getElementById('slider-bioage')?.addEventListener('input', (e) => {
+          state.bioage = Number(e.target.value);
+          const el = document.getElementById('val-bioage');
+          if (el) el.textContent = state.bioage + ' Yrs';
+          solveEquilibrium('bioage');
+        });
+      
+        document.getElementById('slider-hrv')?.addEventListener('input', (e) => {
+          state.hrv = Number(e.target.value);
+          const el = document.getElementById('val-hrv');
+          if (el) el.textContent = state.hrv + ' ms';
+          solveEquilibrium('hrv');
+        });
+      
+        document.getElementById('slider-vo2')?.addEventListener('input', (e) => {
+          state.vo2 = Number(e.target.value);
+          const el = document.getElementById('val-vo2');
+          if (el) el.textContent = state.vo2 + ' mL/kg';
+          solveEquilibrium('vo2');
+        });
+      
+        document.getElementById('slider-sleep')?.addEventListener('input', (e) => {
+          state.sleep = Number(e.target.value);
+          const el = document.getElementById('val-sleep');
+          if (el) el.textContent = state.sleep + ' hrs';
+          solveEquilibrium('sleep');
+        });
+      
 
       // Scenario Pills & Cards Interaction
-      const SCENARIOS = [{"shortTitle":"Zone 2","icon":"directions_run","tag":"Mitochondrial","title":"Zone 2 Endurance & Fat Oxidation","desc":"Low-intensity steady-state cardiovascular conditioning maximizing mitochondrial efficiency and metabolic flexibility.","metricLabel":"Lactate","metricVal":"< 2.0 mmol/L","stat1":"-4.2 Yrs","stat2":"Top 5% Cardio","copilot":"High volume Zone 2 training stimulates biogenesis of dense mitochondrial cristae."},{"shortTitle":"Deep Sleep","icon":"bedtime","tag":"Neuro-Restoration","title":"Circadian Synchronization & Glymphatic Clearance","desc":"Strict temperature modulation and dark-light timing to maximize slow-wave deep sleep and brain amyloid clearance.","metricLabel":"Deep Sleep","metricVal":"2.4 hrs / night","stat1":"-5.1 Yrs","stat2":"88% Recovery","copilot":"Glymphatic flush verified: slow-wave sleep cycles elevated by 45% over baseline."},{"shortTitle":"Metabolic Reset","icon":"restaurant","tag":"Autophagy","title":"Intermittent Fasting & AMPK Activation","desc":"Time-restricted feeding schedule driving cellular autophagy, downregulating mTOR, and stabilizing glycemic response.","metricLabel":"HOMA-IR","metricVal":"0.8 Optimal","stat1":"-3.9 Yrs","stat2":"Low Inflammation","copilot":"Cellular renewal active: senescent cell clearance elevated during 16-hour fasting windows."},{"shortTitle":"Stress Shield","icon":"spa","tag":"Autonomic","title":"Vagal Nerve Stimulation & HRV Amplification","desc":"Resonance frequency breathwork (5.5 breaths/min) combined with cold exposure to build robust parasympathetic resilience.","metricLabel":"HRV RMSSD","metricVal":"85 ms","stat1":"-4.8 Yrs","stat2":"Sympathetic Low","copilot":"Autonomic tone normalized: baroreflex sensitivity significantly enhanced."},{"shortTitle":"Centenarian Blueprint","icon":"all_inclusive","tag":"Longevity","title":"Comprehensive Multi-Omic Longevity Baseline","desc":"Holistic protocol harmonizing telomere protection, epigenetic methylation markers, and sarcopenia resistance.","metricLabel":"Epigenetic Pace","metricVal":"0.72x Baseline","stat1":"-6.5 Yrs","stat2":"DNA Clean","copilot":"DunedinPACE epigenetic pace of aging slowed to 0.72 biological years per chronological year."},{"shortTitle":"Hypertrophy","icon":"fitness_center","tag":"Musculoskeletal","title":"High-Output Hypertrophy & Bone Density","desc":"Heavy multi-joint resistance training promoting myokine release, IGF-1 regulation, and dense skeletal mineralization.","metricLabel":"DEXA T-Score","metricVal":"+2.1 Bone","stat1":"-3.5 Yrs","stat2":"Lean Mass High","copilot":"Mechanical tension triggers bone remodeling and builds crucial metabolic glucose sink reserves."}];
+      const SCENARIOS = [{"shortTitle":"Zone 2","icon":"directions_run","tag":"Mitochondrial","title":"Zone 2 Endurance & Fat Oxidation","desc":"Low-intensity steady-state cardiovascular conditioning maximizing mitochondrial efficiency and metabolic flexibility.","metricLabel":"Lactate","metricVal":"< 2.0 mmol/L","stat1":"-4.2 Yrs","stat2":"Top 5% Cardio","copilot":"High volume Zone 2 training stimulates biogenesis of dense mitochondrial cristae.","params":{"bioage":-4.2,"hrv":85,"vo2":58,"sleep":2.3}},{"shortTitle":"Deep Sleep","icon":"bedtime","tag":"Neuro-Restoration","title":"Circadian Synchronization & Glymphatic Clearance","desc":"Strict temperature modulation and dark-light timing to maximize slow-wave deep sleep and brain amyloid clearance.","metricLabel":"Deep Sleep","metricVal":"2.4 hrs / night","stat1":"-5.1 Yrs","stat2":"88% Recovery","copilot":"Glymphatic flush verified: slow-wave sleep cycles elevated by 45% over baseline.","params":{"bioage":-5.1,"hrv":95,"vo2":52,"sleep":3.2}},{"shortTitle":"Metabolic Reset","icon":"restaurant","tag":"Autophagy","title":"Intermittent Fasting & AMPK Activation","desc":"Time-restricted feeding schedule driving cellular autophagy, downregulating mTOR, and stabilizing glycemic response.","metricLabel":"HOMA-IR","metricVal":"0.8 Optimal","stat1":"-3.9 Yrs","stat2":"Low Inflammation","copilot":"Cellular renewal active: senescent cell clearance elevated during 16-hour fasting windows.","params":{"bioage":-3.9,"hrv":76,"vo2":48,"sleep":2.1}},{"shortTitle":"Stress Shield","icon":"spa","tag":"Autonomic","title":"Vagal Nerve Stimulation & HRV Amplification","desc":"Resonance frequency breathwork (5.5 breaths/min) combined with cold exposure to build robust parasympathetic resilience.","metricLabel":"HRV RMSSD","metricVal":"85 ms","stat1":"-4.8 Yrs","stat2":"Sympathetic Low","copilot":"Autonomic tone normalized: baroreflex sensitivity significantly enhanced.","params":{"bioage":-4.8,"hrv":125,"vo2":50,"sleep":2.5}},{"shortTitle":"Centenarian Blueprint","icon":"all_inclusive","tag":"Longevity","title":"Comprehensive Multi-Omic Longevity Baseline","desc":"Holistic protocol harmonizing telomere protection, epigenetic methylation markers, and sarcopenia resistance.","metricLabel":"Epigenetic Pace","metricVal":"0.72x Baseline","stat1":"-6.5 Yrs","stat2":"DNA Clean","copilot":"DunedinPACE epigenetic pace of aging slowed to 0.72 biological years per chronological year.","params":{"bioage":-6.5,"hrv":110,"vo2":64,"sleep":2.8}},{"shortTitle":"Hypertrophy","icon":"fitness_center","tag":"Musculoskeletal","title":"High-Output Hypertrophy & Bone Density","desc":"Heavy multi-joint resistance training promoting myokine release, IGF-1 regulation, and dense skeletal mineralization.","metricLabel":"DEXA T-Score","metricVal":"+2.1 Bone","stat1":"-3.5 Yrs","stat2":"Lean Mass High","copilot":"Mechanical tension triggers bone remodeling and builds crucial metabolic glucose sink reserves.","params":{"bioage":-3.5,"hrv":68,"vo2":52,"sleep":2.4}}];
       function applyScenario(idx) {
         const sc = SCENARIOS[idx];
         if (!sc) return;
         document.querySelectorAll('.scenario-pill-btn').forEach((b, i) => {
           if (i === idx) {
-            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-rose-400 to-pink-500 text-slate-950 shadow-md shrink-0';
+            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-rose-400 to-pink-500 text-slate-950 shadow-md active shrink-0';
           } else {
             b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all glass-button text-slate-900 dark:text-slate-100 shrink-0';
           }
         });
+
+        // Apply Scenario Parameter Values to State & Sliders
+        if (sc.params) {
+          Object.keys(sc.params).forEach(k => {
+            if (state[k] !== undefined) {
+              state[k] = sc.params[k];
+              const slider = document.getElementById('slider-' + k);
+              const valEl = document.getElementById('val-' + k);
+              if (slider) slider.value = sc.params[k];
+              if (valEl) {
+                const slDef = [{"id":"bioage","label":"Bio-Age Delta","defaultVal":-3.8,"min":-15,"max":5,"step":0.1,"unit":" Yrs"},{"id":"hrv","label":"HRV (RMSSD)","defaultVal":78,"min":20,"max":180,"step":1,"unit":" ms"},{"id":"vo2","label":"VO2 Max","defaultVal":54,"min":25,"max":85,"step":1,"unit":" mL/kg"},{"id":"sleep","label":"Deep Sleep Duration","defaultVal":2.2,"min":0.5,"max":4.5,"step":0.1,"unit":" hrs"}].find(s => s.id === k);
+                valEl.textContent = sc.params[k] + (slDef ? slDef.unit : '');
+              }
+            }
+          });
+        }
+
+        solveEquilibrium();
+
         if (document.getElementById('hud-copilot-text')) {
           document.getElementById('hud-copilot-text').textContent = sc.copilot;
         }
@@ -833,10 +952,11 @@
         if (document.getElementById('hud-stat-2')) {
           document.getElementById('hud-stat-2').textContent = sc.stat2;
         }
-        // Morph 3D
-        systemGroup.rotation.x += 0.4;
-        systemGroup.scale.set(1.15, 1.15, 1.15);
-        setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 300);
+
+        // Pulse Morph Animation
+        systemGroup.rotation.x += 0.25;
+        systemGroup.scale.set(1.10, 1.10, 1.10);
+        setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 250);
       }
 
       document.querySelectorAll('.scenario-pill-btn').forEach(btn => {
@@ -854,32 +974,47 @@
         });
       });
 
-      // Sliders Real-Time Feedback
-      
-        document.getElementById('slider-bioage')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-bioage');
-          if (el) el.textContent = v + ' Yrs';
+      // Raycaster for Spatial Detail Card
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const detailCard = document.getElementById('submodule-detail-card');
+
+      interactionSurface.addEventListener('pointermove', (e) => {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(Object.values(nodeMeshes).map(n => n.gem));
+        if (hits.length > 0) {
+          if (detailCard) {
+            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
+            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
+            detailCard.classList.remove('hidden');
+          }
+        }
+      });
+
+      interactionSurface.addEventListener('pointerleave', () => {
+        if (detailCard) detailCard.classList.add('hidden');
+      });
+
+      // Animation Loop
+      function animate() {
+        requestAnimationFrame(animate);
+        systemGroup.rotation.y += 0.0025;
+        Object.values(nodeMeshes).forEach(n => {
+          n.gem.rotation.y -= 0.010;
+          n.ring.rotation.z += 0.015;
         });
-      
-        document.getElementById('slider-hrv')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-hrv');
-          if (el) el.textContent = v + ' ms';
-        });
-      
-        document.getElementById('slider-vo2')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-vo2');
-          if (el) el.textContent = v + ' mL/kg';
-        });
-      
-        document.getElementById('slider-sleep')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-sleep');
-          if (el) el.textContent = v + ' hrs';
-        });
-      
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
 
       // Copy Embed
       document.getElementById('btn-copy-embed')?.addEventListener('click', () => {

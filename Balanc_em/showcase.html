@@ -304,7 +304,7 @@
             <span class="material-symbols-outlined text-xs text-sky-400">tune</span> Scenarios:
           </span>
           
-            <button class="scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md shrink-0" data-scenario-idx="0">
+            <button class="scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md active shrink-0" data-scenario-idx="0">
               <span class="material-symbols-outlined text-sm">thermostat</span>
               <span>Summer Heatwave</span>
             </button>
@@ -409,7 +409,7 @@
                 <span class="material-symbols-outlined text-sm text-emerald-500">insights</span>
                 <span>Solved Equilibrium HUD</span>
               </div>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-400">STABLE</span>
+              <span id="hud-equilibrium-status" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-400">STABLE</span>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-center font-mono">
@@ -592,7 +592,7 @@
 
   </div>
 
-  <!-- Three.js 3D Interactive Spatial Engine Script -->
+  <!-- Three.js 3D Interactive Spatial Engine & Mathematical Resolver Script -->
   <script>
     // 1. Dark/Light Mode Switcher
     const btnToggleDark = document.getElementById('btn-toggle-dark');
@@ -643,7 +643,7 @@
       });
     })();
 
-    // 3. Master Frameless 3D Spatial Polytope Engine
+    // 3. Master Frameless 3D Spatial Polytope Engine with Continuous Mathematical Deformation
     (function initMasterHeroEngine() {
       const canvas = document.getElementById('hero-embed-canvas');
       const interactionSurface = document.getElementById('hero-interaction-surface');
@@ -666,7 +666,7 @@
       controls.target.set(0, 0, 0);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.enableZoom = false; // Zero scroll-trap: Allow seamless page scroll!
+      controls.enableZoom = false; // Zero scroll-trap: Natural page scrolling preserved!
 
       // Modifier-wheel zoom (Ctrl+Wheel or Cmd+Wheel)
       interactionSurface.addEventListener('wheel', (e) => {
@@ -693,20 +693,23 @@
         document.getElementById('showcase-right-flank')?.classList.toggle('opacity-0', isZenMode);
       });
 
-      // Lighting Rig
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x0f172a, 0.60);
+      // Studio Lighting Rig
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x0f172a, 0.65);
       scene.add(hemiLight);
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.80);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
       dirLight.position.set(6, 8, 6);
       scene.add(dirLight);
 
-      // Central Polytope Model
+      // Central System Group
       const systemGroup = new THREE.Group();
       scene.add(systemGroup);
 
-      // Core Crystalline Mesh
-      const coreGeo = new THREE.IcosahedronGeometry(1.6, 0);
-      const coreMat = new THREE.MeshPhysicalMaterial({
+      // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
+      const corePolyGeo = new THREE.BufferGeometry();
+      const corePositions = new Float32Array(24 * 3); // 8 triangles * 3 vertices * 3 coords
+      corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
+
+      const corePolyMat = new THREE.MeshPhysicalMaterial({
         color: 0x059669,
         emissive: 0x059669,
         emissiveIntensity: 0.35,
@@ -715,115 +718,236 @@
         transmission: 0.85,
         transparent: true,
         opacity: 0.92,
-        flatShading: true
+        flatShading: true,
+        side: THREE.DoubleSide
       });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+      const coreMesh = new THREE.Mesh(corePolyGeo, corePolyMat);
       systemGroup.add(coreMesh);
 
-      // 6 Outer Nodes with Orbital Halos
-      const nodeDirs = [
-        new THREE.Vector3(0, 2.4, 0),
-        new THREE.Vector3(0, -2.4, 0),
-        new THREE.Vector3(2.4, 0.5, 0.5),
-        new THREE.Vector3(-2.4, 0.5, 0.5),
-        new THREE.Vector3(0.6, -0.6, 2.4),
-        new THREE.Vector3(-0.6, 0.6, -2.4)
-      ];
+      // 6 Unit Node Direction Vectors (Octahedral Basis)
+      const NODE_DIRS = {
+        top: new THREE.Vector3(0, 1.8, 0),
+        bottom: new THREE.Vector3(0, -1.8, 0),
+        right: new THREE.Vector3(2.0, 0, 0),
+        left: new THREE.Vector3(-2.0, 0, 0),
+        front: new THREE.Vector3(0, 0, 2.0),
+        back: new THREE.Vector3(0, 0, -2.0)
+      };
 
       const nodeColors = [0x38bdf8, 0x10b981, 0xa855f7, 0xf59e0b, 0xf43f5e, 0x6366f1];
-      const nodeMeshes = [];
+      const nodeKeys = ['top', 'bottom', 'right', 'left', 'front', 'back'];
+      const nodeMeshes = {};
 
-      nodeDirs.forEach((dir, i) => {
+      nodeKeys.forEach((k, i) => {
         const nGroup = new THREE.Group();
-        nGroup.position.copy(dir);
-
-        const gemGeo = new THREE.OctahedronGeometry(0.35, 0);
+        const gemGeo = new THREE.OctahedronGeometry(0.28, 0);
         const gemMat = new THREE.MeshPhysicalMaterial({
           color: nodeColors[i % nodeColors.length],
           emissive: nodeColors[i % nodeColors.length],
-          emissiveIntensity: 0.50,
+          emissiveIntensity: 0.55,
           roughness: 0.10,
           flatShading: true
         });
         const gem = new THREE.Mesh(gemGeo, gemMat);
         nGroup.add(gem);
 
-        // Orbital Ring
-        const ringGeo = new THREE.TorusGeometry(0.55, 0.015, 8, 32);
-        const ringMat = new THREE.MeshBasicMaterial({ color: nodeColors[i % nodeColors.length], transparent: true, opacity: 0.65 });
+        const ringGeo = new THREE.TorusGeometry(0.45, 0.015, 8, 32);
+        const ringMat = new THREE.MeshBasicMaterial({ color: nodeColors[i % nodeColors.length], transparent: true, opacity: 0.70 });
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 3;
         nGroup.add(ring);
 
         systemGroup.add(nGroup);
-        nodeMeshes.push({ group: nGroup, gem, ring });
+        nodeMeshes[k] = { group: nGroup, gem, ring, baseDir: NODE_DIRS[k] };
       });
 
-      // Struts
-      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
-      nodeDirs.forEach(dir => {
-        const sGeo = new THREE.CylinderGeometry(0.01, 0.01, dir.length(), 8);
+      // 12 Struts Connecting the 6 Apexes into a Complete Polytope Envelope
+      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.40 });
+      const strutPairs = [
+        ['top', 'right'], ['top', 'front'], ['top', 'left'], ['top', 'back'],
+        ['bottom', 'right'], ['bottom', 'front'], ['bottom', 'left'], ['bottom', 'back'],
+        ['right', 'front'], ['front', 'left'], ['left', 'back'], ['back', 'right']
+      ];
+      const struts = [];
+      strutPairs.forEach(() => {
+        const sGeo = new THREE.CylinderGeometry(0.008, 0.008, 1, 8);
         const sMesh = new THREE.Mesh(sGeo, strutMat);
-        sMesh.position.copy(dir).multiplyScalar(0.5);
-        sMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
         systemGroup.add(sMesh);
+        struts.push(sMesh);
       });
 
-      // Raycaster for Spatial Detail Card
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-      const detailCard = document.getElementById('submodule-detail-card');
+      // Internal State
+      const state = {
+        freq: 50.01,
+        gen: 3400,
+        bess: 850,
+        renew: 62
+      };
 
-      interactionSurface.addEventListener('pointermove', (e) => {
-        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouse, camera);
-        const hits = raycaster.intersectObjects(nodeMeshes.map(n => n.gem));
-        if (hits.length > 0) {
-          if (detailCard) {
-            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
-            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
-            detailCard.classList.remove('hidden');
+      // Mathematical Solver & Geometry Morphing Engine
+      
+      function solveEquilibrium(changedPillar) {
+        if (changedPillar === 'renew') {
+          // Higher renewables require higher BESS storage to stabilize frequency
+          const rN = state.renew / 100.0;
+          if (rN > 0.5) {
+            state.bess = Math.round(400 + Math.pow(rN, 1.4) * 2200);
           }
+        } else if (changedPillar === 'bess') {
+          // Higher BESS allows higher renewable penetration
+          const bN = state.bess / 3000.0;
+          state.renew = Math.min(100, Math.round(20 + bN * 80));
         }
-      });
 
-      interactionSurface.addEventListener('pointerleave', () => {
-        if (detailCard) detailCard.classList.add('hidden');
-      });
+        // Calculate Carbon Intensity (g/kWh)
+        const carbonIntensity = Math.max(0, Math.round(440 * (1.0 - state.renew / 100.0) * (1.0 - 0.15 * (state.bess / 3000.0))));
 
-      // Animation Loop
-      function animate() {
-        requestAnimationFrame(animate);
-        systemGroup.rotation.y += 0.003;
-        coreMesh.rotation.x += 0.002;
-        nodeMeshes.forEach(n => {
-          n.gem.rotation.y -= 0.010;
-          n.ring.rotation.z += 0.015;
+        // Calculate Frequency Deviation from 50.00 Hz
+        const unbalance = Math.abs(state.gen - 3500) / 4500.0;
+        const bessDamp = 1.0 / (1.0 + state.bess / 800.0);
+        const freqDev = Number((unbalance * 0.15 * bessDamp).toFixed(2));
+        const solvedFreq = Number((50.00 + (state.gen > 3500 ? freqDev : -freqDev)).toFixed(2));
+        state.freq = solvedFreq;
+
+        ['freq', 'gen', 'bess', 'renew'].forEach(k => {
+          const sl = document.getElementById('slider-' + k);
+          const vl = document.getElementById('val-' + k);
+          if (sl) sl.value = state[k];
+          if (vl) {
+            const unitMap = { freq: ' Hz', gen: ' MW', bess: ' MW', renew: '%' };
+            vl.textContent = state[k] + unitMap[k];
+          }
         });
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
 
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
+        const hudFreq = document.getElementById('hud-stat-1');
+        const hudCarbon = document.getElementById('hud-stat-2');
+        const hudCopilot = document.getElementById('hud-copilot-text');
+        if (hudFreq) hudFreq.textContent = state.freq + ' Hz Stable';
+        if (hudCarbon) hudCarbon.textContent = carbonIntensity + ' g/kWh Clean';
+        if (hudCopilot) {
+          hudCopilot.textContent = 'Grid dispatch synchronized: ' + state.gen + 'MW baseline with ' + state.bess + 'MW BESS capacity buffers ' + state.renew + '% renewable share, driving emissions down to ' + carbonIntensity + ' g/kWh.';
+        }
+
+        update3DGeometry();
+      }
+
+      function update3DGeometry() {
+        const fN = Math.max(0.0, Math.min(1.0, 1.0 - Math.abs(state.freq - 50.00) / 0.8));
+        const gN = Math.max(0.0, Math.min(1.0, (state.gen - 1000) / (8000 - 1000)));
+        const bN = Math.max(0.0, Math.min(1.0, state.bess / 3000.0));
+        const rN = Math.max(0.0, Math.min(1.0, (state.renew - 10) / (100 - 10)));
+
+        const rads = {
+          top: 0.85 + fN * 1.6,       // Grid frequency stability pulls upward
+          bottom: 0.85 + bN * 1.6,    // BESS battery storage expands downward
+          right: 0.85 + gN * 1.5,     // Base generation expands right
+          left: 0.85 + rN * 1.5,      // Renewable penetration expands left
+          front: 0.85 + (fN * 0.5 + gN * 0.5) * 1.5,
+          back: 0.85 + (bN * 0.5 + rN * 0.5) * 1.5
+        };
+
+        const v = {};
+        Object.keys(rads).forEach(k => {
+          v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
+          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.22));
+        });
+
+        const p = corePolyGeo.attributes.position.array;
+        const setTri = (offset, p1, p2, p3) => {
+          p[offset]   = p1.x; p[offset+1] = p1.y; p[offset+2] = p1.z;
+          p[offset+3] = p2.x; p[offset+4] = p2.y; p[offset+5] = p2.z;
+          p[offset+6] = p3.x; p[offset+7] = p3.y; p[offset+8] = p3.z;
+        };
+
+        setTri(0,  v.top, v.right, v.front);
+        setTri(9,  v.top, v.front, v.left);
+        setTri(18, v.top, v.left, v.back);
+        setTri(27, v.top, v.back, v.right);
+        setTri(36, v.bottom, v.right, v.back);
+        setTri(45, v.bottom, v.back, v.left);
+        setTri(54, v.bottom, v.left, v.front);
+        setTri(63, v.bottom, v.front, v.right);
+
+        corePolyGeo.attributes.position.needsUpdate = true;
+        corePolyGeo.computeVertexNormals();
+
+        strutPairs.forEach(([k1, k2], i) => {
+          const p1 = nodeMeshes[k1].group.position;
+          const p2 = nodeMeshes[k2].group.position;
+          const dist = p1.distanceTo(p2);
+          const strut = struts[i];
+          strut.scale.set(1, dist, 1);
+          strut.position.copy(p1).add(p2).multiplyScalar(0.5);
+          strut.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
+        });
+      }
+    
+
+      // Initial Reciprocal Calculation & Geometry Update
+      solveEquilibrium();
+
+      // Sliders 2-Way Binding with Real-Time Reciprocal Solving
+      
+        document.getElementById('slider-freq')?.addEventListener('input', (e) => {
+          state.freq = Number(e.target.value);
+          const el = document.getElementById('val-freq');
+          if (el) el.textContent = state.freq + ' Hz';
+          solveEquilibrium('freq');
+        });
+      
+        document.getElementById('slider-gen')?.addEventListener('input', (e) => {
+          state.gen = Number(e.target.value);
+          const el = document.getElementById('val-gen');
+          if (el) el.textContent = state.gen + ' MW';
+          solveEquilibrium('gen');
+        });
+      
+        document.getElementById('slider-bess')?.addEventListener('input', (e) => {
+          state.bess = Number(e.target.value);
+          const el = document.getElementById('val-bess');
+          if (el) el.textContent = state.bess + ' MW';
+          solveEquilibrium('bess');
+        });
+      
+        document.getElementById('slider-renew')?.addEventListener('input', (e) => {
+          state.renew = Number(e.target.value);
+          const el = document.getElementById('val-renew');
+          if (el) el.textContent = state.renew + '%';
+          solveEquilibrium('renew');
+        });
+      
 
       // Scenario Pills & Cards Interaction
-      const SCENARIOS = [{"shortTitle":"Summer Heatwave","icon":"thermostat","tag":"Peak Demand","title":"Summer Peak Heatwave Extreme Dispatch","desc":"Air conditioning surge driving 98% grid capacity, stabilized by instant 4-hour utility-scale lithium BESS injection.","metricLabel":"Peak Demand","metricVal":"7,800 MW","stat1":"49.98 Hz","stat2":"220 g/kWh","copilot":"Four-hour battery discharge bridges the evening air conditioning peak until industrial curtailment kicks in."},{"shortTitle":"Duck Curve","icon":"solar_power","tag":"Solar Solar","title":"Solar Duck Curve Midday Curtailment","desc":"Massive midday rooftop PV generation creating negative spot electricity prices, absorbed into grid-scale storage.","metricLabel":"Solar Yield","metricVal":"4,200 MW Peak","stat1":"50.04 Hz","stat2":"45 g/kWh","copilot":"Negative pricing absorbed: pumped hydro and BESS charging at full capacity to prevent grid over-frequency."},{"shortTitle":"Islanded Grid","icon":"offline_bolt","tag":"Microgrid","title":"100% Islanded Regional Microgrid","desc":"Autonomous local energy cooperative running entirely detached from the main transmission interconnect.","metricLabel":"Autonomy","metricVal":"100% Islanded","stat1":"50.00 Hz","stat2":"18 g/kWh","copilot":"Grid-forming inverters provide synthetic inertia without requiring synchronous fossil turbines."},{"shortTitle":"Polar Vortex","icon":"ac_unit","tag":"Extreme Cold","title":"Winter Polar Vortex Heating Freeze","desc":"Sub-zero blizzard conditions freezing natural gas wellheads while heating demand spikes past all historical records.","metricLabel":"Reserve Margin","metricVal":"4.2% Tight","stat1":"49.92 Hz","stat2":"380 g/kWh","copilot":"Emergency demand-response protocols activated across commercial refrigeration and steel smelting plants."},{"shortTitle":"Wind Storm","icon":"air","tag":"Wind Energy","title":"High-Penetration Offshore Wind Surge","desc":"Gale-force North Sea wind farm output generating 120% of regional demand, exported via HVDC submarine interconnects.","metricLabel":"Wind Output","metricVal":"5,400 MW Export","stat1":"50.02 Hz","stat2":"12 g/kWh","copilot":"HVDC links transmitting excess green energy to continental European pump storage reservoirs."},{"shortTitle":"Zero Carbon 2030","icon":"eco","tag":"Clean Energy","title":"100% Renewable Zero-Carbon Horizon","desc":"Fully decarbonized energy system harmonizing long-duration iron-air batteries, green hydrogen, and nuclear baseload.","metricLabel":"Emissions","metricVal":"0 g/kWh Clean","stat1":"50.00 Hz","stat2":"0 g/kWh Clean","copilot":"True zero emissions achieved: long-duration storage easily covers multi-day seasonal renewable lulls."}];
+      const SCENARIOS = [{"shortTitle":"Summer Heatwave","icon":"thermostat","tag":"Peak Demand","title":"Summer Peak Heatwave Extreme Dispatch","desc":"Air conditioning surge driving 98% grid capacity, stabilized by instant 4-hour utility-scale lithium BESS injection.","metricLabel":"Peak Demand","metricVal":"7,800 MW","stat1":"50.00 Hz Stable","stat2":"210 g/kWh Clean","copilot":"Four-hour battery discharge bridges the evening air conditioning peak until industrial curtailment kicks in.","params":{"freq":50,"gen":7200,"bess":2400,"renew":45}},{"shortTitle":"Duck Curve","icon":"solar_power","tag":"Solar Solar","title":"Solar Duck Curve Midday Curtailment","desc":"Massive midday rooftop PV generation creating negative spot electricity prices, absorbed into grid-scale storage.","metricLabel":"Solar Yield","metricVal":"4,200 MW Peak","stat1":"50.02 Hz Stable","stat2":"35 g/kWh Clean","copilot":"Negative pricing absorbed: pumped hydro and BESS charging at full capacity to prevent grid over-frequency.","params":{"freq":50.02,"gen":2800,"bess":2200,"renew":85}},{"shortTitle":"Islanded Grid","icon":"offline_bolt","tag":"Microgrid","title":"100% Islanded Regional Microgrid","desc":"Autonomous local energy cooperative running entirely detached from the main transmission interconnect.","metricLabel":"Autonomy","metricVal":"100% Islanded","stat1":"50.00 Hz Stable","stat2":"12 g/kWh Clean","copilot":"Grid-forming inverters provide synthetic inertia without requiring synchronous fossil turbines.","params":{"freq":50,"gen":1800,"bess":1600,"renew":92}},{"shortTitle":"Polar Vortex","icon":"ac_unit","tag":"Extreme Cold","title":"Winter Polar Vortex Heating Freeze","desc":"Sub-zero blizzard conditions freezing natural gas wellheads while heating demand spikes past all historical records.","metricLabel":"Reserve Margin","metricVal":"4.2% Tight","stat1":"49.95 Hz Stable","stat2":"340 g/kWh Clean","copilot":"Emergency demand-response protocols activated across commercial refrigeration and steel smelting plants.","params":{"freq":49.95,"gen":7800,"bess":1800,"renew":25}},{"shortTitle":"Wind Storm","icon":"air","tag":"Wind Energy","title":"High-Penetration Offshore Wind Surge","desc":"Gale-force North Sea wind farm output generating 120% of regional demand, exported via HVDC submarine interconnects.","metricLabel":"Wind Output","metricVal":"5,400 MW Export","stat1":"50.01 Hz Stable","stat2":"8 g/kWh Clean","copilot":"HVDC links transmitting excess green energy to continental European pump storage reservoirs.","params":{"freq":50.01,"gen":3200,"bess":2600,"renew":95}},{"shortTitle":"Zero Carbon 2030","icon":"eco","tag":"Clean Energy","title":"100% Renewable Zero-Carbon Horizon","desc":"Fully decarbonized energy system harmonizing long-duration iron-air batteries, green hydrogen, and nuclear baseload.","metricLabel":"Emissions","metricVal":"0 g/kWh Clean","stat1":"50.00 Hz Stable","stat2":"0 g/kWh Clean","copilot":"True zero emissions achieved: long-duration storage easily covers multi-day seasonal renewable lulls.","params":{"freq":50,"gen":3500,"bess":3000,"renew":100}}];
       function applyScenario(idx) {
         const sc = SCENARIOS[idx];
         if (!sc) return;
         document.querySelectorAll('.scenario-pill-btn').forEach((b, i) => {
           if (i === idx) {
-            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md shrink-0';
+            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md active shrink-0';
           } else {
             b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all glass-button text-slate-900 dark:text-slate-100 shrink-0';
           }
         });
+
+        // Apply Scenario Parameter Values to State & Sliders
+        if (sc.params) {
+          Object.keys(sc.params).forEach(k => {
+            if (state[k] !== undefined) {
+              state[k] = sc.params[k];
+              const slider = document.getElementById('slider-' + k);
+              const valEl = document.getElementById('val-' + k);
+              if (slider) slider.value = sc.params[k];
+              if (valEl) {
+                const slDef = [{"id":"freq","label":"Grid Frequency","defaultVal":50.01,"min":49.2,"max":50.8,"step":0.01,"unit":" Hz"},{"id":"gen","label":"Base Generation","defaultVal":3400,"min":1000,"max":8000,"step":50,"unit":" MW"},{"id":"bess","label":"BESS Battery Storage","defaultVal":850,"min":0,"max":3000,"step":25,"unit":" MW"},{"id":"renew","label":"Renewable Penetration","defaultVal":62,"min":10,"max":100,"step":1,"unit":"%"}].find(s => s.id === k);
+                valEl.textContent = sc.params[k] + (slDef ? slDef.unit : '');
+              }
+            }
+          });
+        }
+
+        solveEquilibrium();
+
         if (document.getElementById('hud-copilot-text')) {
           document.getElementById('hud-copilot-text').textContent = sc.copilot;
         }
@@ -833,10 +957,11 @@
         if (document.getElementById('hud-stat-2')) {
           document.getElementById('hud-stat-2').textContent = sc.stat2;
         }
-        // Morph 3D
-        systemGroup.rotation.x += 0.4;
-        systemGroup.scale.set(1.15, 1.15, 1.15);
-        setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 300);
+
+        // Pulse Morph Animation
+        systemGroup.rotation.x += 0.25;
+        systemGroup.scale.set(1.10, 1.10, 1.10);
+        setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 250);
       }
 
       document.querySelectorAll('.scenario-pill-btn').forEach(btn => {
@@ -854,32 +979,47 @@
         });
       });
 
-      // Sliders Real-Time Feedback
-      
-        document.getElementById('slider-freq')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-freq');
-          if (el) el.textContent = v + ' Hz';
+      // Raycaster for Spatial Detail Card
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const detailCard = document.getElementById('submodule-detail-card');
+
+      interactionSurface.addEventListener('pointermove', (e) => {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(Object.values(nodeMeshes).map(n => n.gem));
+        if (hits.length > 0) {
+          if (detailCard) {
+            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
+            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
+            detailCard.classList.remove('hidden');
+          }
+        }
+      });
+
+      interactionSurface.addEventListener('pointerleave', () => {
+        if (detailCard) detailCard.classList.add('hidden');
+      });
+
+      // Animation Loop
+      function animate() {
+        requestAnimationFrame(animate);
+        systemGroup.rotation.y += 0.0025;
+        Object.values(nodeMeshes).forEach(n => {
+          n.gem.rotation.y -= 0.010;
+          n.ring.rotation.z += 0.015;
         });
-      
-        document.getElementById('slider-gen')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-gen');
-          if (el) el.textContent = v + ' MW';
-        });
-      
-        document.getElementById('slider-bess')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-bess');
-          if (el) el.textContent = v + ' MW';
-        });
-      
-        document.getElementById('slider-renew')?.addEventListener('input', (e) => {
-          const v = e.target.value;
-          const el = document.getElementById('val-renew');
-          if (el) el.textContent = v + '%';
-        });
-      
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
 
       // Copy Embed
       document.getElementById('btn-copy-embed')?.addEventListener('click', () => {
