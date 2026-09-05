@@ -336,21 +336,30 @@
         </div>
       </div>
 
-      <!-- 3D Spatial Detail Card -->
-      <div id="submodule-detail-card" class="bg-slate-950/95 text-white border border-sky-400/50 backdrop-blur-2xl p-4 rounded-3xl shadow-2xl hidden fixed z-50 pointer-events-auto min-w-[280px] max-w-[340px] space-y-2">
+      <!-- High-Contrast 3D Spatial Detail Card (Anchors at cursor/focus point, stays open until cursor leaves) -->
+      <div id="submodule-detail-card" class="bg-slate-950/95 text-white border border-sky-500/50 shadow-sky-500/10 backdrop-blur-2xl p-5 rounded-3xl shadow-2xl hidden fixed z-50 pointer-events-auto cursor-default transition-all duration-150 min-w-[290px] max-w-[340px] space-y-3">
         <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
-          <span id="detail-card-badge" class="px-2.5 py-0.5 text-xs font-mono font-black uppercase rounded-lg bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-300">ACTIVE</span>
-          <span id="detail-card-metric" class="text-xs font-mono font-bold text-sky-400">Pillar Node</span>
+          <div class="flex items-center gap-2">
+            <span id="submodule-card-status" class="px-2.5 py-1 text-xs font-mono font-black uppercase rounded-lg bg-sky-500/20 text-sky-300 border-sky-500/30">ACTIVE</span>
+            <span id="submodule-card-category" class="text-xs font-mono font-bold text-sky-400">Milestone</span>
+          </div>
+          <span id="submodule-card-qual" class="text-xs font-mono font-bold text-slate-400">Req: 85%</span>
         </div>
         <div>
-          <h4 id="detail-card-title" class="text-sm font-black text-white leading-snug">Component Node</h4>
-          <p id="detail-card-desc" class="text-xs text-slate-300 font-sans leading-relaxed mt-1">
-            Reciprocal trade-off vector component modeled inside the 3D spatial polytope.
+          <h4 id="submodule-card-title" class="text-base font-black text-white leading-snug">Submodule Deliverable</h4>
+          <p id="submodule-card-desc" class="text-xs text-slate-300 font-sans leading-relaxed mt-1.5">
+            Core milestone deliverable modeled inside the 3D trade-off reactor.
           </p>
         </div>
+        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+          <span class="text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-sky-400">insights</span>
+            <span id="submodule-card-impact">Equilibrium Impact</span>
+          </span>
+          <span id="submodule-card-metric" class="text-emerald-400 font-bold">ACTIVE (Ready)</span>
+        </div>
       </div>
-
-      <!-- FLANKING INTERACTIVE CARDS -->
+<!-- FLANKING INTERACTIVE CARDS -->
       <div class="relative z-20 w-full max-w-[1840px] mx-auto flex flex-col lg:flex-row items-center justify-between px-4 sm:px-8 my-auto pointer-events-none gap-8">
         
         <!-- LEFT FLANK: Interactive Constraint Sliders -->
@@ -363,39 +372,62 @@
               </div>
             </div>
 
-            <!-- 4 Live Sliders -->
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Monthly Budget</span>
-                  <span id="val-budget" class="font-black text-sky-500">450 $/mo</span>
-                </div>
-                <input type="range" id="slider-budget" min="100" max="25000" step="50" value="450" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+                        <!-- 4 Live Color-Coded Sliders -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-emerald-600 dark:text-emerald-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span> Monthly Budget
+                </span>
+                <span id="val-budget" class="font-black text-emerald-600 dark:text-emerald-400 font-mono text-sm">450 $/mo</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Availability SLA</span>
-                  <span id="val-sla" class="font-black text-sky-500">99.95%</span>
-                </div>
-                <input type="range" id="slider-sla" min="95" max="99.999" step="0.01" value="99.95" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <input type="range" id="slider-budget" min="100" max="25000" step="50" value="450" class="w-full accent-emerald-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>$100 /mo</span>
+                <span>$25,000 /mo</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Latency (p99)</span>
-                  <span id="val-latency" class="font-black text-sky-500">28 ms</span>
-                </div>
-                <input type="range" id="slider-latency" min="5" max="250" step="1" value="28" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-sky-600 dark:text-sky-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-sky-500 shadow-sm shadow-sky-500/50"></span> Availability SLA
+                </span>
+                <span id="val-sla" class="font-black text-sky-600 dark:text-sky-400 font-mono text-sm">99.95%</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Compute Capacity</span>
-                  <span id="val-compute" class="font-black text-sky-500">64 vCPU</span>
-                </div>
-                <input type="range" id="slider-compute" min="2" max="512" step="2" value="64" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <input type="range" id="slider-sla" min="95" max="99.999" step="0.01" value="99.95" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>95.0% Standard</span>
+                <span>99.999% Five Nines</span>
               </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-purple-600 dark:text-purple-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-purple-500 shadow-sm shadow-purple-500/50"></span> Latency (p99)
+                </span>
+                <span id="val-latency" class="font-black text-purple-600 dark:text-purple-400 font-mono text-sm">28 ms</span>
+              </div>
+              <input type="range" id="slider-latency" min="5" max="250" step="1" value="28" class="w-full accent-purple-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>5 ms Edge</span>
+                <span>250 ms Batch</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-cyan-600 dark:text-cyan-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-cyan-500 shadow-sm shadow-cyan-500/50"></span> Compute Capacity
+                </span>
+                <span id="val-compute" class="font-black text-cyan-600 dark:text-cyan-400 font-mono text-sm">64 vCPU</span>
+              </div>
+              <input type="range" id="slider-compute" min="2" max="512" step="2" value="64" class="w-full accent-cyan-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>2 vCPU</span>
+                <span>512 vCPU Fleet</span>
+              </div>
+            </div>
             
           </div>
         </div>
@@ -643,7 +675,7 @@
     })();
 
     // 3. Master Frameless 3D Spatial Polytope Engine with Box'em Standard 3D Billboards & Multi-Layer Jewels
-    (function initMasterHeroEngine() {
+    (function initShowcasePolytopeEngine() {
       const canvas = document.getElementById('hero-embed-canvas');
       const interactionSurface = document.getElementById('hero-interaction-surface');
       if (!canvas || !interactionSurface || !window.THREE) return;
@@ -661,8 +693,10 @@
       const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
       camera.position.set(0, 0, 9.6);
 
+      const targetWorldY = -0.38; // Calibrated vertical centering between top bar and bottom flank
+
       const controls = new THREE.OrbitControls(camera, interactionSurface);
-      controls.target.set(0, 0, 0);
+      controls.target.set(0, targetWorldY, 0);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
       controls.enableZoom = false; // Zero scroll-trap
@@ -681,7 +715,7 @@
       document.getElementById('hero-btn-zoom-out')?.addEventListener('click', () => camera.position.multiplyScalar(1.18));
       document.getElementById('hero-btn-reset-view')?.addEventListener('click', () => {
         camera.position.set(0, 0, 9.6);
-        controls.target.set(0, 0, 0);
+        controls.target.set(0, targetWorldY, 0);
       });
 
       // Zen Showcase Mode
@@ -701,6 +735,7 @@
 
       // Central System Group
       const systemGroup = new THREE.Group();
+      systemGroup.position.y = targetWorldY;
       scene.add(systemGroup);
 
       // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
@@ -709,8 +744,8 @@
       corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
 
       const corePolyMat = new THREE.MeshPhysicalMaterial({
-        color: 0x0284c7,
-        emissive: 0x0284c7,
+        color: 0x38bdf8,
+        emissive: 0x38bdf8,
         emissiveIntensity: 0.35,
         roughness: 0.12,
         metalness: 0.20,
@@ -730,75 +765,108 @@
       coreWireMesh.renderOrder = 11;
       systemGroup.add(coreWireMesh);
 
-      // 6 Unit Node Direction Vectors (Octahedral Basis)
+      // 6 Unit Node Direction Vectors (Normalized Octahedral Basis - Exact Box'em Visual Scale)
       const NODE_DIRS = {
-        top: new THREE.Vector3(0, 1.8, 0),
-        bottom: new THREE.Vector3(0, -1.8, 0),
-        right: new THREE.Vector3(2.0, 0, 0),
-        left: new THREE.Vector3(-2.0, 0, 0),
-        front: new THREE.Vector3(0, 0, 2.0),
-        back: new THREE.Vector3(0, 0, -2.0)
+        top: new THREE.Vector3(0, 1, 0),
+        bottom: new THREE.Vector3(0, -1, 0),
+        right: new THREE.Vector3(1, 0, 0),
+        left: new THREE.Vector3(-1, 0, 0),
+        front: new THREE.Vector3(0, 0, 1),
+        back: new THREE.Vector3(0, 0, -1)
       };
 
-      // 6 Node Definitions with Specific Colors & Titles
-      const NODE_METADATA = [{"key":"top","label":"SLA","fullTitle":"AVAILABILITY SLA","color":3718648,"hexStr":"#38bdf8","offset":[0,0.45,0.2]},{"key":"bottom","label":"LATENCY","fullTitle":"LATENCY (p99)","color":11032055,"hexStr":"#a855f7","offset":[0,-0.45,-0.2]},{"key":"right","label":"BUDGET","fullTitle":"MONTHLY BUDGET","color":1096065,"hexStr":"#10b981","offset":[0.5,0,0.2]},{"key":"left","label":"COMPUTE","fullTitle":"COMPUTE CAPACITY","color":959977,"hexStr":"#0ea5e9","offset":[-0.5,0,0.2]},{"key":"front","label":"SECURITY","fullTitle":"SECURITY SHIELD","color":16007006,"hexStr":"#f43f5e","offset":[0,-0.3,0.5]},{"key":"back","label":"COMPLEXITY","fullTitle":"OPS BLAST RADIUS","color":16096779,"hexStr":"#f59e0b","offset":[0,0.3,-0.5]}];
+      const NODE_METADATA = [
+        { key: "top", label: "SLA", fullTitle: "AVAILABILITY SLA", color: 0x38bdf8, hexStr: "#38bdf8", geo: new THREE.TorusGeometry(0.12, 0.04, 16, 32) },
+        { key: "bottom", label: "LATENCY", fullTitle: "LATENCY (p99)", color: 0xa855f7, hexStr: "#a855f7", geo: new THREE.OctahedronGeometry(0.14, 1) },
+        { key: "right", label: "BUDGET", fullTitle: "MONTHLY BUDGET", color: 0x10b981, hexStr: "#10b981", geo: new THREE.CylinderGeometry(0.14, 0.14, 0.08, 6) },
+        { key: "left", label: "COMPUTE", fullTitle: "COMPUTE CAPACITY", color: 0xea5e9, hexStr: "#0ea5e9", geo: new THREE.BoxGeometry(0.16, 0.16, 0.16) },
+        { key: "front", label: "SECURITY", fullTitle: "SECURITY SHIELD", color: 0xf43f5e, hexStr: "#f43f5e", geo: new THREE.IcosahedronGeometry(0.15, 0) },
+        { key: "back", label: "COMPLEXITY", fullTitle: "OPS BLAST RADIUS", color: 0xf59e0b, hexStr: "#f59e0b", geo: new THREE.DodecahedronGeometry(0.14, 0) }
+      ];
       const nodeMeshes = {};
 
-      // Multi-Layered Crystalline Jewel Node Builder (Box'em Standard)
-      const nodeCrystalGeo = new THREE.OctahedronGeometry(0.18, 0);
-      const innerJewelGeo = new THREE.OctahedronGeometry(0.08, 0);
+      // Multi-Layered Crystalline Jewel Node Builder (Full Parity with Box'em Standard)
+      function createNodeCrystal(colorHex, name, nodeKey, customGeo) {
+        const group = new THREE.Group();
+        group.name = name;
+        group.userData = { nodeKey: nodeKey, isNode: true };
+        group.renderOrder = 15;
 
-      NODE_METADATA.forEach(nodeDef => {
-        const k = nodeDef.key;
-        const colorHex = nodeDef.color;
-        const nGroup = new THREE.Group();
-        nGroup.name = 'node-' + k;
-        nGroup.renderOrder = 15;
-
-        // 1. Faceted Outer Jewel
+        // 1. Faceted Outer Jewel (Physical Refractive Material with High IOR)
+        const gemGeo = customGeo || new THREE.OctahedronGeometry(0.15, 0);
         const gemMat = new THREE.MeshPhysicalMaterial({
           color: colorHex,
+          roughness: 0.12,
+          metalness: 0.10,
+          transmission: 0.88,
+          ior: 1.76,
           emissive: colorHex,
-          emissiveIntensity: 0.40,
-          roughness: 0.10,
-          metalness: 0.15,
-          transmission: 0.85,
+          emissiveIntensity: 0.35,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.05,
           flatShading: true,
           transparent: true,
-          opacity: 0.95
+          opacity: 0.95,
+          depthWrite: false,
+          depthTest: true
         });
-        const gem = new THREE.Mesh(nodeCrystalGeo, gemMat);
-        nGroup.add(gem);
+        const gem = new THREE.Mesh(gemGeo, gemMat);
+        gem.renderOrder = 15;
+        group.add(gem);
 
-        // 1b. Crisp Wireframe Edge Lines
-        const edgeGeo = new THREE.EdgesGeometry(nodeCrystalGeo);
-        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45 });
+        // 1b. Crisp Wireframe Edges
+        const edgeGeo = new THREE.EdgesGeometry(gemGeo);
+        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45, depthWrite: false });
         const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat);
+        edgeLines.renderOrder = 16;
         gem.add(edgeLines);
 
-        // 2. Sparkling Inner Jewel Core
+        // 2. Radiant Sparkling Inner Jewel Core
+        const innerGeo = new THREE.OctahedronGeometry(0.07, 0);
         const innerMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           emissive: colorHex,
           emissiveIntensity: 0.95,
-          roughness: 0.05,
-          flatShading: true
+          roughness: 0.02,
+          transmission: 0.40,
+          flatShading: true,
+          depthWrite: false,
+          depthTest: true
         });
-        const innerJewel = new THREE.Mesh(innerJewelGeo, innerMat);
-        nGroup.add(innerJewel);
+        const innerJewel = new THREE.Mesh(innerGeo, innerMat);
+        innerJewel.renderOrder = 16;
+        group.add(innerJewel);
 
-        // 3. Rotating Orbital Halo
-        const ringGeo = new THREE.TorusGeometry(0.32, 0.008, 8, 36);
-        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70 });
+        // 3. Primary Silky Smooth Torus Ring
+        const ringGeo = new THREE.TorusGeometry(0.20, 0.006, 16, 48);
+        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70, depthWrite: false });
         const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 3;
-        nGroup.add(ring);
+        ring.renderOrder = 17;
+        group.add(ring);
 
-        systemGroup.add(nGroup);
-        nodeMeshes[k] = { group: nGroup, gem, innerJewel, ring, baseDir: NODE_DIRS[k], meta: nodeDef };
+        // 4. Secondary Diagonal Gimbal Ring
+        const ring2Geo = new THREE.TorusGeometry(0.23, 0.005, 16, 48);
+        const ring2 = new THREE.Mesh(ring2Geo, ringMat);
+        ring2.rotation.x = Math.PI / 3;
+        ring2.renderOrder = 17;
+        group.add(ring2);
+
+        // 5. Expanded Hit Sphere for Smooth Raycasting & Direct 3D Dragging
+        const hitGeo = new THREE.SphereGeometry(0.36, 16, 16);
+        const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001, depthWrite: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.userData = { parentNode: group, nodeKey: nodeKey };
+        group.add(hitMesh);
+
+        systemGroup.add(group);
+        return { group, gem, innerJewel, ring, ring2, hitMesh, nodeKey };
+      }
+
+      NODE_METADATA.forEach(nodeDef => {
+        nodeMeshes[nodeDef.key] = createNodeCrystal(nodeDef.color, 'node-' + nodeDef.key, nodeDef.key, nodeDef.geo);
       });
 
-      // 3D Spatial Canvas Billboard Sprites (Box'em Standard)
+      // 4x Supersampled Single-Line Box'em Standard 3D Billboard Sprite Generator
       function createSpatial3DBillboard(fullTitle, colorHexStr) {
         const c = document.createElement('canvas');
         c.width = 1024;
@@ -811,17 +879,18 @@
 
         const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(mat);
-        sprite.scale.set(1.45, 0.34, 1.0);
+        sprite.scale.set(1.20, 0.281, 1.0);
         sprite.renderOrder = 9999;
 
-        const redraw = (valText) => {
+        const redraw = (valText, overrideColor) => {
           ctx.clearRect(0, 0, c.width, c.height);
           const pad = 8, w = c.width - pad * 2, h = c.height - pad * 2, r = 58;
+          const colorStr = overrideColor || colorHexStr;
 
           ctx.save();
-          // Matte Glass Capsule Background
+          // High-Contrast Deep Matte Glass Capsule Tag Background
           ctx.fillStyle = 'rgba(9, 14, 26, 0.95)';
-          ctx.strokeStyle = colorHexStr;
+          ctx.strokeStyle = colorStr;
           ctx.lineWidth = 10;
           ctx.beginPath();
           ctx.moveTo(pad + r, pad);
@@ -837,28 +906,39 @@
           ctx.fill();
           ctx.stroke();
 
-          // Glowing Colored Bullet Dot
-          ctx.fillStyle = colorHexStr;
-          ctx.shadowColor = colorHexStr;
-          ctx.shadowBlur = 16;
-          ctx.beginPath();
-          ctx.arc(58, c.height / 2, 22, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
+          // Dynamically fit font so text never overflows canvas
+          let fontSize = 60;
+          ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
+          let textWidth = ctx.measureText(valText).width;
+          const bulletRadius = 20;
+          const gap = 24;
+          const maxContentWidth = w - 48;
 
-          // Full Title (Small Upper)
-          ctx.fillStyle = colorHexStr;
-          ctx.font = 'bold 36px "JetBrains Mono", monospace';
+          while ((textWidth + bulletRadius * 2 + gap > maxContentWidth) && fontSize > 32) {
+            fontSize -= 2;
+            ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
+            textWidth = ctx.measureText(valText).width;
+          }
+
+          const totalGroupWidth = bulletRadius * 2 + gap + textWidth;
+          const groupStartX = (c.width - totalGroupWidth) / 2;
+
+          // Glowing Colored Bullet Dot
+          ctx.fillStyle = colorStr;
+          ctx.shadowColor = colorStr;
+          ctx.shadowBlur = 14;
+          ctx.beginPath();
+          ctx.arc(groupStartX + bulletRadius, c.height / 2, bulletRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Crisp High-Legibility Typography
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
-          ctx.fillText(fullTitle, 105, 68);
-
-          // Live Metric (Large Bold)
-          ctx.fillStyle = '#ffffff';
-          ctx.font = '900 64px "JetBrains Mono", monospace';
-          ctx.fillText(valText, 105, 148);
-
+          ctx.fillText(valText, groupStartX + bulletRadius * 2 + gap, c.height / 2 + 2);
           ctx.restore();
+
           tex.needsUpdate = true;
         };
 
@@ -869,54 +949,165 @@
 
       const nodeBillboards = {};
       NODE_METADATA.forEach(nodeDef => {
-        const sprite = createSpatial3DBillboard(nodeDef.fullTitle, nodeDef.hexStr);
+        const sprite = createSpatial3DBillboard(nodeDef.label, nodeDef.hexStr);
         systemGroup.add(sprite);
         nodeBillboards[nodeDef.key] = sprite;
       });
 
-      // Internal Submodules Group (Orbiting internal jewels inside the crystal volume)
+      // Adaptive Screen-Space Scaling (Maintains Crisp Standard 34px-High Tags Across Zooms & Viewing Distances)
+      function updateAdaptiveBillboards() {
+        const vFOV = THREE.MathUtils.degToRad(camera.fov);
+        const heightPerUnit = 2 * Math.tan(vFOV / 2);
+        const basePixelH = 34;
+        const refDist = 9.0;
+        const sWorldPos = new THREE.Vector3();
+        Object.values(nodeBillboards).forEach(s => {
+          if (!s) return;
+          s.getWorldPosition(sWorldPos);
+          const dist = Math.max(1.0, camera.position.distanceTo(sWorldPos));
+          const depthMultiplier = Math.pow(refDist / dist, 0.75);
+          const worldH = Math.max(0.12, (basePixelH / (window.innerHeight || 800)) * dist * heightPerUnit * depthMultiplier);
+          const worldW = worldH * (1024 / 240);
+          s.scale.set(worldW, worldH, 1.0);
+        });
+      }
+
+      // Internal Submodules Group (Orbiting internal deliverable shards inside the crystal volume)
       const submoduleGroup = new THREE.Group();
       submoduleGroup.renderOrder = 8;
       systemGroup.add(submoduleGroup);
 
-      const SUBMODULE_DEFS = [{"name":"Global Anycast CDN","color":3718648},{"name":"Read Replica Cluster","color":1096065},{"name":"Distributed Cache Tier","color":959977},{"name":"Auto-Scaler Controller","color":11032055},{"name":"Ingress Mesh Gateway","color":16007006},{"name":"Disaster Recovery Sync","color":16096779}];
+      const SUBMODULE_DEFS = [
+        {
+          name: "Global Anycast Edge CDN",
+          category: "Edge Delivery Milestone",
+          desc: "320+ edge point-of-presence network terminating TLS handshakes in under 12ms with Brotli compression and cache routing.",
+          color: 0x38bdf8,
+          pillarKey: "latency",
+          reqVal: "<= 60 ms",
+          impact: "Sub-50ms Global TTFB",
+          isActive: (s) => { return Boolean(s.latency <= 60); }
+        },
+        {
+          name: "Multi-Region Read Replica Cluster",
+          category: "Database High-Availability",
+          desc: "Active-active Aurora PostgreSQL clusters with sub-100ms cross-region replication and automated split-brain failover.",
+          color: 0x10b981,
+          pillarKey: "sla",
+          reqVal: ">= 99.90% SLA",
+          impact: "Five-Nines Resilience",
+          isActive: (s) => { return Boolean(s.sla >= 99.90); }
+        },
+        {
+          name: "Distributed Redis Cluster Cache",
+          category: "Microsecond Caching",
+          desc: "In-memory clustered cache handling 4.2 million requests/sec with LRU eviction and memory-efficient binary packing.",
+          color: 0xea5e9,
+          pillarKey: "latency",
+          reqVal: "<= 35 ms",
+          impact: "Backend Offload",
+          isActive: (s) => { return Boolean(s.latency <= 35); }
+        },
+        {
+          name: "Predictive Kubernetes Auto-Scaler",
+          category: "Elastic Compute Fleet",
+          desc: "Machine learning traffic forecaster scaling pod replicas 3 minutes before scheduled traffic spikes to prevent latency spikes.",
+          color: 0xa855f7,
+          pillarKey: "compute",
+          reqVal: ">= 32 Cores",
+          impact: "Zero-Throttling Fleet",
+          isActive: (s) => { return Boolean(s.compute >= 32); }
+        },
+        {
+          name: "Zero-Trust Envoy Service Mesh",
+          category: "Security Perimeter Tier",
+          desc: "mTLS end-to-end encrypted packet inspection with automated certificate rotation and distributed rate-limiting guards.",
+          color: 0xf43f5e,
+          pillarKey: "sla",
+          reqVal: ">= 99.95% SLA",
+          impact: "Encrypted Internal Fabric",
+          isActive: (s) => { return Boolean(s.sla >= 99.95); }
+        },
+        {
+          name: "Chaos Engineering Automated Drill",
+          category: "Resilience Verification",
+          desc: "Continuous Chaos Mesh injects network partitions, packet drops, and node panics weekly into staging clusters.",
+          color: 0xf59e0b,
+          pillarKey: "budget",
+          reqVal: ">= 1200 $/mo",
+          impact: "Automated Failover Sign-Off",
+          isActive: (s) => { return Boolean(s.budget >= 1200); }
+        }
+      ];
+
       const submoduleMeshes = [];
-      const subGeo = new THREE.OctahedronGeometry(0.10, 0);
+      const subGeo = new THREE.IcosahedronGeometry(0.10, 0); // High-visibility crystal shards
 
       SUBMODULE_DEFS.forEach((sub, idx) => {
         const angle = (idx / SUBMODULE_DEFS.length) * Math.PI * 2;
-        const rad = 0.85;
+        const rad = 0.50; // Nestled inside the crystal volume
         const x = Math.cos(angle) * rad;
         const z = Math.sin(angle) * rad;
-        const y = (idx % 2 === 0 ? 0.35 : -0.35);
+        const y = (idx % 2 === 0 ? 0.20 : -0.20);
 
         const subMat = new THREE.MeshPhysicalMaterial({
           color: sub.color,
           emissive: sub.color,
           emissiveIntensity: 0.85,
-          roughness: 0.10,
-          metalness: 0.50,
+          roughness: 0.12,
+          metalness: 0.25,
           flatShading: true,
           transparent: true,
-          opacity: 0.90
+          opacity: 0.95,
+          depthWrite: false,
+          depthTest: true
         });
         const subMesh = new THREE.Mesh(subGeo, subMat);
         subMesh.position.set(x, y, z);
-        subMesh.userData = { name: sub.name, angle, rad, yBase: y };
+        subMesh.renderOrder = 9;
+        subMesh.userData = {
+          ...sub,
+          angle,
+          rad,
+          yBase: y,
+          baseColor: sub.color
+        };
+
+        const subEdges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(subGeo),
+          new THREE.LineBasicMaterial({ color: sub.color, transparent: true, opacity: 0.5, depthWrite: false })
+        );
+        subMesh.add(subEdges);
+        subMesh.userData.edges = subEdges;
+
+        // Expanded raycast hit sphere for effortless hover detection
+        const subHitGeo = new THREE.SphereGeometry(0.18, 8, 8);
+        const subHitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const subHitSphere = new THREE.Mesh(subHitGeo, subHitMat);
+        subHitSphere.userData = subMesh.userData;
+        subMesh.add(subHitSphere);
+
         submoduleGroup.add(subMesh);
         submoduleMeshes.push(subMesh);
       });
 
-      // 12 Struts Connecting the 6 Apexes into a Complete Polytope Envelope
-      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.40 });
+      function checkSubmoduleActive(subData) {
+        if (typeof subData.isActive === 'function') {
+          return subData.isActive(state);
+        }
+        return true;
+      }
+
+      // Connecting Sleek Struts
       const strutPairs = [
-        ['top', 'right'], ['top', 'front'], ['top', 'left'], ['top', 'back'],
-        ['bottom', 'right'], ['bottom', 'front'], ['bottom', 'left'], ['bottom', 'back'],
+        ['top', 'right'], ['top', 'left'], ['top', 'front'], ['top', 'back'],
+        ['bottom', 'right'], ['bottom', 'left'], ['bottom', 'front'], ['bottom', 'back'],
         ['right', 'front'], ['front', 'left'], ['left', 'back'], ['back', 'right']
       ];
       const struts = [];
+      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
       strutPairs.forEach(() => {
-        const sGeo = new THREE.CylinderGeometry(0.008, 0.008, 1, 8);
+        const sGeo = new THREE.CylinderGeometry(0.0055, 0.0055, 1, 8);
         const sMesh = new THREE.Mesh(sGeo, strutMat);
         sMesh.renderOrder = 2;
         systemGroup.add(sMesh);
@@ -925,106 +1116,114 @@
 
       // Internal State
       const state = {
-        budget: 450,
-        sla: 99.95,
-        latency: 28,
-        compute: 64
+        budget: 450, sla: 99.95, latency: 28, compute: 64
       };
 
       // Mathematical Solver & Geometry Morphing Engine
-      
       function solveEquilibrium(changedPillar) {
-        const bNorm = Math.max(0.01, Math.min(1.0, (state.budget - 100) / (25000 - 100)));
-        const sNorm = Math.max(0.0, Math.min(1.0, (state.sla - 95.0) / (99.999 - 95.0)));
-        const lNorm = Math.max(0.0, Math.min(1.0, 1.0 - (state.latency - 5) / (250 - 5)));
-        const cNorm = Math.max(0.0, Math.min(1.0, (state.compute - 2) / (512 - 2)));
-
-        if (changedPillar === 'budget') {
-          state.compute = Math.round(2 + Math.pow(bNorm, 0.70) * 510);
-          state.latency = Math.max(5, Math.round(250 - Math.pow(bNorm, 0.55) * 242));
-          const nines = 1.3 + Math.pow(bNorm, 0.5) * 3.7;
-          state.sla = Number((100.0 - Math.pow(10, -nines) * 100.0).toFixed(3));
-        } else if (changedPillar === 'sla') {
-          state.budget = Math.round(150 + Math.pow(sNorm, 1.8) * 24850);
-          state.compute = Math.round(8 + Math.pow(sNorm, 0.85) * 504);
-          state.latency = Math.max(5, Math.round(180 - sNorm * 170));
-        } else if (changedPillar === 'latency') {
-          state.budget = Math.round(120 + Math.pow(lNorm, 1.6) * 24880);
-          state.compute = Math.round(10 + Math.pow(lNorm, 0.9) * 502);
-        } else if (changedPillar === 'compute') {
-          state.budget = Math.round(100 + Math.pow(cNorm, 1.3) * 24900);
-        }
-
-        ['budget', 'sla', 'latency', 'compute'].forEach(k => {
-          const sl = document.getElementById('slider-' + k);
-          const vl = document.getElementById('val-' + k);
-          if (sl) sl.value = state[k];
-          if (vl) {
-            const unitMap = { budget: ' $/mo', sla: '%', latency: ' ms', compute: ' vCPU' };
-            vl.textContent = state[k] + unitMap[k];
+        
+        if (changedPillar === 'compute') {
+          const cN = state.compute / 512.0;
+          state.budget = Math.round(150 + Math.pow(cN, 1.25) * 8500);
+        } else if (changedPillar === 'budget') {
+          const bN = state.budget / 25000.0;
+          state.compute = Math.min(512, Math.max(8, Math.round(16 + bN * 496)));
+          if (changedPillar !== 'sla') {
+            state.sla = Number((99.5 + Math.pow(bN, 0.3) * 0.49).toFixed(3));
           }
-        });
-
-        const hudSpend = document.getElementById('hud-stat-1');
-        const hudSla = document.getElementById('hud-stat-2');
-        const hudCopilot = document.getElementById('hud-copilot-text');
-        if (hudSpend) hudSpend.textContent = '$' + state.budget.toLocaleString() + ' / mo';
-        if (hudSla) hudSla.textContent = state.sla.toFixed(3) + '% SLA';
-        if (hudCopilot) {
-          hudCopilot.textContent = 'Cloud topology balanced: ' + state.compute + ' vCPU allocation supports p99 latency of ' + state.latency + 'ms with ' + state.sla.toFixed(2) + '% availability SLA.';
+        } else if (changedPillar === 'sla') {
+          const sN = (state.sla - 95.0) / (99.999 - 95.0);
+          state.budget = Math.round(300 + Math.pow(sN, 3.0) * 18000);
+        } else if (changedPillar === 'latency') {
+          const latRatio = (250.0 - state.latency) / 245.0;
+          state.budget = Math.round(200 + Math.pow(latRatio, 2.0) * 6000);
         }
+
+        // Two-way DOM sync
+        const slBudget = document.getElementById('slider-budget');
+        const vlBudget = document.getElementById('val-budget');
+        if (slBudget) slBudget.value = state.budget;
+        if (vlBudget) vlBudget.textContent = state.budget + ' $/mo';
+
+        const slSla = document.getElementById('slider-sla');
+        const vlSla = document.getElementById('val-sla');
+        if (slSla) slSla.value = state.sla;
+        if (vlSla) vlSla.textContent = state.sla.toFixed(2) + '%';
+
+        const slLatency = document.getElementById('slider-latency');
+        const vlLatency = document.getElementById('val-latency');
+        if (slLatency) slLatency.value = state.latency;
+        if (vlLatency) vlLatency.textContent = state.latency + ' ms';
+
+        const slCompute = document.getElementById('slider-compute');
+        const vlCompute = document.getElementById('val-compute');
+        if (slCompute) slCompute.value = state.compute;
+        if (vlCompute) vlCompute.textContent = state.compute + ' vCPU';
+
+        const hud1 = document.getElementById('hud-stat-1');
+        const hud2 = document.getElementById('hud-stat-2');
+        const hudCopilot = document.getElementById('hud-copilot-text');
+        if (hud1) hud1.textContent = state.sla.toFixed(2) + '% SLA High';
+        if (hud2) hud2.textContent = state.latency + ' ms Ultra-Low';
+        if (hudCopilot) {
+          hudCopilot.textContent = 'Cloud topology synchronized: ' + state.compute + ' vCPU compute capacity with $' + state.budget + '/mo budget delivers ' + state.sla.toFixed(2) + '% SLA at ' + state.latency + 'ms p99 latency.';
+        }
+        
 
         update3DGeometry();
       }
 
       function update3DGeometry() {
-        const bN = Math.max(0.01, Math.min(1.0, (state.budget - 100) / (25000 - 100)));
-        const sN = Math.max(0.0, Math.min(1.0, (state.sla - 95.0) / (99.999 - 95.0)));
-        const lN = Math.max(0.0, Math.min(1.0, 1.0 - (state.latency - 5) / (250 - 5)));
+        
+        const bN = Math.max(0.0, Math.min(1.0, (state.budget - 100) / (25000 - 100)));
+        const sN = Math.max(0.0, Math.min(1.0, (state.sla - 95) / (99.999 - 95)));
+        const lN = Math.max(0.0, Math.min(1.0, (250 - state.latency) / (250 - 5)));
         const cN = Math.max(0.0, Math.min(1.0, (state.compute - 2) / (512 - 2)));
 
         const rads = {
-          top: 0.85 + sN * 1.6,
-          bottom: 0.85 + lN * 1.5,
-          right: 0.85 + bN * 1.6,
-          left: 0.85 + cN * 1.6,
-          front: 0.85 + (bN * 0.5 + cN * 0.5) * 1.5,
-          back: 0.85 + (sN * 0.5 + lN * 0.5) * 1.5
+          top: 0.65 + sN * 0.65,
+          bottom: 0.65 + lN * 0.65,
+          right: 0.65 + bN * 0.65,
+          left: 0.65 + cN * 0.65,
+          front: 0.65 + ((sN + bN) / 2) * 0.65,
+          back: 0.65 + ((lN + cN) / 2) * 0.65
         };
+        
 
         const v = {};
         Object.keys(rads).forEach(k => {
           v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
-          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.22));
+          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.12));
         });
 
-        // Update 3D Floating Canvas Billboards
+        // Update 3D Floating Canvas Billboards cleanly positioned adjacent to nodes
+        
         if (nodeBillboards.top) {
-          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0, 0.45, 0.2));
-          nodeBillboards.top.userData.redraw(state.sla.toFixed(3) + '% SLA');
+          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0.0, -0.28, 0.15));
+          nodeBillboards.top.userData.redraw(`SLA: ${state.sla.toFixed(2)}%`, '#38bdf8');
         }
         if (nodeBillboards.bottom) {
-          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0, -0.45, -0.2));
-          nodeBillboards.bottom.userData.redraw(state.latency + ' ms (p99)');
+          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0.0, -0.32, 0.15));
+          nodeBillboards.bottom.userData.redraw(`LAT: ${state.latency} ms`, '#a855f7');
         }
         if (nodeBillboards.right) {
-          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.55, 0, 0.2));
-          nodeBillboards.right.userData.redraw('$' + state.budget.toLocaleString() + ' / mo');
+          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.48, 0.16, 0.15));
+          nodeBillboards.right.userData.redraw(`BUDGET: $${state.budget}/mo`, '#10b981');
         }
         if (nodeBillboards.left) {
-          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.55, 0, 0.2));
-          nodeBillboards.left.userData.redraw(state.compute + ' vCPU');
+          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.48, 0.16, 0.15));
+          nodeBillboards.left.userData.redraw(`CPU: ${state.compute} Cores`, '#0ea5e9');
         }
         if (nodeBillboards.front) {
-          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0, -0.35, 0.5));
-          nodeBillboards.front.userData.redraw('100% Zero-Trust');
+          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0.0, -0.26, 0.30));
+          nodeBillboards.front.userData.redraw('SECURITY: mTLS', '#f43f5e');
         }
         if (nodeBillboards.back) {
-          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0, 0.35, -0.5));
-          nodeBillboards.back.userData.redraw('15% Blast Cap');
+          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0.0, 0.26, -0.30));
+          nodeBillboards.back.userData.redraw('BLAST: Isolated', '#f59e0b');
         }
+        
 
-        // Morph Core 8 Triangles
         const p = corePolyGeo.attributes.position.array;
         const setTri = (offset, p1, p2, p3) => {
           p[offset]   = p1.x; p[offset+1] = p1.y; p[offset+2] = p1.z;
@@ -1044,7 +1243,6 @@
         corePolyGeo.attributes.position.needsUpdate = true;
         corePolyGeo.computeVertexNormals();
 
-        // Update Struts Length & Orientation
         strutPairs.forEach(([k1, k2], i) => {
           const p1 = nodeMeshes[k1].group.position;
           const p2 = nodeMeshes[k2].group.position;
@@ -1054,87 +1252,117 @@
           strut.position.copy(p1).add(p2).multiplyScalar(0.5);
           strut.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
         });
+
+        // Update Submodule States & Shard Appearances
+        submoduleMeshes.forEach(mesh => {
+          const isAct = checkSubmoduleActive(mesh.userData);
+          const colorHex = isAct ? mesh.userData.baseColor : 0x475569;
+          mesh.material.color.setHex(colorHex);
+          mesh.material.emissive.setHex(colorHex);
+          mesh.material.emissiveIntensity = isAct ? 0.85 : 0.20;
+          mesh.material.opacity = isAct ? 0.95 : 0.45;
+          mesh.userData.isActive = isAct;
+        });
+
+        updateAdaptiveBillboards();
       }
-    
 
       // Initial Reciprocal Calculation & Geometry Update
       solveEquilibrium();
 
-      // Sliders 2-Way Binding with Real-Time Reciprocal Solving
+      // Sliders 2-Way Binding
       
-        document.getElementById('slider-budget')?.addEventListener('input', (e) => {
-          state.budget = Number(e.target.value);
-          const el = document.getElementById('val-budget');
-          if (el) el.textContent = state.budget + ' $/mo';
-          solveEquilibrium('budget');
-        });
-      
-        document.getElementById('slider-sla')?.addEventListener('input', (e) => {
-          state.sla = Number(e.target.value);
-          const el = document.getElementById('val-sla');
-          if (el) el.textContent = state.sla + '%';
-          solveEquilibrium('sla');
-        });
-      
-        document.getElementById('slider-latency')?.addEventListener('input', (e) => {
-          state.latency = Number(e.target.value);
-          const el = document.getElementById('val-latency');
-          if (el) el.textContent = state.latency + ' ms';
-          solveEquilibrium('latency');
-        });
-      
-        document.getElementById('slider-compute')?.addEventListener('input', (e) => {
-          state.compute = Number(e.target.value);
-          const el = document.getElementById('val-compute');
-          if (el) el.textContent = state.compute + ' vCPU';
-          solveEquilibrium('compute');
-        });
-      
+      document.getElementById('slider-budget')?.addEventListener('input', (e) => {
+        state.budget = Number(e.target.value);
+        solveEquilibrium('budget');
+      });
+      document.getElementById('slider-sla')?.addEventListener('input', (e) => {
+        state.sla = Number(e.target.value);
+        solveEquilibrium('sla');
+      });
+      document.getElementById('slider-latency')?.addEventListener('input', (e) => {
+        state.latency = Number(e.target.value);
+        solveEquilibrium('latency');
+      });
+      document.getElementById('slider-compute')?.addEventListener('input', (e) => {
+        state.compute = Number(e.target.value);
+        solveEquilibrium('compute');
+      });
+        
 
-      // Scenario Pills & Cards Interaction
-      const SCENARIOS = [{"shortTitle":"Edge MVP","icon":"bolt","tag":"SaaS Starter","title":"B2B SaaS Edge-First MVP","desc":"Lean serverless cloud topology running on edge workers with zero idle infrastructure spend.","metricLabel":"Budget","metricVal":"$450 / mo","stat1":"$450 / mo","stat2":"99.9% SLA","copilot":"Lean serverless baseline delivers sub-30ms global latency at minimal cash burn.","params":{"budget":450,"sla":99.9,"latency":35,"compute":32}},{"shortTitle":"Fintech Core","icon":"account_balance","tag":"Enterprise","title":"High-Throughput Streaming Fintech","desc":"Dual-region active-active deployment designed for zero data loss and sub-10ms transactional p99.","metricLabel":"Throughput","metricVal":"45k req/sec","stat1":"$8,500 / mo","stat2":"99.99% SLA","copilot":"Active-active Kafka & Postgres cluster ensures ACID guarantees across US-East and EU-West.","params":{"budget":8500,"sla":99.99,"latency":12,"compute":256}},{"shortTitle":"Global Banking","icon":"shield","tag":"Mission-Critical","title":"Multi-Region Tier 4 Banking Grid","desc":"Five-region geo-distributed cluster with multi-cloud failover and 99.999% SLA five-nines uptime.","metricLabel":"Resilience","metricVal":"99.999% SLA","stat1":"$24,000 / mo","stat2":"99.999% SLA","copilot":"Fully redundant multi-cloud mesh with automated chaos-engineering self-healing.","params":{"budget":24000,"sla":99.999,"latency":8,"compute":480}},{"shortTitle":"AI Cluster","icon":"psychology","tag":"Deep Learning","title":"Distributed AI Inference Mesh","desc":"GPU-accelerated vLLM inference instances coupled with quantized model caching and NVMe tiering.","metricLabel":"Throughput","metricVal":"1,200 tok/sec","stat1":"$14,200 / mo","stat2":"99.9% SLA","copilot":"Dynamic batching and speculative decoding maximize token throughput per dollar.","params":{"budget":14200,"sla":99.92,"latency":42,"compute":384}},{"shortTitle":"Healthcare HIPAA","icon":"medical_services","tag":"Compliance","title":"Zero-Trust Healthcare HIPAA Grid","desc":"Encrypted-at-rest medical telemetry pipeline with air-gapped patient audit logs and BAA guarantees.","metricLabel":"Audit Security","metricVal":"100% HIPAA","stat1":"$6,800 / mo","stat2":"99.95% SLA","copilot":"Hardware security module (HSM) key isolation with automated cryptographic rotation.","params":{"budget":6800,"sla":99.95,"latency":22,"compute":192}},{"shortTitle":"Serverless Mesh","icon":"hub","tag":"Event-Driven","title":"Event-Driven Microservices Mesh","desc":"Asynchronous pub/sub queue infrastructure with automatic backpressure management and cold-start mitigations.","metricLabel":"Cold Start","metricVal":"< 15 ms","stat1":"$1,200 / mo","stat2":"99.8% SLA","copilot":"Warm pool pre-provisioning eliminates latency spikes during sudden viral load peaks.","params":{"budget":1200,"sla":99.8,"latency":65,"compute":64}}];
+      // Scenario Presets
+      
+      const SCENARIOS = [
+        {
+          name: 'Edge MVP',
+          params: { budget: 450, sla: 99.95, latency: 28, compute: 64 },
+          copilot: 'Lean edge compute deployment: Serverless functions and Cloudflare Edge caching keeping budget under $500/mo while ensuring sub-30ms response times.',
+          stat1: '99.95% SLA High',
+          stat2: '28 ms Ultra-Low'
+        },
+        {
+          name: 'Fintech Core',
+          params: { budget: 4800, sla: 99.99, latency: 15, compute: 192 },
+          copilot: 'Strict compliance banking core: Multi-AZ PostgreSQL with synchronous replication, active IDS/IPS packet inspection, and 99.99% availability SLA.',
+          stat1: '99.99% High Availability',
+          stat2: '15 ms Real-Time'
+        },
+        {
+          name: 'Global Banking',
+          params: { budget: 18500, sla: 99.999, latency: 12, compute: 384 },
+          copilot: 'Multi-cloud global failover topology: Triple-region replication with zero recovery point objective (RPO) and instant BGP failover across continents.',
+          stat1: '99.999% Five Nines',
+          stat2: '12 ms Sub-Frame'
+        },
+        {
+          name: 'AI Cluster',
+          params: { budget: 12500, sla: 99.90, latency: 65, compute: 512 },
+          copilot: 'High-density GPU tensor cluster: Dedicated InfiniBand interconnects streaming multi-billion parameter inference tokens with auto-scaled worker pools.',
+          stat1: '99.90% Tensor SLA',
+          stat2: '65 ms Batch TTFT'
+        },
+        {
+          name: 'Healthcare HIPAA',
+          params: { budget: 2800, sla: 99.95, latency: 35, compute: 96 },
+          copilot: 'HIPAA and SOC2 Type II certified environment: Hardware Security Modules (HSM), encrypted ephemeral storage, and immutable audit access logging.',
+          stat1: '99.95% Compliant',
+          stat2: '35 ms Secure Latency'
+        },
+        {
+          name: 'Serverless Mesh',
+          params: { budget: 950, sla: 99.92, latency: 45, compute: 32 },
+          copilot: 'Event-driven reactive microservices: Zero idle compute costs with dynamic scale-to-zero queue consumers and managed Kafka event pipelines.',
+          stat1: '99.92% Auto-Scaled',
+          stat2: '45 ms Event Latency'
+        }
+      ];
+        
+
       function applyScenario(idx) {
         const sc = SCENARIOS[idx];
         if (!sc) return;
         document.querySelectorAll('.scenario-pill-btn').forEach((b, i) => {
           if (i === idx) {
-            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-sky-400 to-cyan-400 text-slate-950 shadow-md active shrink-0';
+            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md active shrink-0';
           } else {
             b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all glass-button text-slate-900 dark:text-slate-100 shrink-0';
           }
         });
 
-        // Apply Scenario Parameter Values to State & Sliders
         if (sc.params) {
           Object.keys(sc.params).forEach(k => {
-            if (state[k] !== undefined) {
-              state[k] = sc.params[k];
-              const slider = document.getElementById('slider-' + k);
-              const valEl = document.getElementById('val-' + k);
-              if (slider) slider.value = sc.params[k];
-              if (valEl) {
-                const slDef = [{"id":"budget","label":"Monthly Budget","defaultVal":450,"min":100,"max":25000,"step":50,"unit":" $/mo"},{"id":"sla","label":"Availability SLA","defaultVal":99.95,"min":95,"max":99.999,"step":0.01,"unit":"%"},{"id":"latency","label":"Latency (p99)","defaultVal":28,"min":5,"max":250,"step":1,"unit":" ms"},{"id":"compute","label":"Compute Capacity","defaultVal":64,"min":2,"max":512,"step":2,"unit":" vCPU"}].find(s => s.id === k);
-                valEl.textContent = sc.params[k] + (slDef ? slDef.unit : '');
-              }
-            }
+            if (state[k] !== undefined) state[k] = sc.params[k];
           });
         }
 
         solveEquilibrium();
 
-        if (document.getElementById('hud-copilot-text')) {
-          document.getElementById('hud-copilot-text').textContent = sc.copilot;
-        }
-        if (document.getElementById('hud-stat-1')) {
-          document.getElementById('hud-stat-1').textContent = sc.stat1;
-        }
-        if (document.getElementById('hud-stat-2')) {
-          document.getElementById('hud-stat-2').textContent = sc.stat2;
-        }
+        if (document.getElementById('hud-copilot-text')) document.getElementById('hud-copilot-text').textContent = sc.copilot;
+        if (document.getElementById('hud-stat-1')) document.getElementById('hud-stat-1').textContent = sc.stat1;
+        if (document.getElementById('hud-stat-2')) document.getElementById('hud-stat-2').textContent = sc.stat2;
 
-        // Pulse Morph Animation
-        systemGroup.rotation.x += 0.25;
-        systemGroup.scale.set(1.10, 1.10, 1.10);
+        systemGroup.rotation.x += 0.15;
+        systemGroup.scale.set(1.08, 1.08, 1.08);
         setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 250);
       }
 
@@ -1153,33 +1381,225 @@
         });
       });
 
-      // Raycaster for Spatial Detail Card
+      // 4. Direct 3D Node Drag & Drop and Submodule Raycast Engine (Full Parity with Box'em)
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
+      let draggedNode = null;
+      let dragKey = null;
+      const dragPlane = new THREE.Plane();
+      const planeIntersect = new THREE.Vector3();
+
+      let isHoveringCard = false;
+      let isHoveringModel = false;
+      let cardHideTimeout = null;
       const detailCard = document.getElementById('submodule-detail-card');
 
-      interactionSurface.addEventListener('pointermove', (e) => {
+      function openDetailCard(e, data) {
+        if (!detailCard || draggedNode) return;
+        if (cardHideTimeout) {
+          clearTimeout(cardHideTimeout);
+          cardHideTimeout = null;
+        }
+
+        const cardWidth = 320;
+        const cardHeight = 180;
+        let posX = e.clientX + 16;
+        let posY = e.clientY - 24;
+
+        if (posX + cardWidth > window.innerWidth - 16) {
+          posX = e.clientX - cardWidth - 16;
+        }
+        if (posY + cardHeight > window.innerHeight - 16) {
+          posY = window.innerHeight - cardHeight - 16;
+        }
+        if (posY < 16) posY = 16;
+        if (posX < 16) posX = 16;
+
+        detailCard.style.left = `${posX}px`;
+        detailCard.style.top = `${posY}px`;
+
+        const isAct = checkSubmoduleActive(data);
+        const statusEl = document.getElementById('submodule-card-status');
+        if (statusEl) {
+          statusEl.textContent = isAct ? 'ACTIVE' : 'LOCKED';
+          statusEl.className = `px-2.5 py-1 text-xs font-mono font-black uppercase rounded-lg border ${isAct ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40'}`;
+        }
+        const catEl = document.getElementById('submodule-card-category');
+        if (catEl) catEl.textContent = data.category || 'Deliverable';
+        const qualEl = document.getElementById('submodule-card-qual');
+        if (qualEl) qualEl.textContent = data.reqText || `Req: ${data.reqVal}`;
+        const titleEl = document.getElementById('submodule-card-title');
+        if (titleEl) titleEl.textContent = data.name || 'Milestone Deliverable';
+        const descEl = document.getElementById('submodule-card-desc');
+        if (descEl) descEl.textContent = data.desc || 'Core deliverable modeled in reciprocal constraint matrix.';
+        const impactEl = document.getElementById('submodule-card-impact');
+        if (impactEl) impactEl.textContent = data.impact || 'Equilibrium Impact';
+        const metricEl = document.getElementById('submodule-card-metric');
+        if (metricEl) {
+          metricEl.textContent = isAct ? 'ACTIVE (Ready)' : `LOCKED (Needs ${data.reqVal})`;
+          metricEl.className = `font-bold ${isAct ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+
+        detailCard.classList.remove('hidden');
+      }
+
+      function scheduleCardDismiss() {
+        if (isHoveringCard || isHoveringModel) return;
+        if (cardHideTimeout) clearTimeout(cardHideTimeout);
+        cardHideTimeout = setTimeout(() => {
+          if (!isHoveringCard && !isHoveringModel && detailCard && !draggedNode) {
+            detailCard.classList.add('hidden');
+          }
+          cardHideTimeout = null;
+        }, 300);
+      }
+
+      if (detailCard) {
+        detailCard.addEventListener('pointerenter', () => {
+          isHoveringCard = true;
+          if (cardHideTimeout) {
+            clearTimeout(cardHideTimeout);
+            cardHideTimeout = null;
+          }
+        });
+        detailCard.addEventListener('pointerleave', () => {
+          isHoveringCard = false;
+          scheduleCardDismiss();
+        });
+      }
+
+      function applyDraggedNorm(key, norm) {
+        
+        if (key === 'top') {
+          state.sla = Number((95.0 + norm * 4.99).toFixed(2));
+          solveEquilibrium('sla');
+        } else if (key === 'bottom') {
+          state.latency = Math.round(250 - norm * 245);
+          solveEquilibrium('latency');
+        } else if (key === 'right') {
+          state.budget = Math.round(100 + norm * 24900);
+          solveEquilibrium('budget');
+        } else if (key === 'left') {
+          state.compute = Math.round(2 + norm * 510);
+          solveEquilibrium('compute');
+        }
+        
+      }
+
+      interactionSurface.addEventListener('pointerdown', (e) => {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
-        const hitGems = Object.values(nodeMeshes).map(n => n.gem).concat(submoduleMeshes);
-        const hits = raycaster.intersectObjects(hitGems);
+
+        // Check for node crystal click to drag
+        const hitObjects = [];
+        Object.values(nodeMeshes).forEach(n => {
+          n.group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+        });
+
+        const hits = raycaster.intersectObjects(hitObjects, false);
         if (hits.length > 0) {
-          const hitObj = hits[0].object;
-          if (detailCard) {
-            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
-            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
-            if (hitObj.userData && hitObj.userData.name) {
-              document.getElementById('detail-card-title').textContent = hitObj.userData.name;
-              document.getElementById('detail-card-metric').textContent = 'Internal Modular Subsystem';
-            }
-            detailCard.classList.remove('hidden');
+          let root = hits[0].object;
+          while (root.parent && root.parent !== systemGroup) {
+            if (root.userData && root.userData.isNode) break;
+            root = root.parent;
           }
+          if (root.userData && root.userData.nodeKey) {
+            e.stopPropagation();
+            draggedNode = root;
+            dragKey = root.userData.nodeKey;
+            controls.enabled = false;
+            interactionSurface.style.cursor = 'grabbing';
+
+            const nodeWorldPos = new THREE.Vector3();
+            draggedNode.getWorldPosition(nodeWorldPos);
+            const planeNormal = camera.getWorldDirection(new THREE.Vector3()).negate();
+            dragPlane.setFromNormalAndCoplanarPoint(planeNormal, nodeWorldPos);
+            return;
+          }
+        }
+
+        // Check for submodule click
+        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+        if (subHits.length > 0) {
+          isHoveringModel = true;
+          let subData = subHits[0].object.userData;
+          if (!subData.name && subHits[0].object.parent) {
+            subData = subHits[0].object.parent.userData;
+          }
+          openDetailCard(e, subData);
+        } else if (!isHoveringCard) {
+          isHoveringModel = false;
+          scheduleCardDismiss();
+        }
+      });
+
+      interactionSurface.addEventListener('pointermove', (e) => {
+        if (draggedNode) {
+          if (detailCard) detailCard.classList.add('hidden');
+          return;
+        }
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        const hitObjects = [];
+        Object.values(nodeMeshes).forEach(n => {
+          n.group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+        });
+
+        const hits = raycaster.intersectObjects(hitObjects, false);
+        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+
+        if (hits.length > 0) {
+          interactionSurface.style.cursor = 'grab';
+          isHoveringModel = false;
+          scheduleCardDismiss();
+        } else if (subHits.length > 0) {
+          interactionSurface.style.cursor = 'pointer';
+          isHoveringModel = true;
+          let subData = subHits[0].object.userData;
+          if (!subData.name && subHits[0].object.parent) {
+            subData = subHits[0].object.parent.userData;
+          }
+          openDetailCard(e, subData);
+        } else {
+          interactionSurface.style.cursor = 'default';
+          isHoveringModel = false;
+          scheduleCardDismiss();
         }
       });
 
       interactionSurface.addEventListener('pointerleave', () => {
-        if (detailCard) detailCard.classList.add('hidden');
+        isHoveringModel = false;
+        scheduleCardDismiss();
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!draggedNode || !dragKey) return;
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+          const localPos = systemGroup.worldToLocal(planeIntersect.clone());
+          const dir = NODE_DIRS[dragKey];
+          if (!dir) return;
+          const rawDist = localPos.dot(dir);
+          const minR = 0.65, maxR = 1.30;
+          const clampedRadius = Math.max(minR, Math.min(maxR, rawDist));
+          const norm = (clampedRadius - minR) / (maxR - minR);
+          applyDraggedNorm(dragKey, norm);
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (draggedNode) {
+          draggedNode = null;
+          dragKey = null;
+          controls.enabled = true;
+          interactionSurface.style.cursor = 'default';
+        }
       });
 
       // Animation Loop
@@ -1188,23 +1608,28 @@
         requestAnimationFrame(animate);
         const elapsed = clock.getElapsedTime();
 
-        systemGroup.rotation.y += 0.0020;
-        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05;
+        if (!draggedNode) {
+          systemGroup.rotation.y += 0.0020;
+          systemGroup.position.y = targetWorldY + Math.sin(elapsed * 1.2) * 0.04;
+        } else {
+          systemGroup.position.y = targetWorldY;
+        }
 
         Object.values(nodeMeshes).forEach(n => {
           n.gem.rotation.y += 0.010;
           n.innerJewel.rotation.y -= 0.015;
           n.ring.rotation.z += 0.015;
+          n.ring2.rotation.y += 0.012;
         });
 
-        // Orbit internal submodules
+        // Orbit internal submodules inside crystal volume
         submoduleMeshes.forEach(sm => {
           sm.rotation.y += 0.02;
           sm.rotation.x += 0.015;
-          const currentAngle = sm.userData.angle + elapsed * 0.4;
+          const currentAngle = sm.userData.angle + elapsed * 0.35;
           sm.position.x = Math.cos(currentAngle) * sm.userData.rad;
           sm.position.z = Math.sin(currentAngle) * sm.userData.rad;
-          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 2.0 + sm.userData.angle) * 0.08;
+          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 1.8 + sm.userData.angle) * 0.04;
         });
 
         controls.update();
@@ -1216,11 +1641,12 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        updateAdaptiveBillboards();
       });
 
       // Copy Embed
       document.getElementById('btn-copy-embed')?.addEventListener('click', () => {
-        const snip = '<iframe src="https://orbitem.blackboxes.net/" width="100%" height="650" frameborder="0" style="border-radius: 1.5rem;"></iframe>';
+        const snip = '<iframe src="https://orbit_em.blackboxes.net/" width="100%" height="650" frameborder="0" style="border-radius: 1.5rem;"></iframe>';
         navigator.clipboard.writeText(snip);
         alert('Copied embed snippet to clipboard!');
       });

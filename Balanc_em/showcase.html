@@ -336,21 +336,30 @@
         </div>
       </div>
 
-      <!-- 3D Spatial Detail Card -->
-      <div id="submodule-detail-card" class="bg-slate-950/95 text-white border border-sky-400/50 backdrop-blur-2xl p-4 rounded-3xl shadow-2xl hidden fixed z-50 pointer-events-auto min-w-[280px] max-w-[340px] space-y-2">
+      <!-- High-Contrast 3D Spatial Detail Card (Anchors at cursor/focus point, stays open until cursor leaves) -->
+      <div id="submodule-detail-card" class="bg-slate-950/95 text-white border border-emerald-500/50 shadow-emerald-500/10 backdrop-blur-2xl p-5 rounded-3xl shadow-2xl hidden fixed z-50 pointer-events-auto cursor-default transition-all duration-150 min-w-[290px] max-w-[340px] space-y-3">
         <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
-          <span id="detail-card-badge" class="px-2.5 py-0.5 text-xs font-mono font-black uppercase rounded-lg bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">ACTIVE</span>
-          <span id="detail-card-metric" class="text-xs font-mono font-bold text-sky-400">Pillar Node</span>
+          <div class="flex items-center gap-2">
+            <span id="submodule-card-status" class="px-2.5 py-1 text-xs font-mono font-black uppercase rounded-lg bg-emerald-500/20 text-emerald-300 border-emerald-500/30">ACTIVE</span>
+            <span id="submodule-card-category" class="text-xs font-mono font-bold text-emerald-400">Milestone</span>
+          </div>
+          <span id="submodule-card-qual" class="text-xs font-mono font-bold text-slate-400">Req: 85%</span>
         </div>
         <div>
-          <h4 id="detail-card-title" class="text-sm font-black text-white leading-snug">Component Node</h4>
-          <p id="detail-card-desc" class="text-xs text-slate-300 font-sans leading-relaxed mt-1">
-            Reciprocal trade-off vector component modeled inside the 3D spatial polytope.
+          <h4 id="submodule-card-title" class="text-base font-black text-white leading-snug">Submodule Deliverable</h4>
+          <p id="submodule-card-desc" class="text-xs text-slate-300 font-sans leading-relaxed mt-1.5">
+            Core milestone deliverable modeled inside the 3D trade-off reactor.
           </p>
         </div>
+        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+          <span class="text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-emerald-400">insights</span>
+            <span id="submodule-card-impact">Equilibrium Impact</span>
+          </span>
+          <span id="submodule-card-metric" class="text-emerald-400 font-bold">ACTIVE (Ready)</span>
+        </div>
       </div>
-
-      <!-- FLANKING INTERACTIVE CARDS -->
+<!-- FLANKING INTERACTIVE CARDS -->
       <div class="relative z-20 w-full max-w-[1840px] mx-auto flex flex-col lg:flex-row items-center justify-between px-4 sm:px-8 my-auto pointer-events-none gap-8">
         
         <!-- LEFT FLANK: Interactive Constraint Sliders -->
@@ -363,39 +372,62 @@
               </div>
             </div>
 
-            <!-- 4 Live Sliders -->
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Grid Frequency</span>
-                  <span id="val-freq" class="font-black text-emerald-500">50.01 Hz</span>
-                </div>
-                <input type="range" id="slider-freq" min="49.2" max="50.8" step="0.01" value="50.01" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+                        <!-- 4 Live Color-Coded Sliders -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-emerald-600 dark:text-emerald-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span> Grid Frequency
+                </span>
+                <span id="val-freq" class="font-black text-emerald-600 dark:text-emerald-400 font-mono text-sm">50.01 Hz</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Base Generation</span>
-                  <span id="val-gen" class="font-black text-emerald-500">3400 MW</span>
-                </div>
-                <input type="range" id="slider-gen" min="1000" max="8000" step="50" value="3400" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <input type="range" id="slider-freq" min="49.2" max="50.8" step="0.01" value="50.01" class="w-full accent-emerald-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>49.20 Hz (Under-Freq)</span>
+                <span>50.80 Hz (Over-Freq)</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">BESS Battery Storage</span>
-                  <span id="val-bess" class="font-black text-emerald-500">850 MW</span>
-                </div>
-                <input type="range" id="slider-bess" min="0" max="3000" step="25" value="850" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-amber-600 dark:text-amber-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span> Base Generation
+                </span>
+                <span id="val-gen" class="font-black text-amber-600 dark:text-amber-400 font-mono text-sm">3400 MW</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Renewable Penetration</span>
-                  <span id="val-renew" class="font-black text-emerald-500">62%</span>
-                </div>
-                <input type="range" id="slider-renew" min="10" max="100" step="1" value="62" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <input type="range" id="slider-gen" min="1000" max="8000" step="50" value="3400" class="w-full accent-amber-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>1,000 MW</span>
+                <span>8,000 MW</span>
               </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-teal-600 dark:text-teal-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-teal-500 shadow-sm shadow-teal-500/50"></span> BESS Battery Storage
+                </span>
+                <span id="val-bess" class="font-black text-teal-600 dark:text-teal-400 font-mono text-sm">850 MW</span>
+              </div>
+              <input type="range" id="slider-bess" min="0" max="3000" step="25" value="850" class="w-full accent-teal-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>0 MW</span>
+                <span>3,000 MW (4-Hr)</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-sky-600 dark:text-sky-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-sky-500 shadow-sm shadow-sky-500/50"></span> Renewable Share
+                </span>
+                <span id="val-renew" class="font-black text-sky-600 dark:text-sky-400 font-mono text-sm">62%</span>
+              </div>
+              <input type="range" id="slider-renew" min="10" max="100" step="1" value="62" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>10% Base</span>
+                <span>100% Net Zero</span>
+              </div>
+            </div>
             
           </div>
         </div>
@@ -643,7 +675,7 @@
     })();
 
     // 3. Master Frameless 3D Spatial Polytope Engine with Box'em Standard 3D Billboards & Multi-Layer Jewels
-    (function initMasterHeroEngine() {
+    (function initShowcasePolytopeEngine() {
       const canvas = document.getElementById('hero-embed-canvas');
       const interactionSurface = document.getElementById('hero-interaction-surface');
       if (!canvas || !interactionSurface || !window.THREE) return;
@@ -661,8 +693,10 @@
       const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
       camera.position.set(0, 0, 9.6);
 
+      const targetWorldY = -0.38; // Calibrated vertical centering between top bar and bottom flank
+
       const controls = new THREE.OrbitControls(camera, interactionSurface);
-      controls.target.set(0, 0, 0);
+      controls.target.set(0, targetWorldY, 0);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
       controls.enableZoom = false; // Zero scroll-trap
@@ -681,7 +715,7 @@
       document.getElementById('hero-btn-zoom-out')?.addEventListener('click', () => camera.position.multiplyScalar(1.18));
       document.getElementById('hero-btn-reset-view')?.addEventListener('click', () => {
         camera.position.set(0, 0, 9.6);
-        controls.target.set(0, 0, 0);
+        controls.target.set(0, targetWorldY, 0);
       });
 
       // Zen Showcase Mode
@@ -701,6 +735,7 @@
 
       // Central System Group
       const systemGroup = new THREE.Group();
+      systemGroup.position.y = targetWorldY;
       scene.add(systemGroup);
 
       // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
@@ -709,8 +744,8 @@
       corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
 
       const corePolyMat = new THREE.MeshPhysicalMaterial({
-        color: 0x059669,
-        emissive: 0x059669,
+        color: 0x10b981,
+        emissive: 0x10b981,
         emissiveIntensity: 0.35,
         roughness: 0.12,
         metalness: 0.20,
@@ -725,80 +760,113 @@
       systemGroup.add(coreMesh);
 
       // Core Wireframe Facet Outlines
-      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0x6ee7b7, wireframe: true, transparent: true, opacity: 0.35 });
+      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true, transparent: true, opacity: 0.35 });
       const coreWireMesh = new THREE.Mesh(corePolyGeo, coreWireMat);
       coreWireMesh.renderOrder = 11;
       systemGroup.add(coreWireMesh);
 
-      // 6 Unit Node Direction Vectors (Octahedral Basis)
+      // 6 Unit Node Direction Vectors (Normalized Octahedral Basis - Exact Box'em Visual Scale)
       const NODE_DIRS = {
-        top: new THREE.Vector3(0, 1.8, 0),
-        bottom: new THREE.Vector3(0, -1.8, 0),
-        right: new THREE.Vector3(2.0, 0, 0),
-        left: new THREE.Vector3(-2.0, 0, 0),
-        front: new THREE.Vector3(0, 0, 2.0),
-        back: new THREE.Vector3(0, 0, -2.0)
+        top: new THREE.Vector3(0, 1, 0),
+        bottom: new THREE.Vector3(0, -1, 0),
+        right: new THREE.Vector3(1, 0, 0),
+        left: new THREE.Vector3(-1, 0, 0),
+        front: new THREE.Vector3(0, 0, 1),
+        back: new THREE.Vector3(0, 0, -1)
       };
 
-      // 6 Node Definitions with Specific Colors & Titles
-      const NODE_METADATA = [{"key":"top","label":"FREQ","fullTitle":"GRID FREQUENCY","color":1096065,"hexStr":"#10b981","offset":[0,0.45,0.2]},{"key":"bottom","label":"BESS","fullTitle":"BESS BATTERY STORAGE","color":1357990,"hexStr":"#14b8a6","offset":[0,-0.45,-0.2]},{"key":"right","label":"GEN","fullTitle":"BASE GENERATION","color":16096779,"hexStr":"#f59e0b","offset":[0.5,0,0.2]},{"key":"left","label":"RENEWABLE","fullTitle":"RENEWABLE PENETRATION","color":959977,"hexStr":"#0ea5e9","offset":[-0.5,0,0.2]},{"key":"front","label":"LOSS","fullTitle":"TRANSMISSION LOSS","color":9133302,"hexStr":"#8b5cf6","offset":[0,-0.3,0.5]},{"key":"back","label":"CARBON","fullTitle":"CARBON INTENSITY","color":16007006,"hexStr":"#f43f5e","offset":[0,0.3,-0.5]}];
+      const NODE_METADATA = [
+        { key: "top", label: "FREQ", fullTitle: "GRID FREQUENCY", color: 0x10b981, hexStr: "#10b981", geo: new THREE.OctahedronGeometry(0.15, 0) },
+        { key: "bottom", label: "BESS", fullTitle: "BESS STORAGE", color: 0x14b8a6, hexStr: "#14b8a6", geo: new THREE.BoxGeometry(0.16, 0.16, 0.16) },
+        { key: "right", label: "GEN", fullTitle: "BASE GENERATION", color: 0xf59e0b, hexStr: "#f59e0b", geo: new THREE.CylinderGeometry(0.14, 0.14, 0.08, 6) },
+        { key: "left", label: "RENEWABLE", fullTitle: "GREEN PENETRATION", color: 0xea5e9, hexStr: "#0ea5e9", geo: new THREE.IcosahedronGeometry(0.15, 0) },
+        { key: "front", label: "LOSS", fullTitle: "TRANSMISSION LOSS", color: 0x8b5cf6, hexStr: "#8b5cf6", geo: new THREE.TorusGeometry(0.12, 0.04, 16, 32) },
+        { key: "back", label: "CARBON", fullTitle: "CARBON INTENSITY", color: 0xf43f5e, hexStr: "#f43f5e", geo: new THREE.DodecahedronGeometry(0.14, 0) }
+      ];
       const nodeMeshes = {};
 
-      // Multi-Layered Crystalline Jewel Node Builder (Box'em Standard)
-      const nodeCrystalGeo = new THREE.OctahedronGeometry(0.18, 0);
-      const innerJewelGeo = new THREE.OctahedronGeometry(0.08, 0);
+      // Multi-Layered Crystalline Jewel Node Builder (Full Parity with Box'em Standard)
+      function createNodeCrystal(colorHex, name, nodeKey, customGeo) {
+        const group = new THREE.Group();
+        group.name = name;
+        group.userData = { nodeKey: nodeKey, isNode: true };
+        group.renderOrder = 15;
 
-      NODE_METADATA.forEach(nodeDef => {
-        const k = nodeDef.key;
-        const colorHex = nodeDef.color;
-        const nGroup = new THREE.Group();
-        nGroup.name = 'node-' + k;
-        nGroup.renderOrder = 15;
-
-        // 1. Faceted Outer Jewel
+        // 1. Faceted Outer Jewel (Physical Refractive Material with High IOR)
+        const gemGeo = customGeo || new THREE.OctahedronGeometry(0.15, 0);
         const gemMat = new THREE.MeshPhysicalMaterial({
           color: colorHex,
+          roughness: 0.12,
+          metalness: 0.10,
+          transmission: 0.88,
+          ior: 1.76,
           emissive: colorHex,
-          emissiveIntensity: 0.40,
-          roughness: 0.10,
-          metalness: 0.15,
-          transmission: 0.85,
+          emissiveIntensity: 0.35,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.05,
           flatShading: true,
           transparent: true,
-          opacity: 0.95
+          opacity: 0.95,
+          depthWrite: false,
+          depthTest: true
         });
-        const gem = new THREE.Mesh(nodeCrystalGeo, gemMat);
-        nGroup.add(gem);
+        const gem = new THREE.Mesh(gemGeo, gemMat);
+        gem.renderOrder = 15;
+        group.add(gem);
 
-        // 1b. Crisp Wireframe Edge Lines
-        const edgeGeo = new THREE.EdgesGeometry(nodeCrystalGeo);
-        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45 });
+        // 1b. Crisp Wireframe Edges
+        const edgeGeo = new THREE.EdgesGeometry(gemGeo);
+        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45, depthWrite: false });
         const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat);
+        edgeLines.renderOrder = 16;
         gem.add(edgeLines);
 
-        // 2. Sparkling Inner Jewel Core
+        // 2. Radiant Sparkling Inner Jewel Core
+        const innerGeo = new THREE.OctahedronGeometry(0.07, 0);
         const innerMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           emissive: colorHex,
           emissiveIntensity: 0.95,
-          roughness: 0.05,
-          flatShading: true
+          roughness: 0.02,
+          transmission: 0.40,
+          flatShading: true,
+          depthWrite: false,
+          depthTest: true
         });
-        const innerJewel = new THREE.Mesh(innerJewelGeo, innerMat);
-        nGroup.add(innerJewel);
+        const innerJewel = new THREE.Mesh(innerGeo, innerMat);
+        innerJewel.renderOrder = 16;
+        group.add(innerJewel);
 
-        // 3. Rotating Orbital Halo
-        const ringGeo = new THREE.TorusGeometry(0.32, 0.008, 8, 36);
-        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70 });
+        // 3. Primary Silky Smooth Torus Ring
+        const ringGeo = new THREE.TorusGeometry(0.20, 0.006, 16, 48);
+        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70, depthWrite: false });
         const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 3;
-        nGroup.add(ring);
+        ring.renderOrder = 17;
+        group.add(ring);
 
-        systemGroup.add(nGroup);
-        nodeMeshes[k] = { group: nGroup, gem, innerJewel, ring, baseDir: NODE_DIRS[k], meta: nodeDef };
+        // 4. Secondary Diagonal Gimbal Ring
+        const ring2Geo = new THREE.TorusGeometry(0.23, 0.005, 16, 48);
+        const ring2 = new THREE.Mesh(ring2Geo, ringMat);
+        ring2.rotation.x = Math.PI / 3;
+        ring2.renderOrder = 17;
+        group.add(ring2);
+
+        // 5. Expanded Hit Sphere for Smooth Raycasting & Direct 3D Dragging
+        const hitGeo = new THREE.SphereGeometry(0.36, 16, 16);
+        const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001, depthWrite: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.userData = { parentNode: group, nodeKey: nodeKey };
+        group.add(hitMesh);
+
+        systemGroup.add(group);
+        return { group, gem, innerJewel, ring, ring2, hitMesh, nodeKey };
+      }
+
+      NODE_METADATA.forEach(nodeDef => {
+        nodeMeshes[nodeDef.key] = createNodeCrystal(nodeDef.color, 'node-' + nodeDef.key, nodeDef.key, nodeDef.geo);
       });
 
-      // 3D Spatial Canvas Billboard Sprites (Box'em Standard)
+      // 4x Supersampled Single-Line Box'em Standard 3D Billboard Sprite Generator
       function createSpatial3DBillboard(fullTitle, colorHexStr) {
         const c = document.createElement('canvas');
         c.width = 1024;
@@ -811,17 +879,18 @@
 
         const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(mat);
-        sprite.scale.set(1.45, 0.34, 1.0);
+        sprite.scale.set(1.20, 0.281, 1.0);
         sprite.renderOrder = 9999;
 
-        const redraw = (valText) => {
+        const redraw = (valText, overrideColor) => {
           ctx.clearRect(0, 0, c.width, c.height);
           const pad = 8, w = c.width - pad * 2, h = c.height - pad * 2, r = 58;
+          const colorStr = overrideColor || colorHexStr;
 
           ctx.save();
-          // Matte Glass Capsule Background
+          // High-Contrast Deep Matte Glass Capsule Tag Background
           ctx.fillStyle = 'rgba(9, 14, 26, 0.95)';
-          ctx.strokeStyle = colorHexStr;
+          ctx.strokeStyle = colorStr;
           ctx.lineWidth = 10;
           ctx.beginPath();
           ctx.moveTo(pad + r, pad);
@@ -837,28 +906,39 @@
           ctx.fill();
           ctx.stroke();
 
-          // Glowing Colored Bullet Dot
-          ctx.fillStyle = colorHexStr;
-          ctx.shadowColor = colorHexStr;
-          ctx.shadowBlur = 16;
-          ctx.beginPath();
-          ctx.arc(58, c.height / 2, 22, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
+          // Dynamically fit font so text never overflows canvas
+          let fontSize = 60;
+          ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
+          let textWidth = ctx.measureText(valText).width;
+          const bulletRadius = 20;
+          const gap = 24;
+          const maxContentWidth = w - 48;
 
-          // Full Title (Small Upper)
-          ctx.fillStyle = colorHexStr;
-          ctx.font = 'bold 36px "JetBrains Mono", monospace';
+          while ((textWidth + bulletRadius * 2 + gap > maxContentWidth) && fontSize > 32) {
+            fontSize -= 2;
+            ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
+            textWidth = ctx.measureText(valText).width;
+          }
+
+          const totalGroupWidth = bulletRadius * 2 + gap + textWidth;
+          const groupStartX = (c.width - totalGroupWidth) / 2;
+
+          // Glowing Colored Bullet Dot
+          ctx.fillStyle = colorStr;
+          ctx.shadowColor = colorStr;
+          ctx.shadowBlur = 14;
+          ctx.beginPath();
+          ctx.arc(groupStartX + bulletRadius, c.height / 2, bulletRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Crisp High-Legibility Typography
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
-          ctx.fillText(fullTitle, 105, 68);
-
-          // Live Metric (Large Bold)
-          ctx.fillStyle = '#ffffff';
-          ctx.font = '900 64px "JetBrains Mono", monospace';
-          ctx.fillText(valText, 105, 148);
-
+          ctx.fillText(valText, groupStartX + bulletRadius * 2 + gap, c.height / 2 + 2);
           ctx.restore();
+
           tex.needsUpdate = true;
         };
 
@@ -869,54 +949,165 @@
 
       const nodeBillboards = {};
       NODE_METADATA.forEach(nodeDef => {
-        const sprite = createSpatial3DBillboard(nodeDef.fullTitle, nodeDef.hexStr);
+        const sprite = createSpatial3DBillboard(nodeDef.label, nodeDef.hexStr);
         systemGroup.add(sprite);
         nodeBillboards[nodeDef.key] = sprite;
       });
 
-      // Internal Submodules Group (Orbiting internal jewels inside the crystal volume)
+      // Adaptive Screen-Space Scaling (Maintains Crisp Standard 34px-High Tags Across Zooms & Viewing Distances)
+      function updateAdaptiveBillboards() {
+        const vFOV = THREE.MathUtils.degToRad(camera.fov);
+        const heightPerUnit = 2 * Math.tan(vFOV / 2);
+        const basePixelH = 34;
+        const refDist = 9.0;
+        const sWorldPos = new THREE.Vector3();
+        Object.values(nodeBillboards).forEach(s => {
+          if (!s) return;
+          s.getWorldPosition(sWorldPos);
+          const dist = Math.max(1.0, camera.position.distanceTo(sWorldPos));
+          const depthMultiplier = Math.pow(refDist / dist, 0.75);
+          const worldH = Math.max(0.12, (basePixelH / (window.innerHeight || 800)) * dist * heightPerUnit * depthMultiplier);
+          const worldW = worldH * (1024 / 240);
+          s.scale.set(worldW, worldH, 1.0);
+        });
+      }
+
+      // Internal Submodules Group (Orbiting internal deliverable shards inside the crystal volume)
       const submoduleGroup = new THREE.Group();
       submoduleGroup.renderOrder = 8;
       systemGroup.add(submoduleGroup);
 
-      const SUBMODULE_DEFS = [{"name":"Synchronous Condenser","color":1096065},{"name":"4-Hour Lithium BESS","color":1357990},{"name":"Pumped Hydro Storage","color":959977},{"name":"Offshore Wind Farm","color":16096779},{"name":"Rooftop Solar Micro-Inverter","color":16007006},{"name":"Demand Response Aggregator","color":9133302}];
+      const SUBMODULE_DEFS = [
+        {
+          name: "Synchronous Condenser",
+          category: "Grid Inertia Deliverable",
+          desc: "Heavy spinning mass providing instantaneous mechanical inertia and frequency dampening under sudden generation loss.",
+          color: 0x10b981,
+          pillarKey: "freq",
+          reqVal: "49.8 - 50.2 Hz",
+          impact: "Frequency Stability",
+          isActive: (s) => { return Boolean(s.freq >= 49.80 && s.freq <= 50.20); }
+        },
+        {
+          name: "4-Hour Utility BESS",
+          category: "Energy Storage Milestone",
+          desc: "Fast-responding containerized lithium battery pack absorbing peak renewable swings and smoothing millisecond transients.",
+          color: 0x14b8a6,
+          pillarKey: "bess",
+          reqVal: ">= 600 MW",
+          impact: "Peak Shaving Buffer",
+          isActive: (s) => { return Boolean(s.bess >= 600); }
+        },
+        {
+          name: "Deep Pumped Hydro",
+          category: "Long-Duration Storage Tier",
+          desc: "Dual-reservoir closed-loop gravity storage delivering multi-gigawatt continuous discharge during prolonged wind lulls.",
+          color: 0xea5e9,
+          pillarKey: "bess",
+          reqVal: ">= 1400 MW",
+          impact: "Multi-Day Dispatch Margin",
+          isActive: (s) => { return Boolean(s.bess >= 1400); }
+        },
+        {
+          name: "Offshore Wind Matrix",
+          category: "Clean Generation Milestone",
+          desc: "Floating 15MW offshore turbine arrays operating at 62% capacity factors feeding high-voltage DC interconnects.",
+          color: 0xf59e0b,
+          pillarKey: "renew",
+          reqVal: ">= 45% Share",
+          impact: "Carbon Abatement",
+          isActive: (s) => { return Boolean(s.renew >= 45); }
+        },
+        {
+          name: "Rooftop Solar Mesh",
+          category: "Decentralized PV Grid",
+          desc: "Neighborhood micro-inverters with autonomous volt-VAR power factor control preventing local distribution surges.",
+          color: 0xf43f5e,
+          pillarKey: "renew",
+          reqVal: ">= 70% Share",
+          impact: "Local Peak Demand Offset",
+          isActive: (s) => { return Boolean(s.renew >= 70); }
+        },
+        {
+          name: "Industrial Demand Response",
+          category: "Dynamic Demand Flex",
+          desc: "Megawatt-scale industrial smelter and electrolyzer curtailable contracts triggered under sub-second SCADA alerts.",
+          color: 0x8b5cf6,
+          pillarKey: "gen",
+          reqVal: ">= 2500 MW",
+          impact: "Reserve Margin Cushion",
+          isActive: (s) => { return Boolean(s.gen >= 2500); }
+        }
+      ];
+
       const submoduleMeshes = [];
-      const subGeo = new THREE.OctahedronGeometry(0.10, 0);
+      const subGeo = new THREE.IcosahedronGeometry(0.10, 0); // High-visibility crystal shards
 
       SUBMODULE_DEFS.forEach((sub, idx) => {
         const angle = (idx / SUBMODULE_DEFS.length) * Math.PI * 2;
-        const rad = 0.85;
+        const rad = 0.50; // Nestled inside the crystal volume
         const x = Math.cos(angle) * rad;
         const z = Math.sin(angle) * rad;
-        const y = (idx % 2 === 0 ? 0.35 : -0.35);
+        const y = (idx % 2 === 0 ? 0.20 : -0.20);
 
         const subMat = new THREE.MeshPhysicalMaterial({
           color: sub.color,
           emissive: sub.color,
           emissiveIntensity: 0.85,
-          roughness: 0.10,
-          metalness: 0.50,
+          roughness: 0.12,
+          metalness: 0.25,
           flatShading: true,
           transparent: true,
-          opacity: 0.90
+          opacity: 0.95,
+          depthWrite: false,
+          depthTest: true
         });
         const subMesh = new THREE.Mesh(subGeo, subMat);
         subMesh.position.set(x, y, z);
-        subMesh.userData = { name: sub.name, angle, rad, yBase: y };
+        subMesh.renderOrder = 9;
+        subMesh.userData = {
+          ...sub,
+          angle,
+          rad,
+          yBase: y,
+          baseColor: sub.color
+        };
+
+        const subEdges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(subGeo),
+          new THREE.LineBasicMaterial({ color: sub.color, transparent: true, opacity: 0.5, depthWrite: false })
+        );
+        subMesh.add(subEdges);
+        subMesh.userData.edges = subEdges;
+
+        // Expanded raycast hit sphere for effortless hover detection
+        const subHitGeo = new THREE.SphereGeometry(0.18, 8, 8);
+        const subHitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const subHitSphere = new THREE.Mesh(subHitGeo, subHitMat);
+        subHitSphere.userData = subMesh.userData;
+        subMesh.add(subHitSphere);
+
         submoduleGroup.add(subMesh);
         submoduleMeshes.push(subMesh);
       });
 
-      // 12 Struts Connecting the 6 Apexes into a Complete Polytope Envelope
-      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.40 });
+      function checkSubmoduleActive(subData) {
+        if (typeof subData.isActive === 'function') {
+          return subData.isActive(state);
+        }
+        return true;
+      }
+
+      // Connecting Sleek Struts
       const strutPairs = [
-        ['top', 'right'], ['top', 'front'], ['top', 'left'], ['top', 'back'],
-        ['bottom', 'right'], ['bottom', 'front'], ['bottom', 'left'], ['bottom', 'back'],
+        ['top', 'right'], ['top', 'left'], ['top', 'front'], ['top', 'back'],
+        ['bottom', 'right'], ['bottom', 'left'], ['bottom', 'front'], ['bottom', 'back'],
         ['right', 'front'], ['front', 'left'], ['left', 'back'], ['back', 'right']
       ];
       const struts = [];
+      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
       strutPairs.forEach(() => {
-        const sGeo = new THREE.CylinderGeometry(0.008, 0.008, 1, 8);
+        const sGeo = new THREE.CylinderGeometry(0.0055, 0.0055, 1, 8);
         const sMesh = new THREE.Mesh(sGeo, strutMat);
         sMesh.renderOrder = 2;
         systemGroup.add(sMesh);
@@ -925,15 +1116,12 @@
 
       // Internal State
       const state = {
-        freq: 50.01,
-        gen: 3400,
-        bess: 850,
-        renew: 62
+        freq: 50.01, gen: 3400, bess: 850, renew: 62
       };
 
       // Mathematical Solver & Geometry Morphing Engine
-      
       function solveEquilibrium(changedPillar) {
+        
         if (changedPillar === 'renew') {
           const rN = state.renew / 100.0;
           if (rN > 0.5) {
@@ -944,82 +1132,101 @@
           state.renew = Math.min(100, Math.round(20 + bN * 80));
         }
 
-        const carbonIntensity = Math.max(0, Math.round(440 * (1.0 - state.renew / 100.0) * (1.0 - 0.15 * (state.bess / 3000.0))));
-        const unbalance = Math.abs(state.gen - 3500) / 4500.0;
-        const bessDamp = 1.0 / (1.0 + state.bess / 800.0);
-        const freqDev = Number((unbalance * 0.15 * bessDamp).toFixed(2));
-        const solvedFreq = Number((50.00 + (state.gen > 3500 ? freqDev : -freqDev)).toFixed(2));
-        state.freq = solvedFreq;
+        if (changedPillar !== 'freq') {
+          const unbalance = Math.abs(state.gen - 3500) / 4500.0;
+          const bessDamp = 1.0 / (1.0 + state.bess / 800.0);
+          const freqDev = Number((unbalance * 0.15 * bessDamp).toFixed(2));
+          state.freq = Number((50.00 + (state.gen > 3500 ? freqDev : -freqDev)).toFixed(2));
+        }
 
-        ['freq', 'gen', 'bess', 'renew'].forEach(k => {
-          const sl = document.getElementById('slider-' + k);
-          const vl = document.getElementById('val-' + k);
-          if (sl) sl.value = state[k];
-          if (vl) {
-            const unitMap = { freq: ' Hz', gen: ' MW', bess: ' MW', renew: '%' };
-            vl.textContent = state[k] + unitMap[k];
-          }
-        });
+        const carbonIntensity = Math.max(0, Math.round(440 * (1.0 - state.renew / 100.0) * (1.0 - 0.15 * (state.bess / 3000.0))));
+
+        // Two-way DOM sync
+        const slFreq = document.getElementById('slider-freq');
+        const vlFreq = document.getElementById('val-freq');
+        if (slFreq) slFreq.value = state.freq;
+        if (vlFreq) vlFreq.textContent = state.freq.toFixed(2) + ' Hz';
+
+        const slGen = document.getElementById('slider-gen');
+        const vlGen = document.getElementById('val-gen');
+        if (slGen) slGen.value = state.gen;
+        if (vlGen) vlGen.textContent = state.gen + ' MW';
+
+        const slBess = document.getElementById('slider-bess');
+        const vlBess = document.getElementById('val-bess');
+        if (slBess) slBess.value = state.bess;
+        if (vlBess) vlBess.textContent = state.bess + ' MW';
+
+        const slRenew = document.getElementById('slider-renew');
+        const vlRenew = document.getElementById('val-renew');
+        if (slRenew) slRenew.value = state.renew;
+        if (vlRenew) vlRenew.textContent = state.renew + '%';
 
         const hudFreq = document.getElementById('hud-stat-1');
         const hudCarbon = document.getElementById('hud-stat-2');
         const hudCopilot = document.getElementById('hud-copilot-text');
-        if (hudFreq) hudFreq.textContent = state.freq + ' Hz Stable';
+        if (hudFreq) hudFreq.textContent = state.freq.toFixed(2) + ' Hz Stable';
         if (hudCarbon) hudCarbon.textContent = carbonIntensity + ' g/kWh Clean';
         if (hudCopilot) {
           hudCopilot.textContent = 'Grid dispatch synchronized: ' + state.gen + 'MW baseline with ' + state.bess + 'MW BESS capacity buffers ' + state.renew + '% renewable share, driving emissions down to ' + carbonIntensity + ' g/kWh.';
         }
+        
 
         update3DGeometry();
       }
 
       function update3DGeometry() {
+        
         const fN = Math.max(0.0, Math.min(1.0, 1.0 - Math.abs(state.freq - 50.00) / 0.8));
         const gN = Math.max(0.0, Math.min(1.0, (state.gen - 1000) / (8000 - 1000)));
         const bN = Math.max(0.0, Math.min(1.0, state.bess / 3000.0));
         const rN = Math.max(0.0, Math.min(1.0, (state.renew - 10) / (100 - 10)));
         const carbonIntensity = Math.max(0, Math.round(440 * (1.0 - state.renew / 100.0) * (1.0 - 0.15 * (state.bess / 3000.0))));
 
+        // Compact calibrated radius (0.65 to 1.30)
         const rads = {
-          top: 0.85 + fN * 1.6,
-          bottom: 0.85 + bN * 1.6,
-          right: 0.85 + gN * 1.5,
-          left: 0.85 + rN * 1.5,
-          front: 0.85 + (fN * 0.5 + gN * 0.5) * 1.5,
-          back: 0.85 + (bN * 0.5 + rN * 0.5) * 1.5
+          top: 0.65 + fN * 0.65,
+          bottom: 0.65 + bN * 0.65,
+          right: 0.65 + gN * 0.65,
+          left: 0.65 + rN * 0.65,
+          front: 0.65 + ((fN + gN) / 2) * 0.65,
+          back: 0.65 + ((bN + rN) / 2) * 0.65
         };
+        
 
         const v = {};
         Object.keys(rads).forEach(k => {
           v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
-          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.22));
+          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.12));
         });
 
-        // Update 3D Floating Canvas Billboards
+        // Update 3D Floating Canvas Billboards cleanly positioned adjacent to nodes
+        
         if (nodeBillboards.top) {
-          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0, 0.45, 0.2));
-          nodeBillboards.top.userData.redraw(state.freq + ' Hz Stable');
+          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0.0, -0.28, 0.15));
+          nodeBillboards.top.userData.redraw(`FREQ: ${state.freq.toFixed(2)} Hz`, '#10b981');
         }
         if (nodeBillboards.bottom) {
-          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0, -0.45, -0.2));
-          nodeBillboards.bottom.userData.redraw(state.bess + ' MW BESS');
+          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0.0, -0.32, 0.15));
+          nodeBillboards.bottom.userData.redraw(`BESS: ${state.bess} MW`, '#14b8a6');
         }
         if (nodeBillboards.right) {
-          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.55, 0, 0.2));
-          nodeBillboards.right.userData.redraw(state.gen + ' MW Gen');
+          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.48, 0.16, 0.15));
+          nodeBillboards.right.userData.redraw(`GEN: ${state.gen} MW`, '#f59e0b');
         }
         if (nodeBillboards.left) {
-          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.55, 0, 0.2));
-          nodeBillboards.left.userData.redraw(state.renew + '% Green Share');
+          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.48, 0.16, 0.15));
+          nodeBillboards.left.userData.redraw(`GREEN: ${state.renew}%`, '#0ea5e9');
         }
         if (nodeBillboards.front) {
-          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0, -0.35, 0.5));
-          nodeBillboards.front.userData.redraw('2.8% Transmission');
+          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0.0, -0.26, 0.30));
+          nodeBillboards.front.userData.redraw('LOSS: 2.8%', '#8b5cf6');
         }
         if (nodeBillboards.back) {
-          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0, 0.35, -0.5));
-          nodeBillboards.back.userData.redraw(carbonIntensity + ' g/kWh CO2');
+          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0.0, 0.26, -0.30));
+          nodeBillboards.back.userData.redraw(`CO2: ${carbonIntensity} g/kWh`, '#f43f5e');
         }
+        
 
         const p = corePolyGeo.attributes.position.array;
         const setTri = (offset, p1, p2, p3) => {
@@ -1049,45 +1256,92 @@
           strut.position.copy(p1).add(p2).multiplyScalar(0.5);
           strut.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
         });
+
+        // Update Submodule States & Shard Appearances
+        submoduleMeshes.forEach(mesh => {
+          const isAct = checkSubmoduleActive(mesh.userData);
+          const colorHex = isAct ? mesh.userData.baseColor : 0x475569;
+          mesh.material.color.setHex(colorHex);
+          mesh.material.emissive.setHex(colorHex);
+          mesh.material.emissiveIntensity = isAct ? 0.85 : 0.20;
+          mesh.material.opacity = isAct ? 0.95 : 0.45;
+          mesh.userData.isActive = isAct;
+        });
+
+        updateAdaptiveBillboards();
       }
-    
 
       // Initial Reciprocal Calculation & Geometry Update
       solveEquilibrium();
 
-      // Sliders 2-Way Binding with Real-Time Reciprocal Solving
+      // Sliders 2-Way Binding
       
-        document.getElementById('slider-freq')?.addEventListener('input', (e) => {
-          state.freq = Number(e.target.value);
-          const el = document.getElementById('val-freq');
-          if (el) el.textContent = state.freq + ' Hz';
-          solveEquilibrium('freq');
-        });
-      
-        document.getElementById('slider-gen')?.addEventListener('input', (e) => {
-          state.gen = Number(e.target.value);
-          const el = document.getElementById('val-gen');
-          if (el) el.textContent = state.gen + ' MW';
-          solveEquilibrium('gen');
-        });
-      
-        document.getElementById('slider-bess')?.addEventListener('input', (e) => {
-          state.bess = Number(e.target.value);
-          const el = document.getElementById('val-bess');
-          if (el) el.textContent = state.bess + ' MW';
-          solveEquilibrium('bess');
-        });
-      
-        document.getElementById('slider-renew')?.addEventListener('input', (e) => {
-          state.renew = Number(e.target.value);
-          const el = document.getElementById('val-renew');
-          if (el) el.textContent = state.renew + '%';
-          solveEquilibrium('renew');
-        });
-      
+      document.getElementById('slider-freq')?.addEventListener('input', (e) => {
+        state.freq = Number(e.target.value);
+        solveEquilibrium('freq');
+      });
+      document.getElementById('slider-gen')?.addEventListener('input', (e) => {
+        state.gen = Number(e.target.value);
+        solveEquilibrium('gen');
+      });
+      document.getElementById('slider-bess')?.addEventListener('input', (e) => {
+        state.bess = Number(e.target.value);
+        solveEquilibrium('bess');
+      });
+      document.getElementById('slider-renew')?.addEventListener('input', (e) => {
+        state.renew = Number(e.target.value);
+        solveEquilibrium('renew');
+      });
+        
 
-      // Scenario Pills & Cards Interaction
-      const SCENARIOS = [{"shortTitle":"Summer Heatwave","icon":"thermostat","tag":"Peak Demand","title":"Summer Peak Heatwave Extreme Dispatch","desc":"Air conditioning surge driving 98% grid capacity, stabilized by instant 4-hour utility-scale lithium BESS injection.","metricLabel":"Peak Demand","metricVal":"7,800 MW","stat1":"50.00 Hz Stable","stat2":"210 g/kWh Clean","copilot":"Four-hour battery discharge bridges the evening air conditioning peak until industrial curtailment kicks in.","params":{"freq":50,"gen":7200,"bess":2400,"renew":45}},{"shortTitle":"Duck Curve","icon":"solar_power","tag":"Solar Solar","title":"Solar Duck Curve Midday Curtailment","desc":"Massive midday rooftop PV generation creating negative spot electricity prices, absorbed into grid-scale storage.","metricLabel":"Solar Yield","metricVal":"4,200 MW Peak","stat1":"50.02 Hz Stable","stat2":"35 g/kWh Clean","copilot":"Negative pricing absorbed: pumped hydro and BESS charging at full capacity to prevent grid over-frequency.","params":{"freq":50.02,"gen":2800,"bess":2200,"renew":85}},{"shortTitle":"Islanded Grid","icon":"offline_bolt","tag":"Microgrid","title":"100% Islanded Regional Microgrid","desc":"Autonomous local energy cooperative running entirely detached from the main transmission interconnect.","metricLabel":"Autonomy","metricVal":"100% Islanded","stat1":"50.00 Hz Stable","stat2":"12 g/kWh Clean","copilot":"Grid-forming inverters provide synthetic inertia without requiring synchronous fossil turbines.","params":{"freq":50,"gen":1800,"bess":1600,"renew":92}},{"shortTitle":"Polar Vortex","icon":"ac_unit","tag":"Extreme Cold","title":"Winter Polar Vortex Heating Freeze","desc":"Sub-zero blizzard conditions freezing natural gas wellheads while heating demand spikes past all historical records.","metricLabel":"Reserve Margin","metricVal":"4.2% Tight","stat1":"49.95 Hz Stable","stat2":"340 g/kWh Clean","copilot":"Emergency demand-response protocols activated across commercial refrigeration and steel smelting plants.","params":{"freq":49.95,"gen":7800,"bess":1800,"renew":25}},{"shortTitle":"Wind Storm","icon":"air","tag":"Wind Energy","title":"High-Penetration Offshore Wind Surge","desc":"Gale-force North Sea wind farm output generating 120% of regional demand, exported via HVDC submarine interconnects.","metricLabel":"Wind Output","metricVal":"5,400 MW Export","stat1":"50.01 Hz Stable","stat2":"8 g/kWh Clean","copilot":"HVDC links transmitting excess green energy to continental European pump storage reservoirs.","params":{"freq":50.01,"gen":3200,"bess":2600,"renew":95}},{"shortTitle":"Zero Carbon 2030","icon":"eco","tag":"Clean Energy","title":"100% Renewable Zero-Carbon Horizon","desc":"Fully decarbonized energy system harmonizing long-duration iron-air batteries, green hydrogen, and nuclear baseload.","metricLabel":"Emissions","metricVal":"0 g/kWh Clean","stat1":"50.00 Hz Stable","stat2":"0 g/kWh Clean","copilot":"True zero emissions achieved: long-duration storage easily covers multi-day seasonal renewable lulls.","params":{"freq":50,"gen":3500,"bess":3000,"renew":100}}];
+      // Scenario Presets
+      
+      const SCENARIOS = [
+        {
+          name: 'Summer Heatwave',
+          params: { freq: 49.92, gen: 6800, bess: 2400, renew: 78 },
+          copilot: 'Severe cooling demand peak: Gas peakers dispatching 6,800MW baseline alongside 2,400MW 4-hour BESS discharge to buffer 78% solar penetration.',
+          stat1: '49.92 Hz Loaded',
+          stat2: '210 g/kWh Grid'
+        },
+        {
+          name: 'Duck Curve Midday',
+          params: { freq: 50.15, gen: 2100, bess: 2850, renew: 94 },
+          copilot: 'Extreme solar over-generation: Thermal generation ramped down to 2,100MW minimum stable load; utility batteries absorbing 2,850MW excess solar.',
+          stat1: '50.15 Hz High',
+          stat2: '42 g/kWh Ultra-Low'
+        },
+        {
+          name: 'Islanding Microgrid',
+          params: { freq: 50.00, gen: 1800, bess: 1950, renew: 85 },
+          copilot: 'Transmission line severed: Microgrid operating in isochronous islanded mode with grid-forming BESS inverters establishing voltage and frequency.',
+          stat1: '50.00 Hz Locked',
+          stat2: '65 g/kWh Clean'
+        },
+        {
+          name: 'Polar Vortex',
+          params: { freq: 49.88, gen: 7600, bess: 1100, renew: 28 },
+          copilot: 'Freezing front with suppressed solar output: Gas and hydro thermal base generation at 7,600MW with limited 28% renewable contribution.',
+          stat1: '49.88 Hz Depressed',
+          stat2: '380 g/kWh Elevated'
+        },
+        {
+          name: 'Wind Storm Surge',
+          params: { freq: 50.22, gen: 2400, bess: 2600, renew: 88 },
+          copilot: 'High gale winds generating massive surplus: Automated blade pitching activated and dynamic export interconnects throttling generation.',
+          stat1: '50.22 Hz High',
+          stat2: '55 g/kWh Ultra-Clean'
+        },
+        {
+          name: 'Zero Carbon 2030',
+          params: { freq: 50.01, gen: 1200, bess: 2950, renew: 98 },
+          copilot: 'Near-total decarbonization achieved: Synchronous condensers and ultra-fast BESS provide 100% synthetic inertia with 98% clean power.',
+          stat1: '50.01 Hz Optimal',
+          stat2: '12 g/kWh Pristine'
+        }
+      ];
+        
+
       function applyScenario(idx) {
         const sc = SCENARIOS[idx];
         if (!sc) return;
@@ -1099,37 +1353,20 @@
           }
         });
 
-        // Apply Scenario Parameter Values to State & Sliders
         if (sc.params) {
           Object.keys(sc.params).forEach(k => {
-            if (state[k] !== undefined) {
-              state[k] = sc.params[k];
-              const slider = document.getElementById('slider-' + k);
-              const valEl = document.getElementById('val-' + k);
-              if (slider) slider.value = sc.params[k];
-              if (valEl) {
-                const slDef = [{"id":"freq","label":"Grid Frequency","defaultVal":50.01,"min":49.2,"max":50.8,"step":0.01,"unit":" Hz"},{"id":"gen","label":"Base Generation","defaultVal":3400,"min":1000,"max":8000,"step":50,"unit":" MW"},{"id":"bess","label":"BESS Battery Storage","defaultVal":850,"min":0,"max":3000,"step":25,"unit":" MW"},{"id":"renew","label":"Renewable Penetration","defaultVal":62,"min":10,"max":100,"step":1,"unit":"%"}].find(s => s.id === k);
-                valEl.textContent = sc.params[k] + (slDef ? slDef.unit : '');
-              }
-            }
+            if (state[k] !== undefined) state[k] = sc.params[k];
           });
         }
 
         solveEquilibrium();
 
-        if (document.getElementById('hud-copilot-text')) {
-          document.getElementById('hud-copilot-text').textContent = sc.copilot;
-        }
-        if (document.getElementById('hud-stat-1')) {
-          document.getElementById('hud-stat-1').textContent = sc.stat1;
-        }
-        if (document.getElementById('hud-stat-2')) {
-          document.getElementById('hud-stat-2').textContent = sc.stat2;
-        }
+        if (document.getElementById('hud-copilot-text')) document.getElementById('hud-copilot-text').textContent = sc.copilot;
+        if (document.getElementById('hud-stat-1')) document.getElementById('hud-stat-1').textContent = sc.stat1;
+        if (document.getElementById('hud-stat-2')) document.getElementById('hud-stat-2').textContent = sc.stat2;
 
-        // Pulse Morph Animation
-        systemGroup.rotation.x += 0.25;
-        systemGroup.scale.set(1.10, 1.10, 1.10);
+        systemGroup.rotation.x += 0.15;
+        systemGroup.scale.set(1.08, 1.08, 1.08);
         setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 250);
       }
 
@@ -1148,33 +1385,225 @@
         });
       });
 
-      // Raycaster for Spatial Detail Card
+      // 4. Direct 3D Node Drag & Drop and Submodule Raycast Engine (Full Parity with Box'em)
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
+      let draggedNode = null;
+      let dragKey = null;
+      const dragPlane = new THREE.Plane();
+      const planeIntersect = new THREE.Vector3();
+
+      let isHoveringCard = false;
+      let isHoveringModel = false;
+      let cardHideTimeout = null;
       const detailCard = document.getElementById('submodule-detail-card');
 
-      interactionSurface.addEventListener('pointermove', (e) => {
+      function openDetailCard(e, data) {
+        if (!detailCard || draggedNode) return;
+        if (cardHideTimeout) {
+          clearTimeout(cardHideTimeout);
+          cardHideTimeout = null;
+        }
+
+        const cardWidth = 320;
+        const cardHeight = 180;
+        let posX = e.clientX + 16;
+        let posY = e.clientY - 24;
+
+        if (posX + cardWidth > window.innerWidth - 16) {
+          posX = e.clientX - cardWidth - 16;
+        }
+        if (posY + cardHeight > window.innerHeight - 16) {
+          posY = window.innerHeight - cardHeight - 16;
+        }
+        if (posY < 16) posY = 16;
+        if (posX < 16) posX = 16;
+
+        detailCard.style.left = `${posX}px`;
+        detailCard.style.top = `${posY}px`;
+
+        const isAct = checkSubmoduleActive(data);
+        const statusEl = document.getElementById('submodule-card-status');
+        if (statusEl) {
+          statusEl.textContent = isAct ? 'ACTIVE' : 'LOCKED';
+          statusEl.className = `px-2.5 py-1 text-xs font-mono font-black uppercase rounded-lg border ${isAct ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40'}`;
+        }
+        const catEl = document.getElementById('submodule-card-category');
+        if (catEl) catEl.textContent = data.category || 'Deliverable';
+        const qualEl = document.getElementById('submodule-card-qual');
+        if (qualEl) qualEl.textContent = data.reqText || `Req: ${data.reqVal}`;
+        const titleEl = document.getElementById('submodule-card-title');
+        if (titleEl) titleEl.textContent = data.name || 'Milestone Deliverable';
+        const descEl = document.getElementById('submodule-card-desc');
+        if (descEl) descEl.textContent = data.desc || 'Core deliverable modeled in reciprocal constraint matrix.';
+        const impactEl = document.getElementById('submodule-card-impact');
+        if (impactEl) impactEl.textContent = data.impact || 'Equilibrium Impact';
+        const metricEl = document.getElementById('submodule-card-metric');
+        if (metricEl) {
+          metricEl.textContent = isAct ? 'ACTIVE (Ready)' : `LOCKED (Needs ${data.reqVal})`;
+          metricEl.className = `font-bold ${isAct ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+
+        detailCard.classList.remove('hidden');
+      }
+
+      function scheduleCardDismiss() {
+        if (isHoveringCard || isHoveringModel) return;
+        if (cardHideTimeout) clearTimeout(cardHideTimeout);
+        cardHideTimeout = setTimeout(() => {
+          if (!isHoveringCard && !isHoveringModel && detailCard && !draggedNode) {
+            detailCard.classList.add('hidden');
+          }
+          cardHideTimeout = null;
+        }, 300);
+      }
+
+      if (detailCard) {
+        detailCard.addEventListener('pointerenter', () => {
+          isHoveringCard = true;
+          if (cardHideTimeout) {
+            clearTimeout(cardHideTimeout);
+            cardHideTimeout = null;
+          }
+        });
+        detailCard.addEventListener('pointerleave', () => {
+          isHoveringCard = false;
+          scheduleCardDismiss();
+        });
+      }
+
+      function applyDraggedNorm(key, norm) {
+        
+        if (key === 'top') {
+          state.freq = Number((49.2 + norm * (50.8 - 49.2)).toFixed(2));
+          solveEquilibrium('freq');
+        } else if (key === 'bottom') {
+          state.bess = Math.round(0 + norm * 3000);
+          solveEquilibrium('bess');
+        } else if (key === 'right') {
+          state.gen = Math.round(1000 + norm * 7000);
+          solveEquilibrium('gen');
+        } else if (key === 'left') {
+          state.renew = Math.round(10 + norm * 90);
+          solveEquilibrium('renew');
+        }
+        
+      }
+
+      interactionSurface.addEventListener('pointerdown', (e) => {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
-        const hitGems = Object.values(nodeMeshes).map(n => n.gem).concat(submoduleMeshes);
-        const hits = raycaster.intersectObjects(hitGems);
+
+        // Check for node crystal click to drag
+        const hitObjects = [];
+        Object.values(nodeMeshes).forEach(n => {
+          n.group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+        });
+
+        const hits = raycaster.intersectObjects(hitObjects, false);
         if (hits.length > 0) {
-          const hitObj = hits[0].object;
-          if (detailCard) {
-            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
-            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
-            if (hitObj.userData && hitObj.userData.name) {
-              document.getElementById('detail-card-title').textContent = hitObj.userData.name;
-              document.getElementById('detail-card-metric').textContent = 'Internal Modular Subsystem';
-            }
-            detailCard.classList.remove('hidden');
+          let root = hits[0].object;
+          while (root.parent && root.parent !== systemGroup) {
+            if (root.userData && root.userData.isNode) break;
+            root = root.parent;
           }
+          if (root.userData && root.userData.nodeKey) {
+            e.stopPropagation();
+            draggedNode = root;
+            dragKey = root.userData.nodeKey;
+            controls.enabled = false;
+            interactionSurface.style.cursor = 'grabbing';
+
+            const nodeWorldPos = new THREE.Vector3();
+            draggedNode.getWorldPosition(nodeWorldPos);
+            const planeNormal = camera.getWorldDirection(new THREE.Vector3()).negate();
+            dragPlane.setFromNormalAndCoplanarPoint(planeNormal, nodeWorldPos);
+            return;
+          }
+        }
+
+        // Check for submodule click
+        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+        if (subHits.length > 0) {
+          isHoveringModel = true;
+          let subData = subHits[0].object.userData;
+          if (!subData.name && subHits[0].object.parent) {
+            subData = subHits[0].object.parent.userData;
+          }
+          openDetailCard(e, subData);
+        } else if (!isHoveringCard) {
+          isHoveringModel = false;
+          scheduleCardDismiss();
+        }
+      });
+
+      interactionSurface.addEventListener('pointermove', (e) => {
+        if (draggedNode) {
+          if (detailCard) detailCard.classList.add('hidden');
+          return;
+        }
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        const hitObjects = [];
+        Object.values(nodeMeshes).forEach(n => {
+          n.group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+        });
+
+        const hits = raycaster.intersectObjects(hitObjects, false);
+        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+
+        if (hits.length > 0) {
+          interactionSurface.style.cursor = 'grab';
+          isHoveringModel = false;
+          scheduleCardDismiss();
+        } else if (subHits.length > 0) {
+          interactionSurface.style.cursor = 'pointer';
+          isHoveringModel = true;
+          let subData = subHits[0].object.userData;
+          if (!subData.name && subHits[0].object.parent) {
+            subData = subHits[0].object.parent.userData;
+          }
+          openDetailCard(e, subData);
+        } else {
+          interactionSurface.style.cursor = 'default';
+          isHoveringModel = false;
+          scheduleCardDismiss();
         }
       });
 
       interactionSurface.addEventListener('pointerleave', () => {
-        if (detailCard) detailCard.classList.add('hidden');
+        isHoveringModel = false;
+        scheduleCardDismiss();
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!draggedNode || !dragKey) return;
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+          const localPos = systemGroup.worldToLocal(planeIntersect.clone());
+          const dir = NODE_DIRS[dragKey];
+          if (!dir) return;
+          const rawDist = localPos.dot(dir);
+          const minR = 0.65, maxR = 1.30;
+          const clampedRadius = Math.max(minR, Math.min(maxR, rawDist));
+          const norm = (clampedRadius - minR) / (maxR - minR);
+          applyDraggedNorm(dragKey, norm);
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (draggedNode) {
+          draggedNode = null;
+          dragKey = null;
+          controls.enabled = true;
+          interactionSurface.style.cursor = 'default';
+        }
       });
 
       // Animation Loop
@@ -1183,23 +1612,28 @@
         requestAnimationFrame(animate);
         const elapsed = clock.getElapsedTime();
 
-        systemGroup.rotation.y += 0.0020;
-        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05;
+        if (!draggedNode) {
+          systemGroup.rotation.y += 0.0020;
+          systemGroup.position.y = targetWorldY + Math.sin(elapsed * 1.2) * 0.04;
+        } else {
+          systemGroup.position.y = targetWorldY;
+        }
 
         Object.values(nodeMeshes).forEach(n => {
           n.gem.rotation.y += 0.010;
           n.innerJewel.rotation.y -= 0.015;
           n.ring.rotation.z += 0.015;
+          n.ring2.rotation.y += 0.012;
         });
 
-        // Orbit internal submodules
+        // Orbit internal submodules inside crystal volume
         submoduleMeshes.forEach(sm => {
           sm.rotation.y += 0.02;
           sm.rotation.x += 0.015;
-          const currentAngle = sm.userData.angle + elapsed * 0.4;
+          const currentAngle = sm.userData.angle + elapsed * 0.35;
           sm.position.x = Math.cos(currentAngle) * sm.userData.rad;
           sm.position.z = Math.sin(currentAngle) * sm.userData.rad;
-          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 2.0 + sm.userData.angle) * 0.08;
+          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 1.8 + sm.userData.angle) * 0.04;
         });
 
         controls.update();
@@ -1211,11 +1645,12 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        updateAdaptiveBillboards();
       });
 
       // Copy Embed
       document.getElementById('btn-copy-embed')?.addEventListener('click', () => {
-        const snip = '<iframe src="https://balancem.blackboxes.net/" width="100%" height="650" frameborder="0" style="border-radius: 1.5rem;"></iframe>';
+        const snip = '<iframe src="https://balanc_em.blackboxes.net/" width="100%" height="650" frameborder="0" style="border-radius: 1.5rem;"></iframe>';
         navigator.clipboard.writeText(snip);
         alert('Copied embed snippet to clipboard!');
       });

@@ -336,21 +336,30 @@
         </div>
       </div>
 
-      <!-- 3D Spatial Detail Card -->
-      <div id="submodule-detail-card" class="bg-slate-950/95 text-white border border-sky-400/50 backdrop-blur-2xl p-4 rounded-3xl shadow-2xl hidden fixed z-50 pointer-events-auto min-w-[280px] max-w-[340px] space-y-2">
+      <!-- High-Contrast 3D Spatial Detail Card (Anchors at cursor/focus point, stays open until cursor leaves) -->
+      <div id="submodule-detail-card" class="bg-slate-950/95 text-white border border-rose-500/50 shadow-rose-500/10 backdrop-blur-2xl p-5 rounded-3xl shadow-2xl hidden fixed z-50 pointer-events-auto cursor-default transition-all duration-150 min-w-[290px] max-w-[340px] space-y-3">
         <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
-          <span id="detail-card-badge" class="px-2.5 py-0.5 text-xs font-mono font-black uppercase rounded-lg bg-rose-100 text-rose-900 dark:bg-rose-950 dark:text-rose-300">ACTIVE</span>
-          <span id="detail-card-metric" class="text-xs font-mono font-bold text-sky-400">Pillar Node</span>
+          <div class="flex items-center gap-2">
+            <span id="submodule-card-status" class="px-2.5 py-1 text-xs font-mono font-black uppercase rounded-lg bg-rose-500/20 text-rose-300 border-rose-500/30">ACTIVE</span>
+            <span id="submodule-card-category" class="text-xs font-mono font-bold text-rose-400">Milestone</span>
+          </div>
+          <span id="submodule-card-qual" class="text-xs font-mono font-bold text-slate-400">Req: 85%</span>
         </div>
         <div>
-          <h4 id="detail-card-title" class="text-sm font-black text-white leading-snug">Component Node</h4>
-          <p id="detail-card-desc" class="text-xs text-slate-300 font-sans leading-relaxed mt-1">
-            Reciprocal trade-off vector component modeled inside the 3D spatial polytope.
+          <h4 id="submodule-card-title" class="text-base font-black text-white leading-snug">Submodule Deliverable</h4>
+          <p id="submodule-card-desc" class="text-xs text-slate-300 font-sans leading-relaxed mt-1.5">
+            Core milestone deliverable modeled inside the 3D trade-off reactor.
           </p>
         </div>
+        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+          <span class="text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-rose-400">insights</span>
+            <span id="submodule-card-impact">Equilibrium Impact</span>
+          </span>
+          <span id="submodule-card-metric" class="text-emerald-400 font-bold">ACTIVE (Ready)</span>
+        </div>
       </div>
-
-      <!-- FLANKING INTERACTIVE CARDS -->
+<!-- FLANKING INTERACTIVE CARDS -->
       <div class="relative z-20 w-full max-w-[1840px] mx-auto flex flex-col lg:flex-row items-center justify-between px-4 sm:px-8 my-auto pointer-events-none gap-8">
         
         <!-- LEFT FLANK: Interactive Constraint Sliders -->
@@ -363,39 +372,62 @@
               </div>
             </div>
 
-            <!-- 4 Live Sliders -->
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Bio-Age Delta</span>
-                  <span id="val-bioage" class="font-black text-rose-500">-3.8 Yrs</span>
-                </div>
-                <input type="range" id="slider-bioage" min="-15" max="5" step="0.1" value="-3.8" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+                        <!-- 4 Live Color-Coded Sliders -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-rose-600 dark:text-rose-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50"></span> Bio-Age Delta
+                </span>
+                <span id="val-bioage" class="font-black text-rose-600 dark:text-rose-400 font-mono text-sm">-3.8 Yrs</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">HRV (RMSSD)</span>
-                  <span id="val-hrv" class="font-black text-rose-500">78 ms</span>
-                </div>
-                <input type="range" id="slider-hrv" min="20" max="180" step="1" value="78" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <input type="range" id="slider-bioage" min="-15" max="5" step="0.1" value="-3.8" class="w-full accent-rose-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>-15.0 Yrs Reversal</span>
+                <span>+5.0 Yrs Aging</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">VO2 Max</span>
-                  <span id="val-vo2" class="font-black text-rose-500">54 mL/kg</span>
-                </div>
-                <input type="range" id="slider-vo2" min="25" max="85" step="1" value="54" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-emerald-600 dark:text-emerald-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span> HRV (RMSSD)
+                </span>
+                <span id="val-hrv" class="font-black text-emerald-600 dark:text-emerald-400 font-mono text-sm">78 ms</span>
               </div>
-            
-              <div class="space-y-1">
-                <div class="flex justify-between items-center text-xs font-mono font-bold">
-                  <span class="text-slate-950 dark:text-slate-100 font-black">Deep Sleep Duration</span>
-                  <span id="val-sleep" class="font-black text-rose-500">2.2 hrs</span>
-                </div>
-                <input type="range" id="slider-sleep" min="0.5" max="4.5" step="0.1" value="2.2" class="w-full accent-sky-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <input type="range" id="slider-hrv" min="20" max="180" step="1" value="78" class="w-full accent-emerald-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>20 ms Sympathetic</span>
+                <span>180 ms Parasympathetic</span>
               </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-pink-600 dark:text-pink-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50"></span> VO2 Max
+                </span>
+                <span id="val-vo2" class="font-black text-pink-600 dark:text-pink-400 font-mono text-sm">54 mL/kg</span>
+              </div>
+              <input type="range" id="slider-vo2" min="25" max="85" step="1" value="54" class="w-full accent-pink-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>25 mL/kg Baseline</span>
+                <span>85 mL/kg Elite</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs font-mono">
+                <span class="text-violet-600 dark:text-violet-400 font-black flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-violet-500 shadow-sm shadow-violet-500/50"></span> Deep Sleep Duration
+                </span>
+                <span id="val-sleep" class="font-black text-violet-600 dark:text-violet-400 font-mono text-sm">2.2 hrs</span>
+              </div>
+              <input type="range" id="slider-sleep" min="0.5" max="4.5" step="0.1" value="2.2" class="w-full accent-violet-500 bg-slate-300 dark:bg-slate-700 rounded-lg h-2 cursor-pointer">
+              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold flex justify-between">
+                <span>0.5 hrs Minimal</span>
+                <span>4.5 hrs Peak SWS</span>
+              </div>
+            </div>
             
           </div>
         </div>
@@ -643,7 +675,7 @@
     })();
 
     // 3. Master Frameless 3D Spatial Polytope Engine with Box'em Standard 3D Billboards & Multi-Layer Jewels
-    (function initMasterHeroEngine() {
+    (function initShowcasePolytopeEngine() {
       const canvas = document.getElementById('hero-embed-canvas');
       const interactionSurface = document.getElementById('hero-interaction-surface');
       if (!canvas || !interactionSurface || !window.THREE) return;
@@ -661,8 +693,10 @@
       const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
       camera.position.set(0, 0, 9.6);
 
+      const targetWorldY = -0.38; // Calibrated vertical centering between top bar and bottom flank
+
       const controls = new THREE.OrbitControls(camera, interactionSurface);
-      controls.target.set(0, 0, 0);
+      controls.target.set(0, targetWorldY, 0);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
       controls.enableZoom = false; // Zero scroll-trap
@@ -681,7 +715,7 @@
       document.getElementById('hero-btn-zoom-out')?.addEventListener('click', () => camera.position.multiplyScalar(1.18));
       document.getElementById('hero-btn-reset-view')?.addEventListener('click', () => {
         camera.position.set(0, 0, 9.6);
-        controls.target.set(0, 0, 0);
+        controls.target.set(0, targetWorldY, 0);
       });
 
       // Zen Showcase Mode
@@ -701,6 +735,7 @@
 
       // Central System Group
       const systemGroup = new THREE.Group();
+      systemGroup.position.y = targetWorldY;
       scene.add(systemGroup);
 
       // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
@@ -709,8 +744,8 @@
       corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
 
       const corePolyMat = new THREE.MeshPhysicalMaterial({
-        color: 0xe11d48,
-        emissive: 0xe11d48,
+        color: 0xf43f5e,
+        emissive: 0xf43f5e,
         emissiveIntensity: 0.35,
         roughness: 0.12,
         metalness: 0.20,
@@ -725,80 +760,113 @@
       systemGroup.add(coreMesh);
 
       // Core Wireframe Facet Outlines
-      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0xfb7185, wireframe: true, transparent: true, opacity: 0.35 });
+      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e, wireframe: true, transparent: true, opacity: 0.35 });
       const coreWireMesh = new THREE.Mesh(corePolyGeo, coreWireMat);
       coreWireMesh.renderOrder = 11;
       systemGroup.add(coreWireMesh);
 
-      // 6 Unit Node Direction Vectors (Octahedral Basis)
+      // 6 Unit Node Direction Vectors (Normalized Octahedral Basis - Exact Box'em Visual Scale)
       const NODE_DIRS = {
-        top: new THREE.Vector3(0, 1.8, 0),
-        bottom: new THREE.Vector3(0, -1.8, 0),
-        right: new THREE.Vector3(2.0, 0, 0),
-        left: new THREE.Vector3(-2.0, 0, 0),
-        front: new THREE.Vector3(0, 0, 2.0),
-        back: new THREE.Vector3(0, 0, -2.0)
+        top: new THREE.Vector3(0, 1, 0),
+        bottom: new THREE.Vector3(0, -1, 0),
+        right: new THREE.Vector3(1, 0, 0),
+        left: new THREE.Vector3(-1, 0, 0),
+        front: new THREE.Vector3(0, 0, 1),
+        back: new THREE.Vector3(0, 0, -1)
       };
 
-      // 6 Node Definitions with Specific Colors & Titles
-      const NODE_METADATA = [{"key":"top","label":"BIOAGE","fullTitle":"BIOLOGICAL AGE DELTA","color":16007006,"hexStr":"#f43f5e","offset":[0,0.45,0.2]},{"key":"bottom","label":"VO2","fullTitle":"CARDIO VO2 MAX","color":15485081,"hexStr":"#ec4899","offset":[0,-0.45,-0.2]},{"key":"right","label":"HRV","fullTitle":"AUTONOMIC HRV","color":1096065,"hexStr":"#10b981","offset":[0.5,0,0.2]},{"key":"left","label":"SLEEP","fullTitle":"DEEP SLEEP DURATION","color":9133302,"hexStr":"#8b5cf6","offset":[-0.5,0,0.2]},{"key":"front","label":"FUEL","fullTitle":"METABOLIC FUELING","color":16096779,"hexStr":"#f59e0b","offset":[0,-0.3,0.5]},{"key":"back","label":"AUTOPHAGY","fullTitle":"CELLULAR AUTOPHAGY","color":440020,"hexStr":"#06b6d4","offset":[0,0.3,-0.5]}];
+      const NODE_METADATA = [
+        { key: "top", label: "BIO-AGE", fullTitle: "BIOLOGICAL AGE DELTA", color: 0xf43f5e, hexStr: "#f43f5e", geo: new THREE.OctahedronGeometry(0.15, 0) },
+        { key: "bottom", label: "VO2 MAX", fullTitle: "VO2 MAX (CARDIO)", color: 0xfb7185, hexStr: "#fb7185", geo: new THREE.CylinderGeometry(0.14, 0.14, 0.08, 6) },
+        { key: "right", label: "HRV", fullTitle: "HRV (RMSSD)", color: 0x10b981, hexStr: "#10b981", geo: new THREE.IcosahedronGeometry(0.15, 0) },
+        { key: "left", label: "SLEEP", fullTitle: "DEEP SLEEP DURATION", color: 0x8b5cf6, hexStr: "#8b5cf6", geo: new THREE.TorusGeometry(0.12, 0.04, 16, 32) },
+        { key: "front", label: "METABOLIC", fullTitle: "GLUCOSE FLEXIBILITY", color: 0xf59e0b, hexStr: "#f59e0b", geo: new THREE.DodecahedronGeometry(0.14, 0) },
+        { key: "back", label: "AUTOPHAGY", fullTitle: "CELLULAR AUTOPHAGY", color: 0xea5e9, hexStr: "#0ea5e9", geo: new THREE.BoxGeometry(0.16, 0.16, 0.16) }
+      ];
       const nodeMeshes = {};
 
-      // Multi-Layered Crystalline Jewel Node Builder (Box'em Standard)
-      const nodeCrystalGeo = new THREE.OctahedronGeometry(0.18, 0);
-      const innerJewelGeo = new THREE.OctahedronGeometry(0.08, 0);
+      // Multi-Layered Crystalline Jewel Node Builder (Full Parity with Box'em Standard)
+      function createNodeCrystal(colorHex, name, nodeKey, customGeo) {
+        const group = new THREE.Group();
+        group.name = name;
+        group.userData = { nodeKey: nodeKey, isNode: true };
+        group.renderOrder = 15;
 
-      NODE_METADATA.forEach(nodeDef => {
-        const k = nodeDef.key;
-        const colorHex = nodeDef.color;
-        const nGroup = new THREE.Group();
-        nGroup.name = 'node-' + k;
-        nGroup.renderOrder = 15;
-
-        // 1. Faceted Outer Jewel
+        // 1. Faceted Outer Jewel (Physical Refractive Material with High IOR)
+        const gemGeo = customGeo || new THREE.OctahedronGeometry(0.15, 0);
         const gemMat = new THREE.MeshPhysicalMaterial({
           color: colorHex,
+          roughness: 0.12,
+          metalness: 0.10,
+          transmission: 0.88,
+          ior: 1.76,
           emissive: colorHex,
-          emissiveIntensity: 0.40,
-          roughness: 0.10,
-          metalness: 0.15,
-          transmission: 0.85,
+          emissiveIntensity: 0.35,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.05,
           flatShading: true,
           transparent: true,
-          opacity: 0.95
+          opacity: 0.95,
+          depthWrite: false,
+          depthTest: true
         });
-        const gem = new THREE.Mesh(nodeCrystalGeo, gemMat);
-        nGroup.add(gem);
+        const gem = new THREE.Mesh(gemGeo, gemMat);
+        gem.renderOrder = 15;
+        group.add(gem);
 
-        // 1b. Crisp Wireframe Edge Lines
-        const edgeGeo = new THREE.EdgesGeometry(nodeCrystalGeo);
-        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45 });
+        // 1b. Crisp Wireframe Edges
+        const edgeGeo = new THREE.EdgesGeometry(gemGeo);
+        const edgeMat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45, depthWrite: false });
         const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat);
+        edgeLines.renderOrder = 16;
         gem.add(edgeLines);
 
-        // 2. Sparkling Inner Jewel Core
+        // 2. Radiant Sparkling Inner Jewel Core
+        const innerGeo = new THREE.OctahedronGeometry(0.07, 0);
         const innerMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           emissive: colorHex,
           emissiveIntensity: 0.95,
-          roughness: 0.05,
-          flatShading: true
+          roughness: 0.02,
+          transmission: 0.40,
+          flatShading: true,
+          depthWrite: false,
+          depthTest: true
         });
-        const innerJewel = new THREE.Mesh(innerJewelGeo, innerMat);
-        nGroup.add(innerJewel);
+        const innerJewel = new THREE.Mesh(innerGeo, innerMat);
+        innerJewel.renderOrder = 16;
+        group.add(innerJewel);
 
-        // 3. Rotating Orbital Halo
-        const ringGeo = new THREE.TorusGeometry(0.32, 0.008, 8, 36);
-        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70 });
+        // 3. Primary Silky Smooth Torus Ring
+        const ringGeo = new THREE.TorusGeometry(0.20, 0.006, 16, 48);
+        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70, depthWrite: false });
         const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 3;
-        nGroup.add(ring);
+        ring.renderOrder = 17;
+        group.add(ring);
 
-        systemGroup.add(nGroup);
-        nodeMeshes[k] = { group: nGroup, gem, innerJewel, ring, baseDir: NODE_DIRS[k], meta: nodeDef };
+        // 4. Secondary Diagonal Gimbal Ring
+        const ring2Geo = new THREE.TorusGeometry(0.23, 0.005, 16, 48);
+        const ring2 = new THREE.Mesh(ring2Geo, ringMat);
+        ring2.rotation.x = Math.PI / 3;
+        ring2.renderOrder = 17;
+        group.add(ring2);
+
+        // 5. Expanded Hit Sphere for Smooth Raycasting & Direct 3D Dragging
+        const hitGeo = new THREE.SphereGeometry(0.36, 16, 16);
+        const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001, depthWrite: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.userData = { parentNode: group, nodeKey: nodeKey };
+        group.add(hitMesh);
+
+        systemGroup.add(group);
+        return { group, gem, innerJewel, ring, ring2, hitMesh, nodeKey };
+      }
+
+      NODE_METADATA.forEach(nodeDef => {
+        nodeMeshes[nodeDef.key] = createNodeCrystal(nodeDef.color, 'node-' + nodeDef.key, nodeDef.key, nodeDef.geo);
       });
 
-      // 3D Spatial Canvas Billboard Sprites (Box'em Standard)
+      // 4x Supersampled Single-Line Box'em Standard 3D Billboard Sprite Generator
       function createSpatial3DBillboard(fullTitle, colorHexStr) {
         const c = document.createElement('canvas');
         c.width = 1024;
@@ -811,17 +879,18 @@
 
         const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(mat);
-        sprite.scale.set(1.45, 0.34, 1.0);
+        sprite.scale.set(1.20, 0.281, 1.0);
         sprite.renderOrder = 9999;
 
-        const redraw = (valText) => {
+        const redraw = (valText, overrideColor) => {
           ctx.clearRect(0, 0, c.width, c.height);
           const pad = 8, w = c.width - pad * 2, h = c.height - pad * 2, r = 58;
+          const colorStr = overrideColor || colorHexStr;
 
           ctx.save();
-          // Matte Glass Capsule Background
+          // High-Contrast Deep Matte Glass Capsule Tag Background
           ctx.fillStyle = 'rgba(9, 14, 26, 0.95)';
-          ctx.strokeStyle = colorHexStr;
+          ctx.strokeStyle = colorStr;
           ctx.lineWidth = 10;
           ctx.beginPath();
           ctx.moveTo(pad + r, pad);
@@ -837,28 +906,39 @@
           ctx.fill();
           ctx.stroke();
 
-          // Glowing Colored Bullet Dot
-          ctx.fillStyle = colorHexStr;
-          ctx.shadowColor = colorHexStr;
-          ctx.shadowBlur = 16;
-          ctx.beginPath();
-          ctx.arc(58, c.height / 2, 22, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
+          // Dynamically fit font so text never overflows canvas
+          let fontSize = 60;
+          ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
+          let textWidth = ctx.measureText(valText).width;
+          const bulletRadius = 20;
+          const gap = 24;
+          const maxContentWidth = w - 48;
 
-          // Full Title (Small Upper)
-          ctx.fillStyle = colorHexStr;
-          ctx.font = 'bold 36px "JetBrains Mono", monospace';
+          while ((textWidth + bulletRadius * 2 + gap > maxContentWidth) && fontSize > 32) {
+            fontSize -= 2;
+            ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
+            textWidth = ctx.measureText(valText).width;
+          }
+
+          const totalGroupWidth = bulletRadius * 2 + gap + textWidth;
+          const groupStartX = (c.width - totalGroupWidth) / 2;
+
+          // Glowing Colored Bullet Dot
+          ctx.fillStyle = colorStr;
+          ctx.shadowColor = colorStr;
+          ctx.shadowBlur = 14;
+          ctx.beginPath();
+          ctx.arc(groupStartX + bulletRadius, c.height / 2, bulletRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Crisp High-Legibility Typography
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
-          ctx.fillText(fullTitle, 105, 68);
-
-          // Live Metric (Large Bold)
-          ctx.fillStyle = '#ffffff';
-          ctx.font = '900 64px "JetBrains Mono", monospace';
-          ctx.fillText(valText, 105, 148);
-
+          ctx.fillText(valText, groupStartX + bulletRadius * 2 + gap, c.height / 2 + 2);
           ctx.restore();
+
           tex.needsUpdate = true;
         };
 
@@ -869,54 +949,165 @@
 
       const nodeBillboards = {};
       NODE_METADATA.forEach(nodeDef => {
-        const sprite = createSpatial3DBillboard(nodeDef.fullTitle, nodeDef.hexStr);
+        const sprite = createSpatial3DBillboard(nodeDef.label, nodeDef.hexStr);
         systemGroup.add(sprite);
         nodeBillboards[nodeDef.key] = sprite;
       });
 
-      // Internal Submodules Group (Orbiting internal jewels inside the crystal volume)
+      // Adaptive Screen-Space Scaling (Maintains Crisp Standard 34px-High Tags Across Zooms & Viewing Distances)
+      function updateAdaptiveBillboards() {
+        const vFOV = THREE.MathUtils.degToRad(camera.fov);
+        const heightPerUnit = 2 * Math.tan(vFOV / 2);
+        const basePixelH = 34;
+        const refDist = 9.0;
+        const sWorldPos = new THREE.Vector3();
+        Object.values(nodeBillboards).forEach(s => {
+          if (!s) return;
+          s.getWorldPosition(sWorldPos);
+          const dist = Math.max(1.0, camera.position.distanceTo(sWorldPos));
+          const depthMultiplier = Math.pow(refDist / dist, 0.75);
+          const worldH = Math.max(0.12, (basePixelH / (window.innerHeight || 800)) * dist * heightPerUnit * depthMultiplier);
+          const worldW = worldH * (1024 / 240);
+          s.scale.set(worldW, worldH, 1.0);
+        });
+      }
+
+      // Internal Submodules Group (Orbiting internal deliverable shards inside the crystal volume)
       const submoduleGroup = new THREE.Group();
       submoduleGroup.renderOrder = 8;
       systemGroup.add(submoduleGroup);
 
-      const SUBMODULE_DEFS = [{"name":"Mitochondrial Cristae","color":16007006},{"name":"Telomere Shield Matrix","color":15485081},{"name":"Fasting Autophagosome","color":440020},{"name":"Vagus Nerve Stimulator","color":1096065},{"name":"Sarcopenia Resistance","color":16096779},{"name":"REM Neuro-Index","color":9133302}];
+      const SUBMODULE_DEFS = [
+        {
+          name: "Continuous Ketone-Glucose CGM",
+          category: "Metabolic Precision Deliverable",
+          desc: "Real-time interstitial biosensor continuous streaming with automated insulin sensitivity and glycemic area-under-curve tracking.",
+          color: 0xf59e0b,
+          pillarKey: "hrv",
+          reqVal: ">= 60 ms",
+          impact: "Insulin Sensitivity",
+          isActive: (s) => { return Boolean(s.hrv >= 60); }
+        },
+        {
+          name: "Zone 2 Mitochondrial Biogenesis",
+          category: "Aerobic Longevity Tier",
+          desc: "Polarized lactate-threshold cardio protocol expanding cellular mitochondrial density and fatty-acid oxidation efficiency.",
+          color: 0xf43f5e,
+          pillarKey: "vo2",
+          reqVal: ">= 50 mL/kg",
+          impact: "Cardiorespiratory Fitness",
+          isActive: (s) => { return Boolean(s.vo2 >= 50); }
+        },
+        {
+          name: "High-Density Glymphatic Sleep Matrix",
+          category: "Neuro-Restoration Milestone",
+          desc: "Temperature-regulated bi-phasic cooling cycle maximizing slow-wave delta EEG power and brain amyloid clearance.",
+          color: 0x8b5cf6,
+          pillarKey: "sleep",
+          reqVal: ">= 2.0 hrs",
+          impact: "Neuro-Regeneration",
+          isActive: (s) => { return Boolean(s.sleep >= 2.0); }
+        },
+        {
+          name: "Pulse-Dosed Rapamycin Protocol",
+          category: "mTOR Longevity Intervention",
+          desc: "Intermittent mTORC1 suppression cycle stimulating selective cellular autophagy while protecting immune function.",
+          color: 0xea5e9,
+          pillarKey: "bioage",
+          reqVal: "<= -3.0 Yrs",
+          impact: "Cellular Clearance",
+          isActive: (s) => { return Boolean(s.bioage <= -3.0); }
+        },
+        {
+          name: "Cold Shock Protein Cryo-Chamber",
+          category: "Hormetic Stress Adaptation",
+          desc: "Sub-zero -110°C whole-body cryotherapy stimulating norepinephrine release, peripheral vasoconstriction, and brown fat thermogenesis.",
+          color: 0x10b981,
+          pillarKey: "hrv",
+          reqVal: ">= 75 ms",
+          impact: "Anti-Inflammatory Tone",
+          isActive: (s) => { return Boolean(s.hrv >= 75); }
+        },
+        {
+          name: "Telomere & Epigenetic Horvath Clock",
+          category: "Epigenetic Age Sign-Off",
+          desc: "High-throughput methylation DNA sequencing assay verifying reversal of biological Horvath aging clocks.",
+          color: 0xfb7185,
+          pillarKey: "bioage",
+          reqVal: "<= -5.0 Yrs",
+          impact: "Biological Reversal",
+          isActive: (s) => { return Boolean(s.bioage <= -5.0); }
+        }
+      ];
+
       const submoduleMeshes = [];
-      const subGeo = new THREE.OctahedronGeometry(0.10, 0);
+      const subGeo = new THREE.IcosahedronGeometry(0.10, 0); // High-visibility crystal shards
 
       SUBMODULE_DEFS.forEach((sub, idx) => {
         const angle = (idx / SUBMODULE_DEFS.length) * Math.PI * 2;
-        const rad = 0.85;
+        const rad = 0.50; // Nestled inside the crystal volume
         const x = Math.cos(angle) * rad;
         const z = Math.sin(angle) * rad;
-        const y = (idx % 2 === 0 ? 0.35 : -0.35);
+        const y = (idx % 2 === 0 ? 0.20 : -0.20);
 
         const subMat = new THREE.MeshPhysicalMaterial({
           color: sub.color,
           emissive: sub.color,
           emissiveIntensity: 0.85,
-          roughness: 0.10,
-          metalness: 0.50,
+          roughness: 0.12,
+          metalness: 0.25,
           flatShading: true,
           transparent: true,
-          opacity: 0.90
+          opacity: 0.95,
+          depthWrite: false,
+          depthTest: true
         });
         const subMesh = new THREE.Mesh(subGeo, subMat);
         subMesh.position.set(x, y, z);
-        subMesh.userData = { name: sub.name, angle, rad, yBase: y };
+        subMesh.renderOrder = 9;
+        subMesh.userData = {
+          ...sub,
+          angle,
+          rad,
+          yBase: y,
+          baseColor: sub.color
+        };
+
+        const subEdges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(subGeo),
+          new THREE.LineBasicMaterial({ color: sub.color, transparent: true, opacity: 0.5, depthWrite: false })
+        );
+        subMesh.add(subEdges);
+        subMesh.userData.edges = subEdges;
+
+        // Expanded raycast hit sphere for effortless hover detection
+        const subHitGeo = new THREE.SphereGeometry(0.18, 8, 8);
+        const subHitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const subHitSphere = new THREE.Mesh(subHitGeo, subHitMat);
+        subHitSphere.userData = subMesh.userData;
+        subMesh.add(subHitSphere);
+
         submoduleGroup.add(subMesh);
         submoduleMeshes.push(subMesh);
       });
 
-      // 12 Struts Connecting the 6 Apexes into a Complete Polytope Envelope
-      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.40 });
+      function checkSubmoduleActive(subData) {
+        if (typeof subData.isActive === 'function') {
+          return subData.isActive(state);
+        }
+        return true;
+      }
+
+      // Connecting Sleek Struts
       const strutPairs = [
-        ['top', 'right'], ['top', 'front'], ['top', 'left'], ['top', 'back'],
-        ['bottom', 'right'], ['bottom', 'front'], ['bottom', 'left'], ['bottom', 'back'],
+        ['top', 'right'], ['top', 'left'], ['top', 'front'], ['top', 'back'],
+        ['bottom', 'right'], ['bottom', 'left'], ['bottom', 'front'], ['bottom', 'back'],
         ['right', 'front'], ['front', 'left'], ['left', 'back'], ['back', 'right']
       ];
       const struts = [];
+      const strutMat = new THREE.MeshBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.35 });
       strutPairs.forEach(() => {
-        const sGeo = new THREE.CylinderGeometry(0.008, 0.008, 1, 8);
+        const sGeo = new THREE.CylinderGeometry(0.0055, 0.0055, 1, 8);
         const sMesh = new THREE.Mesh(sGeo, strutMat);
         sMesh.renderOrder = 2;
         systemGroup.add(sMesh);
@@ -925,96 +1116,112 @@
 
       // Internal State
       const state = {
-        bioage: -3.8,
-        hrv: 78,
-        vo2: 54,
-        sleep: 2.2
+        bioage: -3.8, hrv: 78, vo2: 54, sleep: 2.2
       };
 
       // Mathematical Solver & Geometry Morphing Engine
-      
       function solveEquilibrium(changedPillar) {
-        if (changedPillar === 'vo2' || changedPillar === 'hrv' || changedPillar === 'sleep') {
-          const bioDelta = -1.2 * Math.pow(state.vo2 / 40.0, 1.25) - 1.6 * Math.pow(state.hrv / 60.0, 0.8) - 1.4 * Math.pow(state.sleep / 1.8, 0.9) + 3.2;
-          state.bioage = Number(Math.max(-15.0, Math.min(5.0, bioDelta)).toFixed(1));
-        } else if (changedPillar === 'bioage') {
-          const norm = Math.max(0.0, Math.min(1.0, (-state.bioage + 5.0) / 20.0));
-          state.vo2 = Math.round(28 + norm * 52);
-          state.hrv = Math.round(30 + norm * 140);
-          state.sleep = Number((1.0 + norm * 3.0).toFixed(1));
+        
+        if (changedPillar === 'vo2') {
+          const vN = (state.vo2 - 25) / 60.0;
+          state.hrv = Math.round(35 + vN * 85);
+        } else if (changedPillar === 'sleep') {
+          const sN = (state.sleep - 0.5) / 4.0;
+          state.hrv = Math.min(180, Math.round(state.hrv + sN * 25));
         }
 
-        ['bioage', 'hrv', 'vo2', 'sleep'].forEach(k => {
-          const sl = document.getElementById('slider-' + k);
-          const vl = document.getElementById('val-' + k);
-          if (sl) sl.value = state[k];
-          if (vl) {
-            const unitMap = { bioage: ' Yrs', hrv: ' ms', vo2: ' mL/kg', sleep: ' hrs' };
-            vl.textContent = state[k] + unitMap[k];
-          }
-        });
+        if (changedPillar !== 'bioage') {
+          const vo2Contrib = (state.vo2 - 35) * 0.18;
+          const hrvContrib = (state.hrv - 45) * 0.08;
+          const sleepContrib = (state.sleep - 1.2) * 2.2;
+          const calcDelta = -(vo2Contrib + hrvContrib + sleepContrib);
+          state.bioage = Number(Math.max(-14.5, Math.min(4.0, calcDelta)).toFixed(1));
+        }
 
-        const hudBio = document.getElementById('hud-stat-1');
-        const hudReserve = document.getElementById('hud-stat-2');
+        // Two-way DOM sync
+        const slBioage = document.getElementById('slider-bioage');
+        const vlBioage = document.getElementById('val-bioage');
+        if (slBioage) slBioage.value = state.bioage;
+        if (vlBioage) vlBioage.textContent = (state.bioage > 0 ? '+' : '') + state.bioage.toFixed(1) + ' Yrs';
+
+        const slHrv = document.getElementById('slider-hrv');
+        const vlHrv = document.getElementById('val-hrv');
+        if (slHrv) slHrv.value = state.hrv;
+        if (vlHrv) vlHrv.textContent = state.hrv + ' ms';
+
+        const slVo2 = document.getElementById('slider-vo2');
+        const vlVo2 = document.getElementById('val-vo2');
+        if (slVo2) slVo2.value = state.vo2;
+        if (vlVo2) vlVo2.textContent = state.vo2 + ' mL/kg';
+
+        const slSleep = document.getElementById('slider-sleep');
+        const vlSleep = document.getElementById('val-sleep');
+        if (slSleep) slSleep.value = state.sleep;
+        if (vlSleep) vlSleep.textContent = state.sleep.toFixed(1) + ' hrs';
+
+        const hud1 = document.getElementById('hud-stat-1');
+        const hud2 = document.getElementById('hud-stat-2');
         const hudCopilot = document.getElementById('hud-copilot-text');
-        if (hudBio) hudBio.textContent = (state.bioage > 0 ? '+' : '') + state.bioage + ' Years';
-        if (hudReserve) {
-          const pct = Math.min(100, Math.round((state.vo2 / 75.0) * 100));
-          hudReserve.textContent = 'Top ' + Math.max(1, 100 - pct) + '% Elite';
-        }
+        if (hud1) hud1.textContent = (state.bioage > 0 ? '+' : '') + state.bioage.toFixed(1) + ' Yrs Delta';
+        if (hud2) hud2.textContent = state.hrv + ' ms Optimal';
         if (hudCopilot) {
-          hudCopilot.textContent = 'Physiological profile optimized: VO2 max of ' + state.vo2 + ' mL/kg paired with ' + state.sleep + 'h deep sleep yields a biological age reduction of ' + Math.abs(state.bioage) + ' years.';
+          hudCopilot.textContent = 'Biometric equilibrium synchronized: ' + state.vo2 + ' mL/kg VO2 max paired with ' + state.sleep.toFixed(1) + 'h deep sleep drives autonomic HRV to ' + state.hrv + 'ms, reversing biological age by ' + Math.abs(state.bioage).toFixed(1) + ' years.';
         }
+        
 
         update3DGeometry();
       }
 
       function update3DGeometry() {
-        const vN = Math.max(0.0, Math.min(1.0, (state.vo2 - 25) / (85 - 25)));
+        
+        const bN = Math.max(0.0, Math.min(1.0, (5.0 - state.bioage) / (5.0 - (-15.0))));
         const hN = Math.max(0.0, Math.min(1.0, (state.hrv - 20) / (180 - 20)));
+        const vN = Math.max(0.0, Math.min(1.0, (state.vo2 - 25) / (85 - 25)));
         const sN = Math.max(0.0, Math.min(1.0, (state.sleep - 0.5) / (4.5 - 0.5)));
-        const bN = Math.max(0.0, Math.min(1.0, (-state.bioage + 5.0) / 20.0));
 
         const rads = {
-          top: 0.85 + bN * 1.6,
-          bottom: 0.85 + vN * 1.6,
-          right: 0.85 + hN * 1.5,
-          left: 0.85 + sN * 1.5,
-          front: 0.85 + (vN * 0.5 + bN * 0.5) * 1.5,
-          back: 0.85 + (hN * 0.5 + sN * 0.5) * 1.5
+          top: 0.65 + bN * 0.65,
+          bottom: 0.65 + vN * 0.65,
+          right: 0.65 + hN * 0.65,
+          left: 0.65 + sN * 0.65,
+          front: 0.65 + ((bN + hN) / 2) * 0.65,
+          back: 0.65 + ((vN + sN) / 2) * 0.65
         };
+        
 
         const v = {};
         Object.keys(rads).forEach(k => {
           v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
-          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.22));
+          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.12));
         });
 
-        // Update 3D Floating Canvas Billboards
+        // Update 3D Floating Canvas Billboards cleanly positioned adjacent to nodes
+        
         if (nodeBillboards.top) {
-          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0, 0.45, 0.2));
-          nodeBillboards.top.userData.redraw((state.bioage > 0 ? '+' : '') + state.bioage + ' Yrs Delta');
+          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0.0, -0.28, 0.15));
+          nodeBillboards.top.userData.redraw(`BIO-AGE: ${state.bioage > 0 ? '+' : ''}${state.bioage.toFixed(1)} Yrs`, '#f43f5e');
         }
         if (nodeBillboards.bottom) {
-          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0, -0.45, -0.2));
-          nodeBillboards.bottom.userData.redraw(state.vo2 + ' mL/kg VO2');
+          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0.0, -0.32, 0.15));
+          nodeBillboards.bottom.userData.redraw(`VO2: ${state.vo2} mL/kg`, '#fb7185');
         }
         if (nodeBillboards.right) {
-          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.55, 0, 0.2));
-          nodeBillboards.right.userData.redraw(state.hrv + ' ms RMSSD');
+          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.48, 0.16, 0.15));
+          nodeBillboards.right.userData.redraw(`HRV: ${state.hrv} ms`, '#10b981');
         }
         if (nodeBillboards.left) {
-          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.55, 0, 0.2));
-          nodeBillboards.left.userData.redraw(state.sleep + ' hrs Deep');
+          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.48, 0.16, 0.15));
+          nodeBillboards.left.userData.redraw(`SLEEP: ${state.sleep.toFixed(1)} h`, '#8b5cf6');
         }
         if (nodeBillboards.front) {
-          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0, -0.35, 0.5));
-          nodeBillboards.front.userData.redraw('110% Glycemic');
+          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0.0, -0.26, 0.30));
+          nodeBillboards.front.userData.redraw('METABOLIC: Flex', '#f59e0b');
         }
         if (nodeBillboards.back) {
-          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0, 0.35, -0.5));
-          nodeBillboards.back.userData.redraw('85% Autophagy');
+          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0.0, 0.26, -0.30));
+          nodeBillboards.back.userData.redraw('AUTOPHAGY: On', '#0ea5e9');
         }
+        
 
         const p = corePolyGeo.attributes.position.array;
         const setTri = (offset, p1, p2, p3) => {
@@ -1044,87 +1251,117 @@
           strut.position.copy(p1).add(p2).multiplyScalar(0.5);
           strut.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
         });
+
+        // Update Submodule States & Shard Appearances
+        submoduleMeshes.forEach(mesh => {
+          const isAct = checkSubmoduleActive(mesh.userData);
+          const colorHex = isAct ? mesh.userData.baseColor : 0x475569;
+          mesh.material.color.setHex(colorHex);
+          mesh.material.emissive.setHex(colorHex);
+          mesh.material.emissiveIntensity = isAct ? 0.85 : 0.20;
+          mesh.material.opacity = isAct ? 0.95 : 0.45;
+          mesh.userData.isActive = isAct;
+        });
+
+        updateAdaptiveBillboards();
       }
-    
 
       // Initial Reciprocal Calculation & Geometry Update
       solveEquilibrium();
 
-      // Sliders 2-Way Binding with Real-Time Reciprocal Solving
+      // Sliders 2-Way Binding
       
-        document.getElementById('slider-bioage')?.addEventListener('input', (e) => {
-          state.bioage = Number(e.target.value);
-          const el = document.getElementById('val-bioage');
-          if (el) el.textContent = state.bioage + ' Yrs';
-          solveEquilibrium('bioage');
-        });
-      
-        document.getElementById('slider-hrv')?.addEventListener('input', (e) => {
-          state.hrv = Number(e.target.value);
-          const el = document.getElementById('val-hrv');
-          if (el) el.textContent = state.hrv + ' ms';
-          solveEquilibrium('hrv');
-        });
-      
-        document.getElementById('slider-vo2')?.addEventListener('input', (e) => {
-          state.vo2 = Number(e.target.value);
-          const el = document.getElementById('val-vo2');
-          if (el) el.textContent = state.vo2 + ' mL/kg';
-          solveEquilibrium('vo2');
-        });
-      
-        document.getElementById('slider-sleep')?.addEventListener('input', (e) => {
-          state.sleep = Number(e.target.value);
-          const el = document.getElementById('val-sleep');
-          if (el) el.textContent = state.sleep + ' hrs';
-          solveEquilibrium('sleep');
-        });
-      
+      document.getElementById('slider-bioage')?.addEventListener('input', (e) => {
+        state.bioage = Number(e.target.value);
+        solveEquilibrium('bioage');
+      });
+      document.getElementById('slider-hrv')?.addEventListener('input', (e) => {
+        state.hrv = Number(e.target.value);
+        solveEquilibrium('hrv');
+      });
+      document.getElementById('slider-vo2')?.addEventListener('input', (e) => {
+        state.vo2 = Number(e.target.value);
+        solveEquilibrium('vo2');
+      });
+      document.getElementById('slider-sleep')?.addEventListener('input', (e) => {
+        state.sleep = Number(e.target.value);
+        solveEquilibrium('sleep');
+      });
+        
 
-      // Scenario Pills & Cards Interaction
-      const SCENARIOS = [{"shortTitle":"Zone 2","icon":"directions_run","tag":"Mitochondrial","title":"Zone 2 Endurance & Fat Oxidation","desc":"Low-intensity steady-state cardiovascular conditioning maximizing mitochondrial efficiency and metabolic flexibility.","metricLabel":"Lactate","metricVal":"< 2.0 mmol/L","stat1":"-4.2 Yrs","stat2":"Top 5% Cardio","copilot":"High volume Zone 2 training stimulates biogenesis of dense mitochondrial cristae.","params":{"bioage":-4.2,"hrv":85,"vo2":58,"sleep":2.3}},{"shortTitle":"Deep Sleep","icon":"bedtime","tag":"Neuro-Restoration","title":"Circadian Synchronization & Glymphatic Clearance","desc":"Strict temperature modulation and dark-light timing to maximize slow-wave deep sleep and brain amyloid clearance.","metricLabel":"Deep Sleep","metricVal":"2.4 hrs / night","stat1":"-5.1 Yrs","stat2":"88% Recovery","copilot":"Glymphatic flush verified: slow-wave sleep cycles elevated by 45% over baseline.","params":{"bioage":-5.1,"hrv":95,"vo2":52,"sleep":3.2}},{"shortTitle":"Metabolic Reset","icon":"restaurant","tag":"Autophagy","title":"Intermittent Fasting & AMPK Activation","desc":"Time-restricted feeding schedule driving cellular autophagy, downregulating mTOR, and stabilizing glycemic response.","metricLabel":"HOMA-IR","metricVal":"0.8 Optimal","stat1":"-3.9 Yrs","stat2":"Low Inflammation","copilot":"Cellular renewal active: senescent cell clearance elevated during 16-hour fasting windows.","params":{"bioage":-3.9,"hrv":76,"vo2":48,"sleep":2.1}},{"shortTitle":"Stress Shield","icon":"spa","tag":"Autonomic","title":"Vagal Nerve Stimulation & HRV Amplification","desc":"Resonance frequency breathwork (5.5 breaths/min) combined with cold exposure to build robust parasympathetic resilience.","metricLabel":"HRV RMSSD","metricVal":"85 ms","stat1":"-4.8 Yrs","stat2":"Sympathetic Low","copilot":"Autonomic tone normalized: baroreflex sensitivity significantly enhanced.","params":{"bioage":-4.8,"hrv":125,"vo2":50,"sleep":2.5}},{"shortTitle":"Centenarian Blueprint","icon":"all_inclusive","tag":"Longevity","title":"Comprehensive Multi-Omic Longevity Baseline","desc":"Holistic protocol harmonizing telomere protection, epigenetic methylation markers, and sarcopenia resistance.","metricLabel":"Epigenetic Pace","metricVal":"0.72x Baseline","stat1":"-6.5 Yrs","stat2":"DNA Clean","copilot":"DunedinPACE epigenetic pace of aging slowed to 0.72 biological years per chronological year.","params":{"bioage":-6.5,"hrv":110,"vo2":64,"sleep":2.8}},{"shortTitle":"Hypertrophy","icon":"fitness_center","tag":"Musculoskeletal","title":"High-Output Hypertrophy & Bone Density","desc":"Heavy multi-joint resistance training promoting myokine release, IGF-1 regulation, and dense skeletal mineralization.","metricLabel":"DEXA T-Score","metricVal":"+2.1 Bone","stat1":"-3.5 Yrs","stat2":"Lean Mass High","copilot":"Mechanical tension triggers bone remodeling and builds crucial metabolic glucose sink reserves.","params":{"bioage":-3.5,"hrv":68,"vo2":52,"sleep":2.4}}];
+      // Scenario Presets
+      
+      const SCENARIOS = [
+        {
+          name: 'Zone 2 Cardio',
+          params: { bioage: -3.8, hrv: 78, vo2: 54, sleep: 2.2 },
+          copilot: 'Aerobic base conditioning: 4x weekly 45-minute Zone 2 training driving peak mitochondrial density and resting vagal tone.',
+          stat1: '-3.8 Yrs Delta',
+          stat2: '78 ms HRV Optimal'
+        },
+        {
+          name: 'Deep Sleep Focus',
+          params: { bioage: -5.2, hrv: 92, vo2: 50, sleep: 3.4 },
+          copilot: 'Max neuro-regeneration protocol: 3.4 hours slow-wave delta sleep clearing metabolic waste products and elevating morning HRV.',
+          stat1: '-5.2 Yrs Reversal',
+          stat2: '92 ms Restored'
+        },
+        {
+          name: 'Metabolic Reset',
+          params: { bioage: -4.5, hrv: 82, vo2: 52, sleep: 2.5 },
+          copilot: 'Time-restricted eating with prolonged fasting: AMPK activation and systemic autophagy reducing visceral adipose inflammation.',
+          stat1: '-4.5 Yrs Reversal',
+          stat2: '82 ms Resilient'
+        },
+        {
+          name: 'Stress Shield',
+          params: { bioage: -2.8, hrv: 110, vo2: 48, sleep: 2.8 },
+          copilot: 'Parasympathetic dominant state: Resonant frequency breathwork (0.1Hz) maximizing respiratory sinus arrhythmia and HRV amplitude.',
+          stat1: '-2.8 Yrs Calibrated',
+          stat2: '110 ms Peak'
+        },
+        {
+          name: 'Centenarian Blueprint',
+          params: { bioage: -8.4, hrv: 135, vo2: 68, sleep: 3.2 },
+          copilot: 'Elite longevity matrix: High aerobic capacity (VO2 max 68) paired with 3.2h deep sleep yielding an 8.4-year biological age reversal.',
+          stat1: '-8.4 Yrs Masterpiece',
+          stat2: '135 ms Youthful'
+        },
+        {
+          name: 'Hypertrophy Phase',
+          params: { bioage: -3.2, hrv: 68, vo2: 46, sleep: 2.6 },
+          copilot: 'Progressive mechanical tension loading: Myofibrillar hypertrophy protocol enhancing bone mineral density and glycemic buffering.',
+          stat1: '-3.2 Yrs Anabolic',
+          stat2: '68 ms Load'
+        }
+      ];
+        
+
       function applyScenario(idx) {
         const sc = SCENARIOS[idx];
         if (!sc) return;
         document.querySelectorAll('.scenario-pill-btn').forEach((b, i) => {
           if (i === idx) {
-            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-rose-400 to-pink-500 text-slate-950 shadow-md active shrink-0';
+            b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 shadow-md active shrink-0';
           } else {
             b.className = 'scenario-pill-btn px-2.5 py-1 rounded-lg text-xs font-mono font-black flex items-center gap-1 transition-all glass-button text-slate-900 dark:text-slate-100 shrink-0';
           }
         });
 
-        // Apply Scenario Parameter Values to State & Sliders
         if (sc.params) {
           Object.keys(sc.params).forEach(k => {
-            if (state[k] !== undefined) {
-              state[k] = sc.params[k];
-              const slider = document.getElementById('slider-' + k);
-              const valEl = document.getElementById('val-' + k);
-              if (slider) slider.value = sc.params[k];
-              if (valEl) {
-                const slDef = [{"id":"bioage","label":"Bio-Age Delta","defaultVal":-3.8,"min":-15,"max":5,"step":0.1,"unit":" Yrs"},{"id":"hrv","label":"HRV (RMSSD)","defaultVal":78,"min":20,"max":180,"step":1,"unit":" ms"},{"id":"vo2","label":"VO2 Max","defaultVal":54,"min":25,"max":85,"step":1,"unit":" mL/kg"},{"id":"sleep","label":"Deep Sleep Duration","defaultVal":2.2,"min":0.5,"max":4.5,"step":0.1,"unit":" hrs"}].find(s => s.id === k);
-                valEl.textContent = sc.params[k] + (slDef ? slDef.unit : '');
-              }
-            }
+            if (state[k] !== undefined) state[k] = sc.params[k];
           });
         }
 
         solveEquilibrium();
 
-        if (document.getElementById('hud-copilot-text')) {
-          document.getElementById('hud-copilot-text').textContent = sc.copilot;
-        }
-        if (document.getElementById('hud-stat-1')) {
-          document.getElementById('hud-stat-1').textContent = sc.stat1;
-        }
-        if (document.getElementById('hud-stat-2')) {
-          document.getElementById('hud-stat-2').textContent = sc.stat2;
-        }
+        if (document.getElementById('hud-copilot-text')) document.getElementById('hud-copilot-text').textContent = sc.copilot;
+        if (document.getElementById('hud-stat-1')) document.getElementById('hud-stat-1').textContent = sc.stat1;
+        if (document.getElementById('hud-stat-2')) document.getElementById('hud-stat-2').textContent = sc.stat2;
 
-        // Pulse Morph Animation
-        systemGroup.rotation.x += 0.25;
-        systemGroup.scale.set(1.10, 1.10, 1.10);
+        systemGroup.rotation.x += 0.15;
+        systemGroup.scale.set(1.08, 1.08, 1.08);
         setTimeout(() => systemGroup.scale.set(1.0, 1.0, 1.0), 250);
       }
 
@@ -1143,33 +1380,225 @@
         });
       });
 
-      // Raycaster for Spatial Detail Card
+      // 4. Direct 3D Node Drag & Drop and Submodule Raycast Engine (Full Parity with Box'em)
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
+      let draggedNode = null;
+      let dragKey = null;
+      const dragPlane = new THREE.Plane();
+      const planeIntersect = new THREE.Vector3();
+
+      let isHoveringCard = false;
+      let isHoveringModel = false;
+      let cardHideTimeout = null;
       const detailCard = document.getElementById('submodule-detail-card');
 
-      interactionSurface.addEventListener('pointermove', (e) => {
+      function openDetailCard(e, data) {
+        if (!detailCard || draggedNode) return;
+        if (cardHideTimeout) {
+          clearTimeout(cardHideTimeout);
+          cardHideTimeout = null;
+        }
+
+        const cardWidth = 320;
+        const cardHeight = 180;
+        let posX = e.clientX + 16;
+        let posY = e.clientY - 24;
+
+        if (posX + cardWidth > window.innerWidth - 16) {
+          posX = e.clientX - cardWidth - 16;
+        }
+        if (posY + cardHeight > window.innerHeight - 16) {
+          posY = window.innerHeight - cardHeight - 16;
+        }
+        if (posY < 16) posY = 16;
+        if (posX < 16) posX = 16;
+
+        detailCard.style.left = `${posX}px`;
+        detailCard.style.top = `${posY}px`;
+
+        const isAct = checkSubmoduleActive(data);
+        const statusEl = document.getElementById('submodule-card-status');
+        if (statusEl) {
+          statusEl.textContent = isAct ? 'ACTIVE' : 'LOCKED';
+          statusEl.className = `px-2.5 py-1 text-xs font-mono font-black uppercase rounded-lg border ${isAct ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40'}`;
+        }
+        const catEl = document.getElementById('submodule-card-category');
+        if (catEl) catEl.textContent = data.category || 'Deliverable';
+        const qualEl = document.getElementById('submodule-card-qual');
+        if (qualEl) qualEl.textContent = data.reqText || `Req: ${data.reqVal}`;
+        const titleEl = document.getElementById('submodule-card-title');
+        if (titleEl) titleEl.textContent = data.name || 'Milestone Deliverable';
+        const descEl = document.getElementById('submodule-card-desc');
+        if (descEl) descEl.textContent = data.desc || 'Core deliverable modeled in reciprocal constraint matrix.';
+        const impactEl = document.getElementById('submodule-card-impact');
+        if (impactEl) impactEl.textContent = data.impact || 'Equilibrium Impact';
+        const metricEl = document.getElementById('submodule-card-metric');
+        if (metricEl) {
+          metricEl.textContent = isAct ? 'ACTIVE (Ready)' : `LOCKED (Needs ${data.reqVal})`;
+          metricEl.className = `font-bold ${isAct ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+
+        detailCard.classList.remove('hidden');
+      }
+
+      function scheduleCardDismiss() {
+        if (isHoveringCard || isHoveringModel) return;
+        if (cardHideTimeout) clearTimeout(cardHideTimeout);
+        cardHideTimeout = setTimeout(() => {
+          if (!isHoveringCard && !isHoveringModel && detailCard && !draggedNode) {
+            detailCard.classList.add('hidden');
+          }
+          cardHideTimeout = null;
+        }, 300);
+      }
+
+      if (detailCard) {
+        detailCard.addEventListener('pointerenter', () => {
+          isHoveringCard = true;
+          if (cardHideTimeout) {
+            clearTimeout(cardHideTimeout);
+            cardHideTimeout = null;
+          }
+        });
+        detailCard.addEventListener('pointerleave', () => {
+          isHoveringCard = false;
+          scheduleCardDismiss();
+        });
+      }
+
+      function applyDraggedNorm(key, norm) {
+        
+        if (key === 'top') {
+          state.bioage = Number((5.0 - norm * 20.0).toFixed(1));
+          solveEquilibrium('bioage');
+        } else if (key === 'bottom') {
+          state.vo2 = Math.round(25 + norm * 60);
+          solveEquilibrium('vo2');
+        } else if (key === 'right') {
+          state.hrv = Math.round(20 + norm * 160);
+          solveEquilibrium('hrv');
+        } else if (key === 'left') {
+          state.sleep = Number((0.5 + norm * 4.0).toFixed(1));
+          solveEquilibrium('sleep');
+        }
+        
+      }
+
+      interactionSurface.addEventListener('pointerdown', (e) => {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
-        const hitGems = Object.values(nodeMeshes).map(n => n.gem).concat(submoduleMeshes);
-        const hits = raycaster.intersectObjects(hitGems);
+
+        // Check for node crystal click to drag
+        const hitObjects = [];
+        Object.values(nodeMeshes).forEach(n => {
+          n.group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+        });
+
+        const hits = raycaster.intersectObjects(hitObjects, false);
         if (hits.length > 0) {
-          const hitObj = hits[0].object;
-          if (detailCard) {
-            detailCard.style.left = Math.min(window.innerWidth - 350, Math.max(20, e.clientX + 15)) + 'px';
-            detailCard.style.top = Math.max(80, e.clientY - 20) + 'px';
-            if (hitObj.userData && hitObj.userData.name) {
-              document.getElementById('detail-card-title').textContent = hitObj.userData.name;
-              document.getElementById('detail-card-metric').textContent = 'Internal Modular Subsystem';
-            }
-            detailCard.classList.remove('hidden');
+          let root = hits[0].object;
+          while (root.parent && root.parent !== systemGroup) {
+            if (root.userData && root.userData.isNode) break;
+            root = root.parent;
           }
+          if (root.userData && root.userData.nodeKey) {
+            e.stopPropagation();
+            draggedNode = root;
+            dragKey = root.userData.nodeKey;
+            controls.enabled = false;
+            interactionSurface.style.cursor = 'grabbing';
+
+            const nodeWorldPos = new THREE.Vector3();
+            draggedNode.getWorldPosition(nodeWorldPos);
+            const planeNormal = camera.getWorldDirection(new THREE.Vector3()).negate();
+            dragPlane.setFromNormalAndCoplanarPoint(planeNormal, nodeWorldPos);
+            return;
+          }
+        }
+
+        // Check for submodule click
+        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+        if (subHits.length > 0) {
+          isHoveringModel = true;
+          let subData = subHits[0].object.userData;
+          if (!subData.name && subHits[0].object.parent) {
+            subData = subHits[0].object.parent.userData;
+          }
+          openDetailCard(e, subData);
+        } else if (!isHoveringCard) {
+          isHoveringModel = false;
+          scheduleCardDismiss();
+        }
+      });
+
+      interactionSurface.addEventListener('pointermove', (e) => {
+        if (draggedNode) {
+          if (detailCard) detailCard.classList.add('hidden');
+          return;
+        }
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        const hitObjects = [];
+        Object.values(nodeMeshes).forEach(n => {
+          n.group.traverse(child => { if (child.isMesh) hitObjects.push(child); });
+        });
+
+        const hits = raycaster.intersectObjects(hitObjects, false);
+        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+
+        if (hits.length > 0) {
+          interactionSurface.style.cursor = 'grab';
+          isHoveringModel = false;
+          scheduleCardDismiss();
+        } else if (subHits.length > 0) {
+          interactionSurface.style.cursor = 'pointer';
+          isHoveringModel = true;
+          let subData = subHits[0].object.userData;
+          if (!subData.name && subHits[0].object.parent) {
+            subData = subHits[0].object.parent.userData;
+          }
+          openDetailCard(e, subData);
+        } else {
+          interactionSurface.style.cursor = 'default';
+          isHoveringModel = false;
+          scheduleCardDismiss();
         }
       });
 
       interactionSurface.addEventListener('pointerleave', () => {
-        if (detailCard) detailCard.classList.add('hidden');
+        isHoveringModel = false;
+        scheduleCardDismiss();
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!draggedNode || !dragKey) return;
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+          const localPos = systemGroup.worldToLocal(planeIntersect.clone());
+          const dir = NODE_DIRS[dragKey];
+          if (!dir) return;
+          const rawDist = localPos.dot(dir);
+          const minR = 0.65, maxR = 1.30;
+          const clampedRadius = Math.max(minR, Math.min(maxR, rawDist));
+          const norm = (clampedRadius - minR) / (maxR - minR);
+          applyDraggedNorm(dragKey, norm);
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (draggedNode) {
+          draggedNode = null;
+          dragKey = null;
+          controls.enabled = true;
+          interactionSurface.style.cursor = 'default';
+        }
       });
 
       // Animation Loop
@@ -1178,23 +1607,28 @@
         requestAnimationFrame(animate);
         const elapsed = clock.getElapsedTime();
 
-        systemGroup.rotation.y += 0.0020;
-        systemGroup.position.y = Math.sin(elapsed * 1.2) * 0.05;
+        if (!draggedNode) {
+          systemGroup.rotation.y += 0.0020;
+          systemGroup.position.y = targetWorldY + Math.sin(elapsed * 1.2) * 0.04;
+        } else {
+          systemGroup.position.y = targetWorldY;
+        }
 
         Object.values(nodeMeshes).forEach(n => {
           n.gem.rotation.y += 0.010;
           n.innerJewel.rotation.y -= 0.015;
           n.ring.rotation.z += 0.015;
+          n.ring2.rotation.y += 0.012;
         });
 
-        // Orbit internal submodules
+        // Orbit internal submodules inside crystal volume
         submoduleMeshes.forEach(sm => {
           sm.rotation.y += 0.02;
           sm.rotation.x += 0.015;
-          const currentAngle = sm.userData.angle + elapsed * 0.4;
+          const currentAngle = sm.userData.angle + elapsed * 0.35;
           sm.position.x = Math.cos(currentAngle) * sm.userData.rad;
           sm.position.z = Math.sin(currentAngle) * sm.userData.rad;
-          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 2.0 + sm.userData.angle) * 0.08;
+          sm.position.y = sm.userData.yBase + Math.sin(elapsed * 1.8 + sm.userData.angle) * 0.04;
         });
 
         controls.update();
@@ -1206,11 +1640,12 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        updateAdaptiveBillboards();
       });
 
       // Copy Embed
       document.getElementById('btn-copy-embed')?.addEventListener('click', () => {
-        const snip = '<iframe src="https://pulseem.blackboxes.net/" width="100%" height="650" frameborder="0" style="border-radius: 1.5rem;"></iframe>';
+        const snip = '<iframe src="https://pulse_em.blackboxes.net/" width="100%" height="650" frameborder="0" style="border-radius: 1.5rem;"></iframe>';
         navigator.clipboard.writeText(snip);
         alert('Copied embed snippet to clipboard!');
       });
