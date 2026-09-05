@@ -157,6 +157,21 @@
     html:not(.dark) .text-slate-400 {
       color: #475569 !important;
     }
+    html:not(.dark) .scenario-card p,
+    html:not(.dark) .page-content-wrapper p,
+    html:not(.dark) .text-slate-600,
+    html:not(.dark) .text-slate-700 {
+      color: #1e293b !important;
+      font-weight: 500;
+    }
+    html:not(.dark) .scenario-card h3 {
+      color: #020617 !important;
+    }
+    html:not(.dark) .scenario-card {
+      background: #ffffff !important;
+      border-color: rgba(15, 23, 42, 0.16) !important;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+    }
     html:not(.dark) .scenario-pill-btn:not(.active) {
       background: rgba(255, 255, 255, 0.92) !important;
       border-color: rgba(15, 23, 42, 0.18) !important;
@@ -640,6 +655,23 @@
       });
     }
 
+    // Sync saved theme on load
+    const savedTheme = localStorage.getItem('blackboxes_theme');
+    if (savedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+      if (themeIcon) {
+        themeIcon.textContent = 'dark_mode';
+        themeIcon.className = 'material-symbols-outlined text-lg text-indigo-600';
+      }
+    } else if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      if (themeIcon) {
+        themeIcon.textContent = 'light_mode';
+        themeIcon.className = 'material-symbols-outlined text-lg text-amber-400';
+      }
+    }
+
+
     // 2. Ambient Particles Runner
     (function initAmbientBackground() {
       const bgCanvas = document.getElementById('ambient-bg-canvas');
@@ -689,7 +721,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      const targetWorldY = -0.80; // Calibrated vertical stage centering perfectly between top scenario bar and bottom hint
+      let currentTargetWorldY = -0.75; // Dynamic stage centering tracking live-embed section
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
@@ -707,6 +739,8 @@
           e.preventDefault();
           const zoomFactor = e.deltaY > 0 ? 1.08 : 0.92;
           camera.position.multiplyScalar(zoomFactor);
+          camera.position.clampLength(controls.minDistance, controls.maxDistance);
+          updateAdaptiveBillboards();
         }
       }, { passive: false });
 
@@ -735,7 +769,7 @@
 
       // Central System Group
       const systemGroup = new THREE.Group();
-      systemGroup.position.y = targetWorldY;
+      systemGroup.position.y = currentTargetWorldY;
       scene.add(systemGroup);
 
       // Central Deformable Polytope Core Geometry (8 triangular faces spanning 6 apexes)
@@ -778,12 +812,12 @@
       };
 
       const NODE_METADATA = [
-        { key: "top", label: "FREQ", fullTitle: "GRID FREQUENCY", color: 0x10b981, hexStr: "#10b981", geo: new THREE.OctahedronGeometry(0.22, 0) },
-        { key: "bottom", label: "BESS", fullTitle: "BESS STORAGE", color: 0x14b8a6, hexStr: "#14b8a6", geo: new THREE.BoxGeometry(0.24, 0.24, 0.24) },
-        { key: "right", label: "GEN", fullTitle: "BASE GENERATION", color: 0xf59e0b, hexStr: "#f59e0b", geo: new THREE.CylinderGeometry(0.21, 0.21, 0.12, 6) },
-        { key: "left", label: "RENEWABLE", fullTitle: "GREEN PENETRATION", color: 0xea5e9, hexStr: "#0ea5e9", geo: new THREE.IcosahedronGeometry(0.22, 0) },
-        { key: "front", label: "LOSS", fullTitle: "TRANSMISSION LOSS", color: 0x8b5cf6, hexStr: "#8b5cf6", geo: new THREE.TorusGeometry(0.18, 0.06, 16, 32) },
-        { key: "back", label: "CARBON", fullTitle: "CARBON INTENSITY", color: 0xf43f5e, hexStr: "#f43f5e", geo: new THREE.DodecahedronGeometry(0.21, 0) }
+        { key: "top", label: "FREQ", fullTitle: "GRID FREQUENCY", color: 0x10b981, hexStr: "#10b981", geo: new THREE.OctahedronGeometry(0.15, 0) },
+        { key: "bottom", label: "BESS", fullTitle: "BESS STORAGE", color: 0x14b8a6, hexStr: "#14b8a6", geo: new THREE.BoxGeometry(0.16, 0.16, 0.16) },
+        { key: "right", label: "GEN", fullTitle: "BASE GENERATION", color: 0xf59e0b, hexStr: "#f59e0b", geo: new THREE.CylinderGeometry(0.14, 0.14, 0.08, 6) },
+        { key: "left", label: "RENEWABLE", fullTitle: "GREEN PENETRATION", color: 0xea5e9, hexStr: "#0ea5e9", geo: new THREE.IcosahedronGeometry(0.15, 0) },
+        { key: "front", label: "LOSS", fullTitle: "TRANSMISSION LOSS", color: 0x8b5cf6, hexStr: "#8b5cf6", geo: new THREE.TorusGeometry(0.12, 0.04, 16, 32) },
+        { key: "back", label: "CARBON", fullTitle: "CARBON INTENSITY", color: 0xf43f5e, hexStr: "#f43f5e", geo: new THREE.DodecahedronGeometry(0.14, 0) }
       ];
       const nodeMeshes = {};
 
@@ -795,7 +829,7 @@
         group.renderOrder = 15;
 
         // 1. Faceted Outer Jewel (Scaled by +50%)
-        const gemGeo = customGeo || new THREE.OctahedronGeometry(0.22, 0);
+        const gemGeo = customGeo || new THREE.OctahedronGeometry(0.15, 0);
         const gemMat = new THREE.MeshPhysicalMaterial({
           color: colorHex,
           roughness: 0.12,
@@ -824,7 +858,7 @@
         gem.add(edgeLines);
 
         // 2. Radiant Sparkling Inner Jewel Core (0.105, scaled +50%)
-        const innerGeo = new THREE.OctahedronGeometry(0.105, 0);
+        const innerGeo = new THREE.OctahedronGeometry(0.075, 0);
         const innerMat = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           emissive: colorHex,
@@ -840,21 +874,21 @@
         group.add(innerJewel);
 
         // 3. Primary Silky Smooth Torus Ring (0.30, scaled +50%)
-        const ringGeo = new THREE.TorusGeometry(0.30, 0.008, 20, 60);
+        const ringGeo = new THREE.TorusGeometry(0.20, 0.005, 20, 60);
         const ringMat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.70, depthWrite: false });
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.renderOrder = 17;
         group.add(ring);
 
         // 4. Secondary Diagonal Gimbal Ring (0.34, scaled +50%)
-        const ring2Geo = new THREE.TorusGeometry(0.34, 0.007, 20, 60);
+        const ring2Geo = new THREE.TorusGeometry(0.23, 0.004, 20, 60);
         const ring2 = new THREE.Mesh(ring2Geo, ringMat);
         ring2.rotation.x = Math.PI / 3;
         ring2.renderOrder = 17;
         group.add(ring2);
 
         // 5. Expanded Hit Sphere for Smooth Raycasting & Direct 3D Dragging (0.52 radius)
-        const hitGeo = new THREE.SphereGeometry(0.52, 16, 16);
+        const hitGeo = new THREE.SphereGeometry(0.36, 16, 16);
         const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.001, depthWrite: false });
         const hitMesh = new THREE.Mesh(hitGeo, hitMat);
         hitMesh.userData = { parentNode: group, nodeKey: nodeKey };
@@ -881,7 +915,7 @@
 
         const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(mat);
-        sprite.scale.set(1.42, 0.40, 1.0);
+        sprite.scale.set(1.10, 0.30, 1.0);
         sprite.renderOrder = 9999;
 
         const redraw = (valText, overrideColor) => {
@@ -889,21 +923,21 @@
           const colorStr = overrideColor || colorHexStr;
 
           ctx.save();
-          let fontSize = 60;
+          let fontSize = 40;
           ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
           let textWidth = ctx.measureText(valText).width;
-          const bulletRadius = 18;
-          const gap = 20;
+          const bulletRadius = 12;
+          const gap = 14;
 
-          while ((textWidth + bulletRadius * 2 + gap > 520) && fontSize > 34) {
+          while ((textWidth + bulletRadius * 2 + gap > 380) && fontSize > 24) {
             fontSize -= 2;
             ctx.font = `900 ${fontSize}px "JetBrains Mono", monospace`;
             textWidth = ctx.measureText(valText).width;
           }
 
           const totalContentWidth = bulletRadius * 2 + gap + textWidth;
-          const capsuleW = Math.min(610, Math.max(300, totalContentWidth + 56));
-          const capsuleH = 140;
+          const capsuleW = Math.min(460, Math.max(220, totalContentWidth + 36));
+          const capsuleH = 100;
           const startX = (c.width - capsuleW) / 2;
           const startY = (c.height - capsuleH) / 2;
           const r = capsuleH / 2; // Perfect stadium pill contour
@@ -924,7 +958,7 @@
           ctx.closePath();
           ctx.fillStyle = 'rgba(9, 14, 26, 0.95)';
           ctx.fill();
-          ctx.lineWidth = 10;
+          ctx.lineWidth = 8;
           ctx.strokeStyle = colorStr;
           ctx.stroke();
 
@@ -933,7 +967,7 @@
           // Glowing Colored Bullet Dot
           ctx.fillStyle = colorStr;
           ctx.shadowColor = colorStr;
-          ctx.shadowBlur = 14;
+          ctx.shadowBlur = 10;
           ctx.beginPath();
           ctx.arc(groupStartX + bulletRadius, c.height / 2, bulletRadius, 0, Math.PI * 2);
           ctx.fill();
@@ -961,19 +995,20 @@
         nodeBillboards[nodeDef.key] = sprite;
       });
 
-      // Adaptive Screen-Space Scaling (Maintains Crisp Standard 46px-High Stadium Tags)
-      function updateAdaptiveBillboards() {
+      // Adaptive Screen-Space Scaling (Maintains Crisp Tags & Scales With Dynamic Scroll)
+      function updateAdaptiveBillboards(currentModelScale) {
         const vFOV = THREE.MathUtils.degToRad(camera.fov);
         const heightPerUnit = 2 * Math.tan(vFOV / 2);
-        const basePixelH = 46; // Standardized crisp tag height on screen
+        const basePixelH = 32; // Standardized crisp tag height on screen
         const refDist = 9.0;
         const sWorldPos = new THREE.Vector3();
+        const scrollFactor = Math.max(0.20, currentModelScale || (systemGroup ? systemGroup.scale.x : 1.0));
         Object.values(nodeBillboards).forEach(s => {
           if (!s) return;
           s.getWorldPosition(sWorldPos);
           const dist = Math.max(1.0, camera.position.distanceTo(sWorldPos));
           const depthMultiplier = Math.pow(refDist / dist, 0.75);
-          const worldH = Math.max(0.14, (basePixelH / (window.innerHeight || 800)) * dist * heightPerUnit * depthMultiplier);
+          const worldH = Math.max(0.08, (basePixelH / (window.innerHeight || 800)) * dist * heightPerUnit * scrollFactor * depthMultiplier);
           const worldW = worldH * (640 / 180);
           s.scale.set(worldW, worldH, 1.0);
         });
@@ -1048,14 +1083,14 @@
       ];
 
       const submoduleMeshes = [];
-      const subGeo = new THREE.IcosahedronGeometry(0.18, 0); // High-visibility crystal shards
+      const subGeo = new THREE.IcosahedronGeometry(0.12, 0); // High-visibility crystal shards
 
       SUBMODULE_DEFS.forEach((sub, idx) => {
         const angle = (idx / SUBMODULE_DEFS.length) * Math.PI * 2;
-        const rad = 0.62; // Nestled inside the crystal volume
+        const rad = 0.48; // Nestled inside the crystal volume
         const x = Math.cos(angle) * rad;
         const z = Math.sin(angle) * rad;
-        const y = (idx % 2 === 0 ? 0.22 : -0.22);
+        const y = (idx % 2 === 0 ? 0.16 : -0.16);
 
         const subMat = new THREE.MeshPhysicalMaterial({
           color: sub.color,
@@ -1186,45 +1221,45 @@
 
         // Standardized +50% Scale: Calibrated radii (0.98 to 1.95)
         const rads = {
-          top: 0.98 + fN * 0.97,
-          bottom: 0.98 + bN * 0.97,
-          right: 0.98 + gN * 0.97,
-          left: 0.98 + rN * 0.97,
-          front: 0.98 + ((fN + gN) / 2) * 0.97,
-          back: 0.98 + ((bN + rN) / 2) * 0.97
+          top: 0.76 + fN  * 0.74,
+          bottom: 0.76 + bN  * 0.74,
+          right: 0.76 + gN  * 0.74,
+          left: 0.76 + rN  * 0.74,
+          front: 0.76 + ((fN + gN) / 2)  * 0.74,
+          back: 0.76 + ((bN + rN) / 2)  * 0.74
         };
         
 
         const v = {};
         Object.keys(rads).forEach(k => {
           v[k] = NODE_DIRS[k].clone().multiplyScalar(rads[k]);
-          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.12));
+          nodeMeshes[k].group.position.copy(v[k].clone().multiplyScalar(1.16));
         });
 
         // Update 3D Floating Canvas Billboards cleanly positioned adjacent to nodes
         
         if (nodeBillboards.top) {
-          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0.0, -0.46, 0.22));
+          nodeBillboards.top.position.copy(nodeMeshes.top.group.position).add(new THREE.Vector3(0.0, -0.32, 0.15));
           nodeBillboards.top.userData.redraw(`FREQ: ${state.freq.toFixed(2)} Hz`, '#10b981');
         }
         if (nodeBillboards.bottom) {
-          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0.0, -0.46, 0.22));
+          nodeBillboards.bottom.position.copy(nodeMeshes.bottom.group.position).add(new THREE.Vector3(0.0, -0.32, 0.15));
           nodeBillboards.bottom.userData.redraw(`BESS: ${state.bess} MW`, '#06b6d4');
         }
         if (nodeBillboards.right) {
-          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.45, 0.38, 0.20));
+          nodeBillboards.right.position.copy(nodeMeshes.right.group.position).add(new THREE.Vector3(0.35, 0.26, 0.15));
           nodeBillboards.right.userData.redraw(`GEN: ${state.gen} MW`, '#f59e0b');
         }
         if (nodeBillboards.left) {
-          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.45, 0.38, 0.20));
+          nodeBillboards.left.position.copy(nodeMeshes.left.group.position).add(new THREE.Vector3(-0.35, 0.26, 0.15));
           nodeBillboards.left.userData.redraw(`GREEN: ${state.renew}%`, '#0ea5e9');
         }
         if (nodeBillboards.front) {
-          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0.0, -0.40, 0.35));
+          nodeBillboards.front.position.copy(nodeMeshes.front.group.position).add(new THREE.Vector3(0.0, -0.28, 0.20));
           nodeBillboards.front.userData.redraw('LOSS: 2.8%', '#8b5cf6');
         }
         if (nodeBillboards.back) {
-          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0.0, 0.40, -0.35));
+          nodeBillboards.back.position.copy(nodeMeshes.back.group.position).add(new THREE.Vector3(0.0, 0.28, -0.20));
           nodeBillboards.back.userData.redraw(`CO2: ${carbonIntensity} g/kWh`, '#f43f5e');
         }
         
@@ -1501,6 +1536,7 @@
       }
 
       interactionSurface.addEventListener('pointerdown', (e) => {
+        if (!systemGroup.visible) return;
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);
@@ -1546,6 +1582,10 @@
       });
 
       interactionSurface.addEventListener('pointermove', (e) => {
+        if (!systemGroup.visible) {
+          scheduleCardDismiss(true);
+          return;
+        }
         if (draggedNode) {
           if (detailCard) detailCard.classList.add('hidden');
           return;
@@ -1569,11 +1609,12 @@
         } else if (subHits.length > 0) {
           interactionSurface.style.cursor = 'pointer';
           isHoveringModel = true;
-          openDetailCard(e, subHits[0].object.userData);
+          const hit = subHits[0].object;
+          openDetailCard(e, hit.userData);
         } else {
           interactionSurface.style.cursor = 'default';
           isHoveringModel = false;
-          scheduleCardDismiss(false);
+          scheduleCardDismiss();
         }
       });
 
@@ -1593,7 +1634,7 @@
           const dir = NODE_DIRS[dragKey];
           if (!dir) return;
           const rawDist = localPos.dot(dir);
-          const minR = 0.98, maxR = 1.95; // Standardized +50% scale clamp
+          const minR = 0.76, maxR = 1.50; // Standardized +50% scale clamp
           const clampedRadius = Math.max(minR, Math.min(maxR, rawDist));
           const norm = (clampedRadius - minR) / (maxR - minR);
           applyDraggedNorm(dragKey, norm);
@@ -1615,11 +1656,31 @@
         requestAnimationFrame(animate);
         const elapsed = clock.getElapsedTime();
 
+        const canvasParent = document.getElementById('live-embed');
+        if (canvasParent) {
+          const liveRect = canvasParent.getBoundingClientRect();
+          // Dynamic vertical stage centering tracking live-embed section (Box'em standard)
+          const stageCenterY_Screen = liveRect.top + liveRect.height * 0.52;
+          const ndcY = -( (stageCenterY_Screen / window.innerHeight) * 2 - 1 );
+          const vFOV = THREE.MathUtils.degToRad(camera.fov);
+          const visibleHeightAtDist = 2 * Math.tan(vFOV / 2) * camera.position.z;
+          currentTargetWorldY = ndcY * (visibleHeightAtDist * 0.5);
+
+          // Dynamic scale: shrinks gracefully as user scrolls down past hero top (Box'em standard)
+          const scrollDownOffset = Math.max(0, -liveRect.top + 72);
+          const dynamicScrollScale = Math.max(0.12, 1.0 - (scrollDownOffset / 450) * 0.88);
+          systemGroup.scale.set(dynamicScrollScale, dynamicScrollScale, dynamicScrollScale);
+          updateAdaptiveBillboards(dynamicScrollScale);
+
+          // Completely disappear when scrolled past hero embed so lower page content is 100% readable!
+          systemGroup.visible = liveRect.bottom > 80;
+        }
+
         if (!draggedNode) {
           systemGroup.rotation.y += 0.0020;
-          systemGroup.position.y = targetWorldY + Math.sin(elapsed * 1.2) * 0.04;
+          systemGroup.position.y = currentTargetWorldY + Math.sin(elapsed * 1.2) * 0.04;
         } else {
-          systemGroup.position.y = targetWorldY;
+          systemGroup.position.y = currentTargetWorldY;
         }
 
         Object.values(nodeMeshes).forEach(n => {
