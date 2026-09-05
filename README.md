@@ -8,6 +8,17 @@ A modular, zero-build, offline-first ecosystem of **3D WebGL/WebXR reciprocal co
 
 ---
 
+## AXI estate context
+
+This Windows repository is the BlackBoxes spatial-engine suite. It is distinct
+from the local collaboration/exchange project at WSL `/root/blackboxes`.
+Keep development and validation in this repository's existing workflow.
+After a source or state checkpoint, follow
+`C:/Users/Axialon/AXI/Systems/Project-Onboarding.md`, refresh the native state
+and `.axi/project-context.json`, and commit the receipt. AXI can then detect
+changes without being active during development. Registration authorizes no
+deployment, spending, payment operation, or credential change.
+
 ## 💎 The 6 Standalone 3D Engines
 
 | Engine | Directory | Focus & Equilibrium Equation | Launch Link |
