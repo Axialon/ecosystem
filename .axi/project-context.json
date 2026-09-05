@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "purpose": "BlackBoxes spatial-engine suite: six standalone browser tools; separate from the WSL collaboration project.",
+  "contextPaths": [
+    "README.md",
+    "research/README.md"
+  ],
+  "verificationPaths": [],
+  "update": {
+    "summary": "Registered the spatial-engine suite separately from the WSL collaboration project; native development and AXI update instructions recorded. Product code and deployment unchanged; release checks not rerun.",
+    "nextAction": "Keep source handoffs current; assess a specific customer or showcase use after Signature and NextGen release work.",
+    "evidence": [
+      "README.md"
+    ],
+    "recordedAt": "2026-09-05T07:23:42.963Z",
+    "snapshot": {
+      "head": "54e3b87dd33fe4806c37a58f068780f55f280439",
+      "sourceHead": "54e3b87dd33fe4806c37a58f068780f55f280439",
+      "dirty": 0,
+      "omissions": [],
+      "digest": "87b6681cd29f4db0be649d63daaf157b318747a543ca82f3bf46c7f2cac27861"
+    }
+  }
+}
