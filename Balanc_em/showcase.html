@@ -744,25 +744,27 @@
       corePolyGeo.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
 
       const corePolyMat = new THREE.MeshPhysicalMaterial({
-        color: 0x10b981,
+        color: 0x07111e,
         emissive: 0x10b981,
-        emissiveIntensity: 0.35,
-        roughness: 0.12,
-        metalness: 0.20,
-        transmission: 0.85,
+        emissiveIntensity: 0.20,
+        roughness: 0.10,
+        metalness: 0.15,
+        transmission: 0.92,
         transparent: true,
-        opacity: 0.92,
+        opacity: 0.35,
         flatShading: true,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        depthTest: true
       });
       const coreMesh = new THREE.Mesh(corePolyGeo, corePolyMat);
-      coreMesh.renderOrder = 10;
+      coreMesh.renderOrder = 3;
       systemGroup.add(coreMesh);
 
       // Core Wireframe Facet Outlines
-      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true, transparent: true, opacity: 0.35 });
+      const coreWireMat = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true, transparent: true, opacity: 0.40, depthWrite: false });
       const coreWireMesh = new THREE.Mesh(corePolyGeo, coreWireMat);
-      coreWireMesh.renderOrder = 11;
+      coreWireMesh.renderOrder = 4;
       systemGroup.add(coreWireMesh);
 
       // 6 Unit Node Direction Vectors (Normalized Octahedral Basis - Exact Box'em Visual Scale)
@@ -979,7 +981,7 @@
 
       // Internal Submodules Group (Orbiting internal deliverable shards inside the expanded crystal volume)
       const submoduleGroup = new THREE.Group();
-      submoduleGroup.renderOrder = 8;
+      submoduleGroup.renderOrder = 12;
       systemGroup.add(submoduleGroup);
 
       const SUBMODULE_DEFS = [
@@ -1046,30 +1048,30 @@
       ];
 
       const submoduleMeshes = [];
-      const subGeo = new THREE.IcosahedronGeometry(0.15, 0); // High-visibility crystal shards (scaled +50%)
+      const subGeo = new THREE.IcosahedronGeometry(0.18, 0); // High-visibility crystal shards
 
       SUBMODULE_DEFS.forEach((sub, idx) => {
         const angle = (idx / SUBMODULE_DEFS.length) * Math.PI * 2;
-        const rad = 0.75; // Nestled inside the expanded crystal volume
+        const rad = 0.62; // Nestled inside the crystal volume
         const x = Math.cos(angle) * rad;
         const z = Math.sin(angle) * rad;
-        const y = (idx % 2 === 0 ? 0.30 : -0.30);
+        const y = (idx % 2 === 0 ? 0.22 : -0.22);
 
         const subMat = new THREE.MeshPhysicalMaterial({
           color: sub.color,
           emissive: sub.color,
-          emissiveIntensity: 0.85,
-          roughness: 0.12,
-          metalness: 0.25,
+          emissiveIntensity: 1.0,
+          roughness: 0.08,
+          metalness: 0.20,
           flatShading: true,
           transparent: true,
-          opacity: 0.95,
+          opacity: 0.98,
           depthWrite: false,
           depthTest: true
         });
         const subMesh = new THREE.Mesh(subGeo, subMat);
         subMesh.position.set(x, y, z);
-        subMesh.renderOrder = 9;
+        subMesh.renderOrder = 12;
         subMesh.userData = {
           ...sub,
           angle,
@@ -1080,17 +1082,11 @@
 
         const subEdges = new THREE.LineSegments(
           new THREE.EdgesGeometry(subGeo),
-          new THREE.LineBasicMaterial({ color: sub.color, transparent: true, opacity: 0.5, depthWrite: false })
+          new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.70, depthWrite: false })
         );
+        subEdges.renderOrder = 13;
         subMesh.add(subEdges);
         subMesh.userData.edges = subEdges;
-
-        // Expanded raycast hit sphere for effortless hover detection (0.26 radius)
-        const subHitGeo = new THREE.SphereGeometry(0.26, 8, 8);
-        const subHitMat = new THREE.MeshBasicMaterial({ visible: false });
-        const subHitSphere = new THREE.Mesh(subHitGeo, subHitMat);
-        subHitSphere.userData = subMesh.userData;
-        subMesh.add(subHitSphere);
 
         submoduleGroup.add(subMesh);
         submoduleMeshes.push(subMesh);
@@ -1268,8 +1264,8 @@
           const colorHex = isAct ? mesh.userData.baseColor : 0x475569;
           mesh.material.color.setHex(colorHex);
           mesh.material.emissive.setHex(colorHex);
-          mesh.material.emissiveIntensity = isAct ? 0.85 : 0.20;
-          mesh.material.opacity = isAct ? 0.95 : 0.45;
+          mesh.material.emissiveIntensity = isAct ? 1.0 : 0.25;
+          mesh.material.opacity = isAct ? 0.98 : 0.45;
           mesh.userData.isActive = isAct;
         });
 
@@ -1452,15 +1448,24 @@
         detailCard.classList.remove('hidden');
       }
 
-      function scheduleCardDismiss() {
-        if (isHoveringCard || isHoveringModel) return;
-        if (cardHideTimeout) clearTimeout(cardHideTimeout);
+      function scheduleCardDismiss(immediate = false) {
+        if (isHoveringCard) return;
+        if (cardHideTimeout) {
+          clearTimeout(cardHideTimeout);
+          cardHideTimeout = null;
+        }
+        if (immediate) {
+          if (detailCard && !draggedNode) {
+            detailCard.classList.add('hidden');
+          }
+          return;
+        }
         cardHideTimeout = setTimeout(() => {
           if (!isHoveringCard && !isHoveringModel && detailCard && !draggedNode) {
             detailCard.classList.add('hidden');
           }
           cardHideTimeout = null;
-        }, 300);
+        }, 120);
       }
 
       if (detailCard) {
@@ -1519,6 +1524,7 @@
             dragKey = root.userData.nodeKey;
             controls.enabled = false;
             interactionSurface.style.cursor = 'grabbing';
+            scheduleCardDismiss(true);
 
             const nodeWorldPos = new THREE.Vector3();
             draggedNode.getWorldPosition(nodeWorldPos);
@@ -1528,18 +1534,14 @@
           }
         }
 
-        // Check for submodule click
-        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+        // Check for submodule click (exact geometry hit only)
+        const subHits = raycaster.intersectObjects(submoduleMeshes, false);
         if (subHits.length > 0) {
           isHoveringModel = true;
-          let subData = subHits[0].object.userData;
-          if (!subData.name && subHits[0].object.parent) {
-            subData = subHits[0].object.parent.userData;
-          }
-          openDetailCard(e, subData);
+          openDetailCard(e, subHits[0].object.userData);
         } else if (!isHoveringCard) {
           isHoveringModel = false;
-          scheduleCardDismiss();
+          scheduleCardDismiss(true);
         }
       });
 
@@ -1558,30 +1560,26 @@
         });
 
         const hits = raycaster.intersectObjects(hitObjects, false);
-        const subHits = raycaster.intersectObjects(submoduleMeshes, true);
+        const subHits = raycaster.intersectObjects(submoduleMeshes, false);
 
         if (hits.length > 0) {
           interactionSurface.style.cursor = 'grab';
           isHoveringModel = false;
-          scheduleCardDismiss();
+          scheduleCardDismiss(true);
         } else if (subHits.length > 0) {
           interactionSurface.style.cursor = 'pointer';
           isHoveringModel = true;
-          let subData = subHits[0].object.userData;
-          if (!subData.name && subHits[0].object.parent) {
-            subData = subHits[0].object.parent.userData;
-          }
-          openDetailCard(e, subData);
+          openDetailCard(e, subHits[0].object.userData);
         } else {
           interactionSurface.style.cursor = 'default';
           isHoveringModel = false;
-          scheduleCardDismiss();
+          scheduleCardDismiss(false);
         }
       });
 
       interactionSurface.addEventListener('pointerleave', () => {
         isHoveringModel = false;
-        scheduleCardDismiss();
+        scheduleCardDismiss(true);
       });
 
       window.addEventListener('pointermove', (e) => {
